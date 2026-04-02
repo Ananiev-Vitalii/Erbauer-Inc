@@ -21,7 +21,9 @@ urlpatterns = [
     path("verify/invalid/", InvalidVerify.as_view(), name="invalid_verify"),
     path("confirm_user/", ConfirmUser.as_view(), name="confirm_user"),
     path("login/", LoginUser.as_view(), name="login"),
-    path("logout/", auth_views.LogoutView.as_view(next_page="home"), name="logout"),
+    path(
+        "logout/", auth_views.LogoutView.as_view(next_page="main:home"), name="logout"
+    ),
     # Registration / password reset
     path("password_reset/", CustomPasswordResetView.as_view(), name="password-reset"),
     path(

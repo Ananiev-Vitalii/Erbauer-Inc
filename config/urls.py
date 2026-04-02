@@ -10,6 +10,7 @@ handler404 = "core.errors.views.custom_page_not_found"
 handler500 = "core.errors.views.custom_server_error"
 
 urlpatterns = [
+    path("", include("main.urls", namespace="main")),
     path("admin/", custom_admin_site.urls),
     path("accounts/", include("user.urls", namespace="user")),
 ]

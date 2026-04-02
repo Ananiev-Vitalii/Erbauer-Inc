@@ -166,7 +166,7 @@ def verify_user(request, uidb64, token):
         user.save(update_fields=["is_active", "is_verified"])
         login(request, user, backend="django.contrib.auth.backends.ModelBackend")
 
-    return redirect("home")
+    return redirect("main:home")
 
 
 class InvalidVerify(generic.TemplateView):
@@ -195,6 +195,7 @@ class LoginUser(
 
     template_name = "registration/login.html"
     authentication_form = forms.UserAuthenticationForm
+    redirect_authenticated_user = True
     turnstile_error_message = _("Please confirm that you are not a robot.")
 
     def get_form_kwargs(self):

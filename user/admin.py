@@ -35,7 +35,7 @@ class CustomAdminSite(AdminSite):
             return HttpResponseNotAllowed(["POST"])
 
         auth_logout(request)
-        return redirect("home")
+        return redirect("main:home")
 
     def admin_view(self, view, cacheable=False):
         wrapped_view = super().admin_view(view, cacheable=cacheable)
