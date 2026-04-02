@@ -1,0 +1,29 @@
+{% load i18n %}
+
+{% if error_mode == "login" %}
+<div class="form-errors">
+  {% if form.service_message %}
+  <p class="error-message">{{ form.service_message }}</p>
+  {% elif form.errors %}
+  <p class="error-message">
+    {% trans "Invalid email address or password. Please try again." %}
+  </p>
+  {% endif %}
+</div>
+
+
+{% elif error_mode == "default" %}
+{% if form.service_message %}
+<p class="error-message">{{ form.service_message }}</p>
+{% else %}
+{% for field in form %}
+{% if field.errors %}
+<div class="form-errors">
+  {% for error in field.errors %}
+  <p class="error-message">{{ error }}</p>
+  {% endfor %}
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
+{% endif %}

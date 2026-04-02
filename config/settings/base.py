@@ -10,6 +10,7 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
 ALLOWED_HOSTS = ["127.0.0.1"]
 
 INSTALLED_APPS = [
+    "user",
     "core",
     "axes",
     "crispy_forms",
@@ -97,6 +98,10 @@ STATICFILES_DIRS = [
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
+
+AUTH_USER_MODEL = "user.User"
+LOGIN_REDIRECT_URL = "/"
+
 # Debug-toolbar
 INTERNAL_IPS = [
     "127.0.0.1",
@@ -106,6 +111,21 @@ INTERNAL_IPS = [
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
 
+
+# services/rate_limits/resend_verification
+RESEND_VERIFICATION_COOLDOWN_SECONDS = int(
+    os.getenv("RESEND_VERIFICATION_COOLDOWN_SECONDS", 300)
+)
+RESEND_VERIFICATION_MAX_ATTEMPTS = int(os.getenv("RESEND_VERIFICATION_MAX_ATTEMPTS", 5))
+
+# services/rate_limits/password_reset
+PASSWORD_RESET_COOLDOWN_SECONDS = int(os.getenv("PASSWORD_RESET_COOLDOWN_SECONDS", 300))
+PASSWORD_RESET_MAX_ATTEMPTS = int(os.getenv("PASSWORD_RESET_MAX_ATTEMPTS", 5))
+
+# services/registration_rate_limit
+REGISTRATION_ATTEMPTS_LIMIT = int(os.getenv("REGISTRATION_ATTEMPTS_LIMIT", 10))
+REGISTRATION_COOLDOWN_SECONDS = int(os.getenv("REGISTRATION_COOLDOWN_SECONDS", 300))
+
 # Email
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 EMAIL_HOST = os.environ["EMAIL_HOST"]
@@ -114,8 +134,24 @@ EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
 EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 EMAIL_USE_TLS = True
 
-# Django-axes
+# Django-axes services/login_lockout
+LOGIN_LOCKOUT_MINUTES = int(os.getenv("LOGIN_LOCKOUT_MINUTES", 5))
+LOGIN_FAILURE_LIMIT = int(os.getenv("LOGIN_FAILURE_LIMIT", 5))
+
 AUTHENTICATION_BACKENDS = [
     "axes.backends.AxesStandaloneBackend",
     "django.contrib.auth.backends.ModelBackend",
 ]
+
+AXES_FAILURE_LIMIT = LOGIN_FAILURE_LIMIT
+AXES_COOLOFF_TIME = None
+AXES_RESET_ON_SUCCESS = False
+
+AXES_USE_ATTEMPT_EXPIRATION = False
+
+AXES_LOCKOUT_PARAMETERS = ["username", "ip_address"]
+AXES_USERNAME_FORM_FIELD = "username"
+
+# Cloudflare Turnstile captcha services/turnstile
+CF_TURNSTILE_SITE_KEY = os.getenv("CF_TURNSTILE_SITE_KEY", "")
+CF_TURNSTILE_SECRET_KEY = os.getenv("CF_TURNSTILE_SECRET_KEY", "")

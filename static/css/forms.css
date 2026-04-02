@@ -1,0 +1,90 @@
+/* Password strength indicator (progress bar) */
+.password-strength {
+    width: 100%;
+    margin-top: 6px;
+}
+
+.password-strength-hidden {
+    display: none;
+}
+
+.password-strength .progress {
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.password-strength .progress-bar {
+    width: 0;
+    border-radius: 999px;
+    transition:
+        width 0.35s ease,
+        background-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.password-strength .progress-bar.bg-danger {
+    background: linear-gradient(90deg, #ff4d4f 0%, #ff7875 100%) !important;
+    box-shadow: 0 0 8px rgba(255, 77, 79, 0.35);
+}
+
+.password-strength .progress-bar.bg-warning {
+    background: linear-gradient(90deg, #f59e0b 0%, #facc15 100%) !important;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.35);
+}
+
+.password-strength .progress-bar.bg-success {
+    background: linear-gradient(90deg, #22c55e 0%, #4ade80 100%) !important;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.35);
+}
+
+
+/* Password toggle (show/hide icon inside input) */
+.password-toggle {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #6c757d;
+    cursor: pointer;
+    transition:
+        color 0.2s ease,
+        background-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+    z-index: 2;
+}
+
+.password-toggle:hover {
+    color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.08);
+}
+
+.password-toggle:focus-visible {
+    outline: none;
+    color: #0d6efd;
+    background-color: rgba(13, 110, 253, 0.12);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.2);
+}
+
+.password-toggle:active {
+    transform: scale(0.96);
+}
+
+.password-toggle i {
+    font-size: 1rem;
+    line-height: 1;
+    pointer-events: none;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.password-toggle:hover i {
+    transform: scale(1.05);
+}

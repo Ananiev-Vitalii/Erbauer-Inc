@@ -1,0 +1,10 @@
+{% load i18n %}{% autoescape off %}
+
+{% blocktrans with full_name=user.get_full_name %}
+Hello {{ full_name }},
+{% endblocktrans %}
+
+{% trans "Please follow the link to complete your registration." %}
+{{ protocol }}://{{ domain }}{% url 'user:verify_user' uidb64=uid token=token %}
+
+{% endautoescape %}

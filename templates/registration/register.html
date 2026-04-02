@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load static crispy_forms_tags i18n %}
+
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<section class="auth-page">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
+        <div class="card p-4 p-md-5">
+          <h1 class="h4 text-center mb-4">{% trans 'Sign up' %}</h1>
+          {% crispy form %}
+          <div class="auth-links mt-3">
+            <p class="small mb-0 text-center text-muted">
+              {% trans "Already have an account?" %}
+              <a href="{% url 'user:login' %}" class="link-primary">{% trans "Log in" %}</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block js %}
+<!-- Cloudflare Turnstile captcha -->
+<script src="{% static 'js/turnstile_captcha_button.js' %}"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+<!-- Password strength indicator -->
+<script src="{% static 'js/password_strength.js' %}"></script>
+
+<!-- Password toggle -->
+<script src="{% static 'js/password-toggle.js' %}" defer></script>
+{% endblock js %}
