@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="error-page">
+  <h1>{% translate "403 — Access denied" %}</h1>
+
+  <p>
+    {% blocktranslate %}
+    You do not have permission to access this page.
+    {% endblocktranslate %}
+  </p>
+
+  <p>
+    {% blocktranslate %}
+    This may be because your account does not have the required privileges
+    or because the requested action is restricted.
+    {% endblocktranslate %}
+  </p>
+</section>
+{% endblock content %}

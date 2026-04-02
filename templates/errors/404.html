@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load i18n %}
+
+{% block content %}
+<section class="error-page">
+  <h1>{% translate "404 — Page not found" %}</h1>
+
+  <p>
+    {% blocktranslate %}
+    The page you are looking for could not be found.
+    {% endblocktranslate %}
+  </p>
+
+  <p>
+    {% blocktranslate %}
+    The link may be broken, the page may have been moved,
+    or the address may have been entered incorrectly.
+    {% endblocktranslate %}
+  </p>
+
+  <p>
+    {% blocktranslate %}
+    Please check the URL or return to the homepage and continue browsing from there.
+    {% endblocktranslate %}
+  </p>
+</section>
+{% endblock content %}
