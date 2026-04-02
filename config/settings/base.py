@@ -10,8 +10,10 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
 ALLOWED_HOSTS = ["127.0.0.1"]
 
 INSTALLED_APPS = [
-    "user",
     "core",
+    "main",
+    "user",
+    "account",
     "axes",
     "crispy_forms",
     "crispy_bootstrap5",
