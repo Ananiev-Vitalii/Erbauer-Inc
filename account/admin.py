@@ -1,28 +1,27 @@
 from django.contrib import admin
 
 from account.models import Position, Employee, Profile
+from user.admin import custom_admin_site
 
 
-@admin.register(Position)
 class PositionAdmin(admin.ModelAdmin):
     list_display = ("name",)
 
 
-@admin.register(Employee)
 class EmployeeAdmin(admin.ModelAdmin):
     list_display = ("first_name", "last_name", "email", "position", "is_active")
     list_filter = ("is_active", "position")
     search_fields = ("first_name", "last_name", "email")
     fields = ("first_name", "last_name", "email", "position", "is_active")
 
-    def delete_model(self, request, obj) -> None:
+    def delete_model(self, request, obj):
         user = obj.user
         if user:
             user.delete()
         else:
             obj.delete()
 
-    def delete_queryset(self, request, queryset) -> None:
+    def delete_queryset(self, request, queryset):
         for obj in queryset.select_related("user"):
             user = obj.user
             if user:
@@ -31,7 +30,6 @@ class EmployeeAdmin(admin.ModelAdmin):
                 obj.delete()
 
 
-@admin.register(Profile)
 class ProfileAdmin(admin.ModelAdmin):
     list_display = ("get_first_name", "get_last_name", "phone")
     search_fields = (
@@ -50,3 +48,8 @@ class ProfileAdmin(admin.ModelAdmin):
     @admin.display(description="Last name")
     def get_last_name(self, obj):
         return obj.employee.last_name
+
+
+custom_admin_site.register(Position, PositionAdmin)
+custom_admin_site.register(Employee, EmployeeAdmin)
+custom_admin_site.register(Profile, ProfileAdmin)

@@ -1,6 +1,7 @@
 from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
 
 def profile_directory_path(instance: "Profile", filename: str) -> str:
@@ -10,6 +11,10 @@ def profile_directory_path(instance: "Profile", filename: str) -> str:
 
 class Position(models.Model):
     name = models.CharField(max_length=50, unique=True)
+
+    class Meta:
+        verbose_name = _("Position")
+        verbose_name_plural = _("Positions")
 
     def __str__(self) -> str:
         return self.name
@@ -33,6 +38,10 @@ class Employee(models.Model):
     email = models.EmailField(unique=True)
     is_active = models.BooleanField(default=True)
 
+    class Meta:
+        verbose_name = _("Employee")
+        verbose_name_plural = _("Employees")
+
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}".strip() or self.email
 
@@ -47,6 +56,10 @@ class Profile(models.Model):
         upload_to=profile_directory_path, default="profiles/default.png", blank=True
     )
     phone = models.CharField(max_length=30, blank=True)
+
+    class Meta:
+        verbose_name = _("Profile")
+        verbose_name_plural = _("Profiles")
 
     def __str__(self) -> str:
         return f"Profile: {self.employee}"
