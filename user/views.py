@@ -64,7 +64,7 @@ class UserRegistrationView(
     3) Перед авторизацией проходим верификацию, функция которая будет отправлять сообщение на почту
     4) Создаем пользователя с is_active = False и перенаправляем на страницу с сообщением (проверьте почту)
     5) Turnstile captcha
-    6) Ограничиваем количество регистраций по "ip"
+    6) Ограничиваем количество попыток регистраций по "ip" при невалидных данных
     """
 
     template_name = "registration/register.html"
@@ -80,12 +80,6 @@ class UserRegistrationView(
     def form_valid(self, form):
         if not self.is_turnstile_valid():
             return self.handle_turnstile_failure(form)
-
-        registration_attempt(
-            request=self.request,
-            attempts_limit=REGISTRATION_ATTEMPTS,
-            cooldown_seconds=REGISTRATION_COOLDOWN,
-        )
 
         employee = form.employee
 
@@ -106,6 +100,16 @@ class UserRegistrationView(
 
         self.object = user
         return redirect("user:confirm_user")
+
+    def form_invalid(self, form):
+        blocked, _ = is_blocked(self.request)
+        if not blocked:
+            registration_attempt(
+                request=self.request,
+                attempts_limit=REGISTRATION_ATTEMPTS,
+                cooldown_seconds=REGISTRATION_COOLDOWN,
+            )
+        return super().form_invalid(form)
 
 
 class ConfirmUser(
