@@ -39,6 +39,8 @@ from user.services.registration_rate_limit import (
 from user.services.email import send_verification_email
 from user.services.tokens import get_user_from_verification_data
 
+from account.models import Profile
+
 User = get_user_model()
 
 PASSWORD_RESET_ATTEMPTS = settings.PASSWORD_RESET_MAX_ATTEMPTS
@@ -58,10 +60,11 @@ class UserRegistrationView(
 ):
     """
     1) Даем доступ к странице только неавторизованым пользователям
-    2) Перед авторизацией проходим верификацию, функция которая будет отправлять сообщение на почту
-    3) Создаем пользователя с is_active = False и перенаправляем на страницу с сообщением (проверьте почту)
-    4) Turnstile captcha
-    5) Ограничиваем количество регистраций по "ip"
+    2) Регистрация только сотрудников компании
+    3) Перед авторизацией проходим верификацию, функция которая будет отправлять сообщение на почту
+    4) Создаем пользователя с is_active = False и перенаправляем на страницу с сообщением (проверьте почту)
+    5) Turnstile captcha
+    6) Ограничиваем количество регистраций по "ip"
     """
 
     template_name = "registration/register.html"
@@ -84,10 +87,20 @@ class UserRegistrationView(
             cooldown_seconds=REGISTRATION_COOLDOWN,
         )
 
+        employee = form.employee
+
         with transaction.atomic():
             user = form.save(commit=False)
+            user.email = employee.email
+            user.first_name = employee.first_name
+            user.last_name = employee.last_name
             user.is_active = False
             user.save()
+
+            employee.user = user
+            employee.save(update_fields=["user"])
+
+            Profile.objects.create(employee=employee)
 
             transaction.on_commit(lambda: send_verification_email(self.request, user))
 

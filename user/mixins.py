@@ -9,7 +9,7 @@ from user.services.turnstile import verify_turnstile_token
 class AnonymousRequiredMixin:
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            return redirect("home")
+            return redirect("main:home")
         return super().dispatch(request, *args, **kwargs)
 
 

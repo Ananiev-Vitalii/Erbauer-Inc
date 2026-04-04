@@ -5,6 +5,8 @@ from django.utils.translation import gettext as _
 from django.contrib.auth import forms as auth_forms
 from crispy_forms.layout import HTML, Layout, Field, Submit
 
+from account.models import Employee
+
 User = get_user_model()
 
 
@@ -51,6 +53,8 @@ class BaseStyledForm:
 
 
 class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
+    employee: Employee | None
+
     class Meta:
         model = User
         fields = ["email", "password1", "password2"]
@@ -76,9 +80,22 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
 
     def clean_email(self):
         email = self.cleaned_data["email"].casefold()
+        employee = Employee.objects.filter(email__iexact=email, is_active=True).first()
 
         if User.objects.filter(email__iexact=email).exists():
-            self.add_error("email", _("User with this email already exists"))
+            raise forms.ValidationError(_("User with this email already exists"))
+
+        if not employee:
+            raise forms.ValidationError(
+                _("Registration is available only for active company employees.")
+            )
+
+        if employee.user is not None:
+            raise forms.ValidationError(
+                _("A user with this employee email is already registered.")
+            )
+
+        self.employee = employee
 
         return email
 
