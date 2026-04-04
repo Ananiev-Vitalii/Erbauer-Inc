@@ -10,11 +10,11 @@ def profile_directory_path(instance: "Profile", filename: str) -> str:
 
 
 class Position(models.Model):
-    name = models.CharField(max_length=50, unique=True)
+    name = models.CharField(_("Job title"), max_length=50, unique=True)
 
     class Meta:
-        verbose_name = _("Position")
-        verbose_name_plural = _("Positions")
+        verbose_name = _("Job title")
+        verbose_name_plural = _("Job titles")
 
     def __str__(self) -> str:
         return self.name
@@ -28,15 +28,16 @@ class Employee(models.Model):
         null=True,
         blank=True,
     )
-    first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
+    first_name = models.CharField(_("First name"), max_length=50)
+    last_name = models.CharField(_("Last name"), max_length=50)
     position = models.ForeignKey(
         Position,
         on_delete=models.PROTECT,
         related_name="employees",
+        verbose_name=_("Job title"),
     )
-    email = models.EmailField(unique=True)
-    is_active = models.BooleanField(default=True)
+    email = models.EmailField(_("Email"), unique=True)
+    is_active = models.BooleanField(_("Currently employed"), default=True)
 
     class Meta:
         verbose_name = _("Employee")
@@ -51,11 +52,15 @@ class Profile(models.Model):
         Employee,
         on_delete=models.CASCADE,
         related_name="profile",
+        verbose_name=_("Employee"),
     )
     avatar = models.ImageField(
-        upload_to=profile_directory_path, default="profiles/default.png", blank=True
+        _("Avatar"),
+        upload_to=profile_directory_path,
+        default="profiles/default.png",
+        blank=True,
     )
-    phone = models.CharField(max_length=30, blank=True)
+    phone = models.CharField(_("Phone"), max_length=30, blank=True)
 
     class Meta:
         verbose_name = _("Profile")
