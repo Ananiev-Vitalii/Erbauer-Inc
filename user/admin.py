@@ -12,15 +12,27 @@ from django.utils.translation import activate
 from django.http import HttpResponseNotAllowed
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout as auth_logout
+from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from user.models import User
+from main.models import CompanyProfile
 
 
 class CustomAdminSite(AdminSite):
-    site_header = f"Адміністрація сайту"
-    site_title = "Панель адміністратора"
-    index_title = "Керування сайтом"
+    site_header = _("Site administration")
+    site_title = _("Admin Panel")
+    index_title = _("Site management")
+
+    def each_context(self, request):
+        context = super().each_context(request)
+        company = CompanyProfile.objects.filter(is_active=True).first()
+        context["site_header"] = (
+            f"{_('Site administration')} {company.name}"
+            if company
+            else str(_("Site administration"))
+        )
+        return context
 
     def has_permission(self, request):
         return (
@@ -30,7 +42,6 @@ class CustomAdminSite(AdminSite):
         )
 
     def logout(self, request, extra_context=None):
-
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
@@ -69,7 +80,7 @@ class UserAdmin(BaseUserAdmin):
     fieldsets = (
         (None, {"fields": ("first_name", "last_name", "email", "password")}),
         (
-            "Статуси",
+            _("Statuses"),
             {"fields": ("is_active", "is_staff", "is_superuser", "is_verified")},
         ),
     )
@@ -93,19 +104,19 @@ class UserAdmin(BaseUserAdmin):
 
     def add_view(self, request, form_url="", extra_context=None):
         extra_context = extra_context or {}
-        extra_context["title"] = "Додати користувача"
+        extra_context["title"] = _("Add user")
         return super().add_view(request, form_url, extra_context=extra_context)
 
     def change_view(self, request, object_id, form_url="", extra_context=None):
         extra_context = extra_context or {}
-        extra_context["title"] = "Змінити користувача"
+        extra_context["title"] = _("Change user")
         return super().change_view(
             request, object_id, form_url, extra_context=extra_context
         )
 
     def changelist_view(self, request, extra_context=None):
         extra_context = extra_context or {}
-        extra_context["title"] = "Виберіть користувача для зміни"
+        extra_context["title"] = _("Select user to change")
         return super().changelist_view(request, extra_context=extra_context)
 
 
