@@ -68,13 +68,13 @@ class TeamMember(models.Model):
         default="team_member/default.jpg",
         blank=True,
     )
-    display_order = models.PositiveSmallIntegerField(_("Display order"), default=0)
+    display_order = models.PositiveSmallIntegerField(_("Display order"), unique=True)
     is_visible = models.BooleanField(_("Is visible"), default=True)
 
     class Meta:
         verbose_name = _("Team Member")
         verbose_name_plural = _("Team Members")
-        ordering = ["display_order", "id"]
+        ordering = ["display_order"]
 
     def __str__(self):
         full_name = f"{self.employee.first_name} {self.employee.last_name}".strip()
