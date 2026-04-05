@@ -160,11 +160,16 @@ p {
   flex-shrink: 0;
 }
 
-.brand-logo {
+.brand-logo-wrap {
   width: 52px;
   height: 52px;
-  object-fit: contain;
   flex-shrink: 0;
+}
+
+.brand-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .brand-mark {
@@ -354,5 +359,12 @@ p {
 
   .brand-text {
     display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .brand-logo-wrap {
+    width: 40px;
+    height: 40px;
   }
 }
