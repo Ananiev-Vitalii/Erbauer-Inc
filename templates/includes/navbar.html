@@ -1,0 +1,51 @@
+{% load i18n %}
+
+<header class="site-header" id="siteHeader">
+  <div class="container nav-wrap">
+    <a class="brand" href="#hero" aria-label="{{ company_base.name|default:'Erbauer' }}">
+      {% if company_base and company_base.logo %}
+      <span class="brand-logo-wrap">
+      <img
+              src="{{ company_base.logo.url }}"
+              alt="{{ company_base.name|default:'Erbauer' }} logo"
+              class="brand-logo"
+      ></span>
+      {% else %}
+      <span class="brand-mark">
+          {{ company_base.name|default:"Erbauer"|slice:":2"|upper }}
+      </span>
+      {% endif %}
+      <span class="brand-text">
+        {{ company_base.name|default:"Erbauer" }}
+      </span>
+    </a>
+
+    <nav class="main-nav" aria-label="{% trans 'Main menu' %}">
+      <a href="#hero">{% trans "Home" %}</a>
+      <a href="#services">{% trans "Services" %}</a>
+      <a href="#about">{% trans "About" %}</a>
+      <a href="#projects">{% trans "Projects" %}</a>
+      <a href="#team">{% trans "Team" %}</a>
+      <a href="#contacts">{% trans "Contacts" %}</a>
+    </nav>
+
+    <button
+            class="menu-toggle"
+            id="menuToggle"
+            aria-label="{% trans 'Open menu' %}"
+            aria-expanded="false"
+            type="button"
+    >
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="mobile-nav" id="mobileNav">
+    <a href="#hero">{% trans "Home" %}</a>
+    <a href="#services">{% trans "Services" %}</a>
+    <a href="#about">{% trans "About" %}</a>
+    <a href="#projects">{% trans "Projects" %}</a>
+    <a href="#team">{% trans "Team" %}</a>
+    <a href="#contacts">{% trans "Contacts" %}</a>
+  </div>
+</header>

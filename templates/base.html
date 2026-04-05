@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{% endblock title %}</title>
 
-  {% if company_profile and company_profile.logo %}
-  <link rel="icon" type="image/png" href="{{ company_profile.logo.url }}">
+  {% if company_base and company_base.logo %}
+  <link rel="icon" type="image/png" href="{{ company_base.logo.url }}">
   {% else %}
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
   {% endif %}
@@ -16,10 +16,8 @@
   <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 
   <!-- Template Stylesheet -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
 
-  <!-- Crispy forms CSS -->
-  <link rel="stylesheet" href="{% static 'css/forms.css' %}">
 
   {% block extra_css %}{% endblock %}
 </head>
@@ -30,15 +28,18 @@
 
 <!-- Content -->
 <main class="flex-grow-1">
+  {% block content_wrapper %}
   <div class="container py-4">
     {% include "includes/messages.html" %}
     {% block content %}{% endblock %}
   </div>
+  {% endblock content_wrapper %}
 </main>
 
 <!-- Footer -->
 {% include 'includes/footer.html' %}
 
+<script src="{% static 'js/base.js' %}"></script>
 <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
 {% block extra_js %}{% endblock extra_js %}
 </body>

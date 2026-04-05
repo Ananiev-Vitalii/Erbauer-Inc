@@ -1,9 +1,9 @@
 from .models import CompanyProfile
 
 
-def company_profile(request):
+def company_base(request):
     return {
-        "company_profile": CompanyProfile.objects.filter(is_active=True)
+        "company_base": CompanyProfile.objects.filter(is_active=True)
         .only("name", "logo")
         .first()
     }

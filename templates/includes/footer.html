@@ -1,0 +1,77 @@
+{% load i18n %}
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="footer-brand">
+      <a class="brand footer-brand-link" href="#hero">
+        <span class="brand-mark">
+          {{ company_profile.short_name|default:"EB" }}
+        </span>
+        <span class="brand-text">
+          {{ company_profile.name|default:"Erbauer" }}
+        </span>
+      </a>
+
+      <p>
+        {% blocktrans %}
+        Премиум строительная компания полного цикла.
+        Воплощаем ваши мечты в реальность.
+        {% endblocktrans %}
+      </p>
+    </div>
+
+    <div class="footer-col">
+      <h4>{% trans "Контактная информация" %}</h4>
+
+      {% if company_profile.address %}
+      <p>
+        <strong>{% trans "Адрес:" %}</strong><br>
+        {{ company_profile.address }}
+      </p>
+      {% endif %}
+
+      {% if company_profile.phone %}
+      <p>
+        <strong>{% trans "Телефон:" %}</strong><br>
+        <a href="tel:{{ company_profile.phone }}">{{ company_profile.phone }}</a>
+      </p>
+      {% endif %}
+
+      {% if company_profile.email %}
+      <p>
+        <strong>{% trans "Email:" %}</strong><br>
+        <a href="mailto:{{ company_profile.email }}">{{ company_profile.email }}</a>
+      </p>
+      {% endif %}
+
+      {% if company_profile.working_hours %}
+      <p>
+        <strong>{% trans "Рабочие часы:" %}</strong><br>
+        {{ company_profile.working_hours|linebreaksbr }}
+      </p>
+      {% endif %}
+    </div>
+
+    <div class="footer-col">
+      <h4>{% trans "Следите за нами" %}</h4>
+      <div class="socials">
+        {% if company_profile.facebook %}
+        <a href="{{ company_profile.facebook }}" target="_blank" rel="noopener noreferrer">Facebook</a>
+        {% endif %}
+        {% if company_profile.instagram %}
+        <a href="{{ company_profile.instagram }}" target="_blank" rel="noopener noreferrer">Instagram</a>
+        {% endif %}
+        {% if company_profile.telegram %}
+        <a href="{{ company_profile.telegram }}" target="_blank" rel="noopener noreferrer">Telegram</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="container footer-bottom">
+    <p>
+      © {% now "Y" %} {{ company_profile.name|default:"Erbauer" }}.
+      {% trans "Все права защищены." %}
+    </p>
+  </div>
+</footer>
