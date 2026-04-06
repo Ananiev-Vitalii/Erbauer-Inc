@@ -492,31 +492,95 @@ h3 {
   display: block;
 }
 
+
+/*** back-to-top ***/
 .back-to-top {
   position: fixed;
   right: 24px;
   bottom: 24px;
-  width: 52px;
-  height: 52px;
+  width: 64px;
+  height: 64px;
   display: grid;
   place-items: center;
-  border: 0;
-  border-radius: 999px;
-  background: linear-gradient(180deg, #1e293b, #0f172a);
-  color: var(--yellow-400);
-  box-shadow: var(--shadow-md);
+  border: none;
+  border-radius: 50%;
+  background: #111827;
+  color: #fff;
   cursor: pointer;
+  box-shadow: 0 18px 38px rgba(15, 23, 42, 0.28);
   opacity: 0;
   pointer-events: none;
-  transform: translateY(10px);
-  transition: 0.25s ease;
+  transform: translateY(14px) scale(0.92);
+  transition: opacity 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
   z-index: 90;
+  overflow: hidden;
+}
+
+.back-to-top::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: conic-gradient(
+  from 0deg,
+  transparent 0deg 60deg,
+
+  rgba(249, 115, 22, 0) 60deg,
+  rgba(249, 115, 22, 0.12) 74deg,
+  rgba(249, 115, 22, 0.35) 88deg,
+  rgba(249, 115, 22, 0.7) 102deg,
+  #f97316 120deg,
+
+  transparent 120deg 240deg,
+
+  rgba(250, 204, 21, 0) 240deg,
+  rgba(250, 204, 21, 0.12) 254deg,
+  rgba(250, 204, 21, 0.35) 268deg,
+  rgba(250, 204, 21, 0.7) 282deg,
+  #facc15 300deg,
+
+  transparent 300deg 360deg
+  );
+  z-index: 0;
+}
+
+.back-to-top::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: #111827;
+  z-index: 1;
+}
+
+.back-to-top span {
+  position: relative;
+  z-index: 2;
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 700;
+  transform: translateY(-1px);
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .back-to-top.is-visible {
   opacity: 1;
   pointer-events: auto;
-  transform: translateY(0);
+  transform: translateY(0) scale(1);
+}
+
+.back-to-top:hover {
+  box-shadow: 0 22px 44px rgba(15, 23, 42, 0.36);
+  transform: translateY(-3px) scale(1.03);
+}
+
+.back-to-top:hover::before {
+  animation: backToTopSpin 2.4s linear infinite;
+}
+
+.back-to-top:hover span {
+  color: #facc15;
+  transform: translateY(-2px);
 }
 
 .hide-project {
@@ -589,5 +653,29 @@ h3 {
   .project-body,
   .team-body {
     padding: 20px;
+  }
+}
+
+
+/*** back-to-top ***/
+@keyframes backToTopSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .back-to-top {
+    right: 18px;
+    bottom: 18px;
+    width: 56px;
+    height: 56px;
+  }
+
+  .back-to-top span {
+    font-size: 22px;
   }
 }

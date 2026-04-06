@@ -2,7 +2,8 @@
 {% load i18n static %}
 
 {% block title %}{{ company_profile.name|default:"Erbauer" }}{% endblock title %}
-{% block extra_css %}<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}">{% endblock %}
 {% block content_wrapper %}
 <div class="page-noise"></div>
 
@@ -12,6 +13,10 @@
 {% include "includes/home/projects.html" %}
 {% include "includes/home/team.html" %}
 {% include "includes/home/contacts.html" %}
+
+<button class="back-to-top" id="backToTop" aria-label="{% trans 'Back to top' %}">
+  <span>↑</span>
+</button>
 {% endblock content_wrapper %}
 
 {% block extra_js %}
