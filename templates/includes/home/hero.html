@@ -1,10 +1,61 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+{% load i18n static %}
 
-</body>
-</html>
+<section class="hero section-dark" id="hero">
+  <div class="hero-glow hero-glow-1"></div>
+  <div class="hero-glow hero-glow-2"></div>
+
+  <div class="container hero-grid">
+    <div class="hero-copy reveal">
+      <p class="eyebrow">
+        {{ company_profile.hero_badge }}
+      </p>
+
+      <h1>
+        {{ company_profile.hero_title }}
+      </h1>
+    </div>
+
+    <div class="hero-media reveal">
+      <div class="image-frame image-frame-lg">
+        <img
+                src="{% static 'img/hero-placeholder.png.webp' %}"
+                alt="{% trans 'Completed projects' %}"
+        />
+      </div>
+    </div>
+
+    <div class="hero-copy-extra reveal">
+      <p class="hero-text">
+        {{ company_profile.hero_description }}
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#contacts">
+          {% trans "Discuss the project" %}
+        </a>
+        <a class="btn btn-ghost" href="#projects">
+          {% trans "Our projects" %}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container hero-stats reveal">
+    <div class="hero-stats-bar">
+      <article class="hero-stat">
+        <span class="hero-stat-value">{{ company_profile.years_on_market|default:"10" }}+</span>
+        <span class="hero-stat-label">{% trans "Years on the market" %}</span>
+      </article>
+
+      <article class="hero-stat">
+        <span class="hero-stat-value">{{ company_profile.completed_objects_count|default:"100" }}+</span>
+        <span class="hero-stat-label">{% trans "Completed projects" %}</span>
+      </article>
+
+      <article class="hero-stat">
+        <span class="hero-stat-value">{{ company_profile.employees_count|default:"50" }}+</span>
+        <span class="hero-stat-label">{% trans "Specialists" %}</span>
+      </article>
+    </div>
+  </div>
+</section>

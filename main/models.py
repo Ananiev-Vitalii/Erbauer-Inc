@@ -35,6 +35,9 @@ class CompanyProfile(models.Model):
     )
     employees_count = models.PositiveIntegerField(_("Employees count"), default=0)
     about = models.TextField(_("About"), blank=True)
+    hero_badge = models.CharField("Hero badge", max_length=50, blank=True)
+    hero_title = models.TextField(_("Hero title"), blank=True)
+    hero_description = models.TextField(_("Hero description"), blank=True)
     footer_description = models.TextField(_("Footer description"), blank=True)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
