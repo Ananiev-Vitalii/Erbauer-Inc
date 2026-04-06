@@ -299,26 +299,52 @@ p {
 
 .socials {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 12px;
+  align-items: flex-start;
 }
 
 .socials a {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   padding: 10px 14px;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.06);
-  transition: 0.2s ease;
+  color: rgba(255, 255, 255, 0.82);
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
 
 .socials a:hover {
   background: rgba(250, 204, 21, 0.12);
-  color: #fff3b0;
+  color: var(--orange-500);
+  transform: translateX(2px);
+}
+
+.social-icon {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
 }
 
 .footer-bottom {
   padding: 18px 0 28px;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+}
+
+.footer-bottom a {
+  display: inline;
+  color: rgba(255, 255, 255, 0.82);
+  transition: color 0.2s ease;
+}
+
+.footer-bottom a:hover {
+  color: var(--orange-500);
 }
 
 .reveal {
@@ -357,14 +383,13 @@ p {
     width: min(calc(100% - 20px), var(--container));
   }
 
-  .brand-text {
-    display: none;
-  }
-}
-
-@media (max-width: 640px) {
   .brand-logo-wrap {
     width: 40px;
     height: 40px;
+  }
+
+  .brand-text {
+    display: inline;
+    font-size: 16px;
   }
 }

@@ -3,75 +3,111 @@
 <footer class="site-footer">
   <div class="container footer-grid">
     <div class="footer-brand">
-      <a class="brand footer-brand-link" href="#hero">
+      <a class="brand footer-brand-link" href="#hero" aria-label="{{ company_base.name|default:'Erbauer' }}">
+        {% if company_base and company_base.logo %}
+        <span class="brand-logo-wrap">
+            <img
+                    src="{{ company_base.logo.url }}"
+                    alt="{{ company_base.name|default:'Erbauer' }} logo"
+                    class="brand-logo"
+            >
+          </span>
+        {% else %}
         <span class="brand-mark">
-          {{ company_profile.short_name|default:"EB" }}
+            {{ company_base.name|default:"Erbauer"|slice:":2"|upper }}
         </span>
+        {% endif %}
+
         <span class="brand-text">
-          {{ company_profile.name|default:"Erbauer" }}
+          {{ company_base.name|default:"Erbauer" }}
         </span>
       </a>
 
-      <p>
-        {% blocktrans %}
-        Премиум строительная компания полного цикла.
-        Воплощаем ваши мечты в реальность.
-        {% endblocktrans %}
-      </p>
+      {% if company_base.footer_description %}
+      <p>{{ company_base.footer_description }}</p>
+      {% endif %}
+
     </div>
 
     <div class="footer-col">
-      <h4>{% trans "Контактная информация" %}</h4>
+      <h4>{% trans "Contact information" %}</h4>
 
-      {% if company_profile.address %}
+      {% if company_base.address %}
       <p>
-        <strong>{% trans "Адрес:" %}</strong><br>
-        {{ company_profile.address }}
+        <strong>{% trans "Address:" %}</strong><br>
+        {{ company_base.address }}
       </p>
       {% endif %}
 
-      {% if company_profile.phone %}
+      {% if company_base.primary_phone %}
       <p>
-        <strong>{% trans "Телефон:" %}</strong><br>
-        <a href="tel:{{ company_profile.phone }}">{{ company_profile.phone }}</a>
+        <strong>{% trans "Phone:" %}</strong><br>
+        <a href="tel:{{ company_base.primary_phone }}">{{ company_base.primary_phone }}</a>
+        {% if company_base.secondary_phone %}
+        <br>
+        <a href="tel:{{ company_base.secondary_phone }}">{{ company_base.secondary_phone }}</a>
+        {% endif %}
       </p>
       {% endif %}
 
-      {% if company_profile.email %}
+      {% if company_base.email %}
       <p>
         <strong>{% trans "Email:" %}</strong><br>
-        <a href="mailto:{{ company_profile.email }}">{{ company_profile.email }}</a>
+        <a href="mailto:{{ company_base.email }}">{{ company_base.email }}</a>
       </p>
       {% endif %}
 
-      {% if company_profile.working_hours %}
+      {% if company_base.working_hours %}
       <p>
-        <strong>{% trans "Рабочие часы:" %}</strong><br>
-        {{ company_profile.working_hours|linebreaksbr }}
+        <strong>{% trans "Working hours:" %}</strong><br>
+        {{ company_base.working_hours|linebreaksbr }}
       </p>
       {% endif %}
     </div>
 
+    {% if company_base.facebook_url or company_base.instagram_url or company_base.telegram_url %}
     <div class="footer-col">
-      <h4>{% trans "Следите за нами" %}</h4>
+      <h4>{% trans "Follow us" %}</h4>
       <div class="socials">
-        {% if company_profile.facebook %}
-        <a href="{{ company_profile.facebook }}" target="_blank" rel="noopener noreferrer">Facebook</a>
+        {% if company_base.facebook_url %}
+        <a href="{{ company_base.facebook_url }}" target="_blank" rel="noopener noreferrer">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M22 12.07C22 6.477 17.523 2 12 2S2 6.477 2 12.07c0 5.05 3.657 9.235 8.438 10v-7.03H7.898v-2.97h2.54V9.845c0-2.52 1.492-3.913 3.777-3.913 1.094 0 2.238.198 2.238.198v2.476H15.19c-1.243 0-1.63.774-1.63 1.567v1.897h2.773l-.443 2.97H13.56V22c4.78-.765 8.44-4.95 8.44-9.93z"/>
+          </svg>
+          <span>Facebook</span>
+        </a>
         {% endif %}
-        {% if company_profile.instagram %}
-        <a href="{{ company_profile.instagram }}" target="_blank" rel="noopener noreferrer">Instagram</a>
+
+        {% if company_base.instagram_url %}
+        <a href="{{ company_base.instagram_url }}" target="_blank" rel="noopener noreferrer">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5zm0 2A3 3 0 0 0 4 7v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7zm10.5 1.5a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+          </svg>
+          <span>Instagram</span>
+        </a>
         {% endif %}
-        {% if company_profile.telegram %}
-        <a href="{{ company_profile.telegram }}" target="_blank" rel="noopener noreferrer">Telegram</a>
+
+        {% if company_base.telegram_url %}
+        <a href="{{ company_base.telegram_url }}" target="_blank" rel="noopener noreferrer">
+          <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <path d="M21.944 4.66a1.5 1.5 0 0 0-1.694-.224L3.694 11.63a1.5 1.5 0 0 0 .165 2.787l3.87 1.29 1.47 4.63a1.5 1.5 0 0 0 2.63.49l2.178-2.813 3.924 2.89a1.5 1.5 0 0 0 2.36-.87l2.61-13.79a1.5 1.5 0 0 0-.957-1.584zM9.77 15.23l-.59 2.44-.86-2.7 8.67-6.05-7.22 6.31z"/>
+          </svg>
+          <span>Telegram</span>
+        </a>
         {% endif %}
       </div>
     </div>
+    {% endif %}
+
   </div>
 
   <div class="container footer-bottom">
     <p>
-      © {% now "Y" %} {{ company_profile.name|default:"Erbauer" }}.
-      {% trans "Все права защищены." %}
+      © {% now "Y" %} {{ company_base.name|default:"Erbauer" }}
+      <span class="mx-2">|</span>
+      {% trans "All Rights Reserved" %}
+      <span class="mx-2">|</span>
+      <a href="">{% trans "Privacy Policy" %}</a>
     </p>
   </div>
 </footer>

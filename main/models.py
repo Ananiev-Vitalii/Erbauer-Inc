@@ -35,6 +35,7 @@ class CompanyProfile(models.Model):
     )
     employees_count = models.PositiveIntegerField(_("Employees count"), default=0)
     about = models.TextField(_("About"), blank=True)
+    footer_description = models.TextField(_("Footer description"), blank=True)
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
