@@ -216,6 +216,11 @@ p {
   transition: color 0.2s ease;
 }
 
+.main-nav a.is-active,
+.mobile-nav a.is-active {
+  color: var(--orange-500);
+}
+
 .main-nav a:hover,
 .mobile-nav a:hover {
   color: var(--orange-500);

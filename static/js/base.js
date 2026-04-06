@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const siteHeader = document.getElementById("siteHeader");
   const menuToggle = document.getElementById("menuToggle");
   const mobileNav = document.getElementById("mobileNav");
+  const navLinks = document.querySelectorAll(".main-nav a, .mobile-nav a");
+  const sections = document.querySelectorAll("section[id]");
 
   function handleHeaderState() {
     if (!siteHeader) return;
@@ -13,8 +15,36 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function setActiveNavLink() {
+    if (!sections.length || !navLinks.length) return;
+
+    let currentId = "";
+
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop - 120;
+      const sectionHeight = section.offsetHeight;
+
+      if (
+        window.scrollY >= sectionTop &&
+        window.scrollY < sectionTop + sectionHeight
+      ) {
+        currentId = section.getAttribute("id");
+      }
+    });
+
+    navLinks.forEach((link) => {
+      const href = link.getAttribute("href");
+      link.classList.toggle("is-active", href === `#${currentId}`);
+    });
+  }
+
   handleHeaderState();
-  window.addEventListener("scroll", handleHeaderState);
+  setActiveNavLink();
+
+  window.addEventListener("scroll", () => {
+    handleHeaderState();
+    setActiveNavLink();
+  });
 
   if (menuToggle && mobileNav) {
     menuToggle.addEventListener("click", () => {
