@@ -1,0 +1,320 @@
+.section-dark {
+  position: relative;
+  color: var(--white);
+  background-color: var(--slate-950);
+  background-image: linear-gradient(180deg, var(--slate-950) 0%, var(--slate-900) 100%);
+  overflow: hidden;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin: 0 0 14px;
+  color: var(--yellow-300);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.hero h1 {
+  margin: 0;
+  font-size: clamp(42px, 7vw, 84px);
+  font-family: "Playfair Display", serif;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  color: var(--white);
+}
+
+.hero-text {
+  margin-top: 0;
+  font-size: 20px;
+  color: var(--muted);
+}
+
+.section-dark .hero-text {
+  color: rgba(255, 255, 255, 0.76);
+}
+
+/* hero */
+.hero {
+  padding-top: 80px;
+  padding-bottom: 72px;
+}
+
+.hero-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
+  gap: 56px;
+  align-items: start;
+}
+
+.hero-copy {
+  max-width: 720px;
+}
+
+.hero-copy h1 {
+  margin-bottom: 0;
+}
+
+.hero-copy-extra {
+  grid-column: 1 / 2;
+}
+
+.hero-copy-extra .hero-text {
+  margin-top: 0;
+}
+
+.hero-actions,
+.hero-copy-extra .hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-top: 34px;
+}
+
+/* КНОПКИ — теперь тоже здесь, как ты и хотел */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 14px 28px;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  font-weight: 800;
+  transition: 0.28s ease;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn:hover {
+  transform: translateY(-2px) scale(1.01);
+}
+
+.btn-primary {
+  color: #111827;
+  background: var(--gradient-main);
+  box-shadow: 0 14px 30px rgba(249, 115, 22, 0.22);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 20px 40px rgba(249, 115, 22, 0.32);
+}
+
+.btn-ghost {
+  color: var(--white);
+  border-color: rgba(250, 204, 21, 0.8);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.btn-ghost:hover {
+  background: rgba(250, 204, 21, 0.08);
+}
+
+.hero-media {
+  position: relative;
+  align-self: start;
+  margin-top: var(--hero-media-offset, 0px);
+}
+
+/* КАРТИНКА — оставляю старую механику */
+.hero-media .image-frame {
+  min-height: 320px;
+  height: var(--hero-image-height, 320px);
+}
+
+/* image frame теперь тоже целиком в Hero.css */
+.image-frame {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+
+.image-frame::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: var(--gradient-main);
+  filter: blur(24px);
+  opacity: 0.22;
+  z-index: -1;
+}
+
+.image-frame img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.image-frame-lg {
+  min-height: unset;
+}
+
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.14;
+}
+
+.hero-glow-1 {
+  top: 120px;
+  right: -60px;
+  width: 340px;
+  height: 340px;
+  background: var(--yellow-400);
+}
+
+.hero-glow-2 {
+  left: 80px;
+  bottom: -100px;
+  width: 320px;
+  height: 320px;
+  background: var(--orange-500);
+}
+
+/* hero stats */
+.hero-stats {
+  margin-top: 64px;
+}
+
+.hero-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  backdrop-filter: blur(6px);
+  border-radius: 24px;
+  overflow: hidden;
+}
+
+.hero-stat {
+  position: relative;
+  padding: 32px 24px 28px;
+  text-align: center;
+}
+
+.hero-stat:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 22%;
+  right: 0;
+  width: 1px;
+  height: 56%;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.hero-stat-value {
+  display: block;
+  font-size: clamp(40px, 5vw, 72px);
+  line-height: 1;
+  font-weight: 900;
+  margin-bottom: 10px;
+  background: var(--gradient-rich);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero-stat-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255, 235, 150, 0.78);
+}
+
+@media (min-width: 981px) and (min-height: 760px) {
+  .hero {
+    min-height: calc(100vh - var(--site-header-height, 0px));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 980px) {
+  .hero-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .hero-copy,
+  .hero-media,
+  .hero-copy-extra {
+    grid-column: auto;
+  }
+
+  .hero-media {
+    margin-top: 0 !important;
+  }
+
+  .hero-media .image-frame {
+    min-height: 260px;
+    height: 320px;
+  }
+
+  .hero-stats-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-stat {
+    padding: 26px 20px;
+  }
+
+  .hero-stat:not(:last-child)::after {
+    top: auto;
+    bottom: 0;
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.12);
+  }
+
+  .hero-stat-value {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding-top: 54px;
+    padding-bottom: 56px;
+  }
+
+  .hero-copy-extra .hero-actions {
+    flex-direction: column;
+  }
+
+  .btn {
+    width: 100%;
+  }
+
+  .hero-media .image-frame {
+    min-height: 220px;
+    height: 260px;
+  }
+
+  .hero-stats {
+    margin-top: 42px;
+  }
+
+  .hero-stat-value {
+    font-size: clamp(34px, 10vw, 54px);
+  }
+
+  .hero-stat-label {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+  }
+}
