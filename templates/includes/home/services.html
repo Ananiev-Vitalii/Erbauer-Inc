@@ -1,10 +1,76 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+{% load i18n static %}
 
-</body>
-</html>
+<section class="section services" id="services">
+  <div class="container two-col-layout services-layout">
+
+    <div class="section-copy services-copy reveal">
+      <div class="services-copy-top">
+        <p class="section-kicker">{% trans "What we do" %}</p>
+        <h2>{% trans "Our services" %}</h2>
+        <p class="section-lead">
+          {{ company_profile.services_description }}
+        </p>
+      </div>
+
+      <div class="services-copy-bottom">
+        <div class="image-frame image-frame-md services-image">
+          <img
+                  src="{% static 'img/services-placeholder.jpg' %}"
+                  alt="{% trans 'Construction services' %}"
+          />
+        </div>
+
+        <div class="section-cta services-cta">
+          <a class="btn btn-primary" href="#contacts">
+            {% trans "Contact us" %}
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="services-slider reveal" data-delay="120">
+      <div class="services-track">
+        {% for page in service_pages %}
+        <div class="services-page {% if forloop.first %}is-active{% endif %}">
+          <div class="cards-grid services-cards-grid">
+            {% for service in page %}
+            <article class="service-card">
+              <div class="service-icon">
+                {% if service.icon %}
+                <img
+                        src="{{ service.icon.url }}"
+                        alt="{{ service.title }}"
+                        class="service_icon"
+                >
+                {% else %}
+                <span>🛠</span>
+                {% endif %}
+              </div>
+
+              <h3>{{ service.title }}</h3>
+              <p>{{ service.description }}</p>
+            </article>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      {% if service_pages|length > 1 %}
+      <div class="services-slider-footer">
+        <div class="services-dots" id="servicesDots">
+          {% for page in service_pages %}
+          <button
+                  class="services-dot {% if forloop.first %}is-active{% endif %}"
+                  type="button"
+                  aria-label="Show services page {{ forloop.counter }}"
+                  data-index="{{ forloop.counter0 }}"
+          ></button>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+
+  </div>
+</section>

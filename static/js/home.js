@@ -46,8 +46,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const titleOffsetTop = titleRect.top - copyRect.top;
     const titleHeight = titleRect.height;
 
-    heroMedia.style.setProperty("--hero-media-offset", `${Math.max(titleOffsetTop, 0)}px`);
-    heroImageFrame.style.setProperty("--hero-image-height", `${Math.max(titleHeight, 220)}px`);
+    heroMedia.style.setProperty(
+      "--hero-media-offset",
+      `${Math.max(titleOffsetTop, 0)}px`
+    );
+    heroImageFrame.style.setProperty(
+      "--hero-image-height",
+      `${Math.max(titleHeight, 220)}px`
+    );
   }
 
   function easeOutCubic(t) {
@@ -59,10 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function animateCounter(element, options = {}) {
-    const {
-      duration = 1800,
-      startDelay = 0,
-    } = options;
+    const { duration = 1800, startDelay = 0 } = options;
 
     const rawText = element.textContent.trim();
     const hasPlus = rawText.includes("+");
@@ -85,9 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let currentValue;
 
-        if (target <= 20) {
-          currentValue = Math.round(target * eased);
-        } else if (target <= 100) {
+        if (target <= 100) {
           currentValue = Math.round(target * eased);
         } else if (target <= 500) {
           currentValue = Math.round((target * eased) / 2) * 2;
@@ -149,7 +150,9 @@ document.addEventListener("DOMContentLoaded", () => {
     statsObserver.observe(heroStatsSection);
   }
 
-  if (backToTop) {
+  function initBackToTop() {
+    if (!backToTop) return;
+
     function handleBackToTopVisibility() {
       if (window.scrollY > 280) {
         backToTop.classList.add("is-visible");
@@ -166,7 +169,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (projectFilters) {
+  function initProjectFilters() {
+    if (!projectFilters || !projectCards.length) return;
+
     projectFilters.addEventListener("click", (event) => {
       const button = event.target.closest(".filter-btn");
       if (!button) return;
@@ -176,6 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
       projectFilters.querySelectorAll(".filter-btn").forEach((btn) => {
         btn.classList.remove("is-active");
       });
+
       button.classList.add("is-active");
 
       projectCards.forEach((card) => {
@@ -186,7 +192,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (revealItems.length > 0) {
+  function initRevealAnimations() {
+    if (!revealItems.length) return;
+
     const observer = new IntersectionObserver(
       (entries, obs) => {
         entries.forEach((entry) => {
@@ -204,23 +212,68 @@ document.addEventListener("DOMContentLoaded", () => {
     revealItems.forEach((item) => observer.observe(item));
   }
 
-  syncSiteHeaderHeight();
-  syncHeroImageToTitle();
-  initStatsRevealAndCounter();
+  function initServicesSlider() {
+    const dotsContainer = document.getElementById("servicesDots");
+    const pages = document.querySelectorAll(".services-page");
 
-  window.addEventListener("resize", () => {
-    syncSiteHeaderHeight();
-    syncHeroImageToTitle();
-  });
+    if (!dotsContainer || !pages.length) return;
 
-  const heroImage = document.querySelector(".hero-media .image-frame img");
-  if (heroImage) {
+    const dots = dotsContainer.querySelectorAll(".services-dot");
+    if (!dots.length) return;
+
+    function setActivePage(index) {
+      pages.forEach((page, pageIndex) => {
+        page.classList.toggle("is-active", pageIndex === index);
+      });
+
+      dots.forEach((dot, dotIndex) => {
+        dot.classList.toggle("is-active", dotIndex === index);
+      });
+    }
+
+    dotsContainer.addEventListener("click", (event) => {
+      const button = event.target.closest(".services-dot");
+      if (!button) return;
+
+      const index = Number(button.dataset.index);
+      if (Number.isNaN(index)) return;
+
+      setActivePage(index);
+    });
+
+    const initialIndex = Array.from(dots).findIndex((dot) =>
+      dot.classList.contains("is-active")
+    );
+
+    setActivePage(initialIndex >= 0 ? initialIndex : 0);
+  }
+
+  function bindHeroImageEvents() {
+    const heroImage = document.querySelector(".hero-media .image-frame img");
+    if (!heroImage) return;
+
     if (heroImage.complete) {
       syncHeroImageToTitle();
     } else {
       heroImage.addEventListener("load", syncHeroImageToTitle);
     }
   }
+
+  initBackToTop();
+  initProjectFilters();
+  initRevealAnimations();
+  initStatsRevealAndCounter();
+  initServicesSlider();
+
+  syncSiteHeaderHeight();
+  syncHeroImageToTitle();
+
+  window.addEventListener("resize", () => {
+    syncSiteHeaderHeight();
+    syncHeroImageToTitle();
+  });
+
+  bindHeroImageEvents();
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {

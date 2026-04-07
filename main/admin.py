@@ -1,7 +1,9 @@
 from django.contrib import admin
+from django.utils.html import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 from user.admin import custom_admin_site
-from main.models import CompanyProfile, TeamMember
+from main.models import CompanyProfile, TeamMember, Service
 
 
 @admin.register(CompanyProfile, site=custom_admin_site)
@@ -21,6 +23,7 @@ class CompanyProfileAdmin(admin.ModelAdmin):
         "hero_badge",
         "hero_title",
         "hero_description",
+        "services_description",
         "footer_description",
         "working_hours",
         "facebook_url",
@@ -42,3 +45,23 @@ class TeamMemberAdmin(admin.ModelAdmin):
         "display_order",
         "is_visible",
     )
+
+
+@admin.register(Service, site=custom_admin_site)
+class ServiceAdmin(admin.ModelAdmin):
+    list_display = ("title", "icon_preview")
+
+    fields = (
+        "title",
+        "description",
+        "icon",
+    )
+
+    def icon_preview(self, obj):
+        if obj.icon:
+            return mark_safe(
+                f'<img src="{obj.icon.url}" width="40" height="40" style="object-fit:cover;border-radius:6px;" />'
+            )
+        return "—"
+
+    icon_preview.short_description = _("Icon")
