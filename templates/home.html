@@ -3,7 +3,9 @@
 
 {% block title %}{{ company_profile.name|default:"Erbauer" }}{% endblock title %}
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/main/hero.css' %}">{% endblock %}
+<link rel="stylesheet" href="{% static 'css/main/hero.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/services.css' %}">
+{% endblock extra_css %}
 {% block content_wrapper %}
 <div class="page-noise"></div>
 

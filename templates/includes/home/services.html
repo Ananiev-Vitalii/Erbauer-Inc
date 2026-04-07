@@ -1,54 +1,55 @@
 {% load i18n static %}
 
-<section class="section services" id="services">
-  <div class="container two-col-layout services-layout">
+<section class="services" id="services">
+  <div class="container services__layout">
 
-    <div class="section-copy services-copy reveal">
-      <div class="services-copy-top">
-        <p class="section-kicker">{% trans "What we do" %}</p>
-        <h2>{% trans "Our services" %}</h2>
-        <p class="section-lead">
+    <div class="services__copy reveal">
+      <div class="services__copy-top">
+        <p class="services__kicker">{% trans "What we do" %}</p>
+        <h2 class="services__title">{% trans "Our services" %}</h2>
+        <p class="services__lead">
           {{ company_profile.services_description }}
         </p>
       </div>
 
-      <div class="services-copy-bottom">
-        <div class="image-frame image-frame-md services-image">
+      <div class="services__copy-bottom">
+        <div class="services__image-frame services__image-frame--md services__image">
           <img
                   src="{% static 'img/services-placeholder.jpg' %}"
                   alt="{% trans 'Construction services' %}"
+                  class="services__image-img"
           />
         </div>
 
-        <div class="section-cta services-cta">
-          <a class="btn btn-primary" href="#contacts">
+        <div class="services__cta">
+          <a class="services__btn services__btn--primary" href="#contacts">
             {% trans "Contact us" %}
           </a>
         </div>
       </div>
     </div>
 
-    <div class="services-slider reveal" data-delay="120">
-      <div class="services-track">
+    <div class="services__slider reveal" data-delay="120">
+      <div class="services__track">
         {% for page in service_pages %}
-        <div class="services-page {% if forloop.first %}is-active{% endif %}">
-          <div class="cards-grid services-cards-grid">
+        <div class="services__page {% if forloop.first %}is-active{% endif %}">
+          <div class="services__cards-grid">
             {% for service in page %}
-            <article class="service-card">
-              <div class="service-icon">
+            <article class="services__card">
+              <div class="services__icon">
                 {% if service.icon %}
                 <img
                         src="{{ service.icon.url }}"
                         alt="{{ service.title }}"
-                        class="service_icon"
+                        class="services__icon-image"
                 >
                 {% else %}
                 <span>🛠</span>
                 {% endif %}
               </div>
 
-              <h3>{{ service.title }}</h3>
-              <p>{{ service.description }}</p>
+              <h3 class="services__card-title">{{ service.title }}</h3>
+              <p class="services__card-text">{{ service.description }}</p>
             </article>
             {% endfor %}
           </div>
@@ -57,11 +58,11 @@
       </div>
 
       {% if service_pages|length > 1 %}
-      <div class="services-slider-footer">
-        <div class="services-dots" id="servicesDots">
+      <div class="services__slider-footer">
+        <div class="services__dots" id="servicesDots">
           {% for page in service_pages %}
           <button
-                  class="services-dot {% if forloop.first %}is-active{% endif %}"
+                  class="services__dot {% if forloop.first %}is-active{% endif %}"
                   type="button"
                   aria-label="Show services page {{ forloop.counter }}"
                   data-index="{{ forloop.counter0 }}"

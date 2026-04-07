@@ -214,11 +214,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function initServicesSlider() {
     const dotsContainer = document.getElementById("servicesDots");
-    const pages = document.querySelectorAll(".services-page");
+    const pages = document.querySelectorAll(".services__page");
 
     if (!dotsContainer || !pages.length) return;
 
-    const dots = dotsContainer.querySelectorAll(".services-dot");
+    const dots = dotsContainer.querySelectorAll(".services__dot");
     if (!dots.length) return;
 
     function setActivePage(index) {
@@ -232,7 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     dotsContainer.addEventListener("click", (event) => {
-      const button = event.target.closest(".services-dot");
+      const button = event.target.closest(".services__dot");
       if (!button) return;
 
       const index = Number(button.dataset.index);
