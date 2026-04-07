@@ -1,8 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const backToTop = document.getElementById("backToTop");
-  const projectFilters = document.getElementById("projectFilters");
-  const projectCards = document.querySelectorAll(".project-card");
-  const revealItems = document.querySelectorAll(".reveal:not(.hero-stats)");
   const heroStatsSection = document.querySelector(".hero-stats");
   const heroStatValues = document.querySelectorAll(".hero-stat-value");
 
@@ -50,6 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "--hero-media-offset",
       `${Math.max(titleOffsetTop, 0)}px`
     );
+
     heroImageFrame.style.setProperty(
       "--hero-image-height",
       `${Math.max(titleHeight, 220)}px`
@@ -150,104 +147,6 @@ document.addEventListener("DOMContentLoaded", () => {
     statsObserver.observe(heroStatsSection);
   }
 
-  function initBackToTop() {
-    if (!backToTop) return;
-
-    function handleBackToTopVisibility() {
-      if (window.scrollY > 280) {
-        backToTop.classList.add("is-visible");
-      } else {
-        backToTop.classList.remove("is-visible");
-      }
-    }
-
-    handleBackToTopVisibility();
-    window.addEventListener("scroll", handleBackToTopVisibility);
-
-    backToTop.addEventListener("click", () => {
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    });
-  }
-
-  function initProjectFilters() {
-    if (!projectFilters || !projectCards.length) return;
-
-    projectFilters.addEventListener("click", (event) => {
-      const button = event.target.closest(".filter-btn");
-      if (!button) return;
-
-      const filter = button.dataset.filter;
-
-      projectFilters.querySelectorAll(".filter-btn").forEach((btn) => {
-        btn.classList.remove("is-active");
-      });
-
-      button.classList.add("is-active");
-
-      projectCards.forEach((card) => {
-        const category = card.dataset.category;
-        const shouldShow = filter === "all" || category === filter;
-        card.classList.toggle("hide-project", !shouldShow);
-      });
-    });
-  }
-
-  function initRevealAnimations() {
-    if (!revealItems.length) return;
-
-    const observer = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-
-          const delay = entry.target.dataset.delay || 0;
-          entry.target.style.transitionDelay = `${delay}ms`;
-          entry.target.classList.add("is-visible");
-          obs.unobserve(entry.target);
-        });
-      },
-      { threshold: 0.16 }
-    );
-
-    revealItems.forEach((item) => observer.observe(item));
-  }
-
-  function initServicesSlider() {
-    const dotsContainer = document.getElementById("servicesDots");
-    const pages = document.querySelectorAll(".services__page");
-
-    if (!dotsContainer || !pages.length) return;
-
-    const dots = dotsContainer.querySelectorAll(".services__dot");
-    if (!dots.length) return;
-
-    function setActivePage(index) {
-      pages.forEach((page, pageIndex) => {
-        page.classList.toggle("is-active", pageIndex === index);
-      });
-
-      dots.forEach((dot, dotIndex) => {
-        dot.classList.toggle("is-active", dotIndex === index);
-      });
-    }
-
-    dotsContainer.addEventListener("click", (event) => {
-      const button = event.target.closest(".services__dot");
-      if (!button) return;
-
-      const index = Number(button.dataset.index);
-      if (Number.isNaN(index)) return;
-
-      setActivePage(index);
-    });
-
-    const initialIndex = Array.from(dots).findIndex((dot) =>
-      dot.classList.contains("is-active")
-    );
-
-    setActivePage(initialIndex >= 0 ? initialIndex : 0);
-  }
-
   function bindHeroImageEvents() {
     const heroImage = document.querySelector(".hero-media .image-frame img");
     if (!heroImage) return;
@@ -259,11 +158,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  initBackToTop();
-  initProjectFilters();
-  initRevealAnimations();
   initStatsRevealAndCounter();
-  initServicesSlider();
 
   syncSiteHeaderHeight();
   syncHeroImageToTitle();
