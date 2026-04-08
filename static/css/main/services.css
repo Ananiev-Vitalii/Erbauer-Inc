@@ -125,17 +125,17 @@
   text-decoration: none !important;
   appearance: none;
   -webkit-appearance: none;
+  border: none;
+  outline: none;
   transition:
     transform 0.28s ease,
     box-shadow 0.28s ease,
     background 0.28s ease,
-    border-color 0.28s ease,
     color 0.28s ease;
 }
 
 .services-cta-btn:hover {
   transform: translateY(-4px);
-  text-decoration: none !important;
 }
 
 .services-cta-btn:focus,
@@ -155,18 +155,14 @@
 .services-cta-btn--primary:link,
 .services-cta-btn--primary:visited {
   color: #ffffff !important;
-  border: none !important;
-  outline: none !important;
-  text-decoration: none !important;
-  background:
-    linear-gradient(
-      120deg,
-      #fde68a 0%,
-      #facc15 22%,
-      #fbbf24 48%,
-      #f59e0b 78%,
-      #fcd34d 100%
-    ) !important;
+  background: linear-gradient(
+    120deg,
+    #fde68a 0%,
+    #facc15 22%,
+    #fbbf24 48%,
+    #f59e0b 78%,
+    #fcd34d 100%
+  ) !important;
   box-shadow:
     0 16px 34px rgba(245, 158, 11, 0.22),
     inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
@@ -177,18 +173,6 @@
 .services-cta-btn--primary:focus-visible,
 .services-cta-btn--primary:active {
   color: #ffffff !important;
-  border: none !important;
-  outline: none !important;
-  text-decoration: none !important;
-  background:
-    linear-gradient(
-      120deg,
-      #fde68a 0%,
-      #facc15 22%,
-      #fbbf24 48%,
-      #f59e0b 78%,
-      #fcd34d 100%
-    ) !important;
   box-shadow:
     0 22px 42px rgba(245, 158, 11, 0.26),
     inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
