@@ -5,7 +5,7 @@ from main.models import CompanyProfile, Service, TeamMember
 
 
 class HomePageView(TemplateView):
-    template_name = "home.html"
+    template_name = "main/home.html"
     services_page_size = 6
 
     def get_service_pages(self, services: list[Service]) -> list[list[Service]]:
