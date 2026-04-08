@@ -1,10 +1,40 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+{% load i18n static %}
 
-</body>
-</html>
+<section class="about" id="about">
+  <div class="container about__layout">
+    <div class="about__copy reveal">
+      <p class="about__kicker">{% trans 'Who we are' %}</p>
+      <h2 class="about__title">{% trans 'About Us' %}</h2>
+      <div class="about__text">
+        {{ company_profile.about_description|linebreaks }}
+      </div>
+    </div>
+
+    <div class="about__media reveal" data-delay="120">
+      <div class="about__image-frame about__image-frame--lg">
+        <img
+                src="{% static 'img/about-placeholder.jpg' %}"
+                alt="{% trans 'About Us' %}"
+                class="about__image"
+        />
+      </div>
+    </div>
+  </div>
+
+  <div class="container about__stats">
+    <article class="about__stat-card reveal">
+      <span class="about__stat-value">{{ company_profile.years_on_market|default:"10" }}+</span>
+      <span class="about__stat-label">{% trans "Years of experience" %}</span>
+    </article>
+
+    <article class="about__stat-card reveal" data-delay="120">
+      <span class="about__stat-value">{{ company_profile.completed_objects_count|default:"100" }}+</span>
+      <span class="about__stat-label">{% trans "Completed projects" %}</span>
+    </article>
+
+    <article class="about__stat-card reveal" data-delay="240">
+      <span class="about__stat-value">{{ company_profile.employees_count|default:"50" }}+</span>
+      <span class="about__stat-label">{% trans "Specialists" %}</span>
+    </article>
+  </div>
+</section>

@@ -39,7 +39,7 @@ class CompanyProfile(models.Model):
         _("Completed objects count"), default=0
     )
     employees_count = models.PositiveIntegerField(_("Employees count"), default=0)
-    about = models.TextField(_("About"), blank=True)
+    about_description = models.TextField(_("About description"), blank=True)
     hero_badge = models.CharField("Hero badge", max_length=50, blank=True)
     hero_title = models.TextField(_("Hero title"), blank=True)
     hero_description = models.TextField(_("Hero description"), blank=True)
