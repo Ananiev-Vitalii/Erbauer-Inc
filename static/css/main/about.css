@@ -180,9 +180,9 @@
 
   .about__image-frame,
   .about__image-frame--lg {
-    min-height: 480px;
+    min-height: 420px;
     max-height: none;
-    height: 480px;
+    height: 420px;
   }
 }
 
