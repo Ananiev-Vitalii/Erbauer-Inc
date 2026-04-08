@@ -72,8 +72,10 @@
   margin-top: 34px;
 }
 
-/* КНОПКИ — теперь тоже здесь, как ты и хотел */
-.btn {
+/* HERO BUTTONS */
+.hero-btn {
+  position: relative;
+  z-index: 1;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -81,35 +83,105 @@
   min-height: 56px;
   padding: 14px 28px;
   border-radius: 14px;
-  border: 2px solid transparent;
   font-weight: 800;
-  transition: 0.28s ease;
+  line-height: 1;
   cursor: pointer;
-  text-decoration: none;
+  text-decoration: none !important;
+  appearance: none;
+  -webkit-appearance: none;
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    background 0.28s ease,
+    border-color 0.28s ease,
+    color 0.28s ease;
 }
 
-.btn:hover {
-  transform: translateY(-2px) scale(1.01);
+.hero-btn:hover {
+  transform: translateY(-4px);
+  text-decoration: none !important;
 }
 
-.btn-primary {
-  color: #111827;
-  background: var(--gradient-main);
-  box-shadow: 0 14px 30px rgba(249, 115, 22, 0.22);
+.hero-btn:focus,
+.hero-btn:focus-visible,
+.hero-btn:active {
+  outline: none !important;
+  text-decoration: none !important;
 }
 
-.btn-primary:hover {
-  box-shadow: 0 20px 40px rgba(249, 115, 22, 0.32);
+.hero-btn::before,
+.hero-btn::after {
+  content: none !important;
+  display: none !important;
 }
 
-.btn-ghost {
-  color: var(--white);
-  border-color: rgba(250, 204, 21, 0.8);
-  background: rgba(255, 255, 255, 0.03);
+/* LEFT HERO BUTTON */
+.hero-btn-primary,
+.hero-btn-primary:link,
+.hero-btn-primary:visited,
+.hero-btn-primary:hover,
+.hero-btn-primary:focus,
+.hero-btn-primary:focus-visible,
+.hero-btn-primary:active {
+  color: #111827 !important;
+  border: none !important;
+  outline: none !important;
+  text-decoration: none !important;
+  background:
+    linear-gradient(
+      120deg,
+      #fde68a 0%,
+      #facc15 18%,
+      #f59e0b 45%,
+      #f97316 72%,
+      #fdba74 100%
+    ) !important;
+  box-shadow:
+    0 16px 34px rgba(249, 115, 22, 0.20),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
-.btn-ghost:hover {
-  background: rgba(250, 204, 21, 0.08);
+.hero-btn-primary:hover,
+.hero-btn-primary:focus,
+.hero-btn-primary:focus-visible,
+.hero-btn-primary:active {
+  color: #111827 !important;
+  background:
+    linear-gradient(
+      120deg,
+      #fde68a 0%,
+      #facc15 18%,
+      #f59e0b 45%,
+      #f97316 72%,
+      #fdba74 100%
+    ) !important;
+  box-shadow:
+    0 22px 42px rgba(249, 115, 22, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+}
+
+/* RIGHT HERO BUTTON */
+.hero-btn-secondary,
+.hero-btn-secondary:link,
+.hero-btn-secondary:visited {
+  color: var(--white) !important;
+  border: 2px solid rgba(250, 204, 21, 0.8) !important;
+  outline: none !important;
+  text-decoration: none !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  box-shadow: none !important;
+}
+
+.hero-btn-secondary:hover,
+.hero-btn-secondary:focus,
+.hero-btn-secondary:focus-visible,
+.hero-btn-secondary:active {
+  color: var(--white) !important;
+  border: 2px solid rgba(250, 204, 21, 0.8) !important;
+  outline: none !important;
+  text-decoration: none !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  box-shadow: none !important;
 }
 
 .hero-media {
@@ -118,13 +190,11 @@
   margin-top: var(--hero-media-offset, 0px);
 }
 
-/* КАРТИНКА — оставляю старую механику */
 .hero-media .image-frame {
   min-height: 320px;
   height: var(--hero-image-height, 320px);
 }
 
-/* image frame теперь тоже целиком в Hero.css */
 .image-frame {
   position: relative;
   border-radius: var(--radius-lg);
@@ -241,7 +311,7 @@
   }
 }
 
-@media (max-width: 980px) {
+@media (max-width: 1024px) {
   .hero-grid {
     grid-template-columns: 1fr;
     gap: 24px;
@@ -296,7 +366,7 @@
     flex-direction: column;
   }
 
-  .btn {
+  .hero-btn {
     width: 100%;
   }
 
