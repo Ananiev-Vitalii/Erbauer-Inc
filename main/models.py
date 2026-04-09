@@ -134,12 +134,13 @@ class Project(models.Model):
         default=ProjectCategory.RESIDENTIAL,
     )
 
-    short_description = models.CharField(_("Short description"), max_length=255)
+    short_description = models.TextField(_("Short description"), max_length=150)
 
     cover_image = models.ImageField(
         _("Cover image"),
         upload_to=project_cover_upload_path,
     )
+    created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
 
     class Meta:
         verbose_name = _("Project")
