@@ -1,10 +1,105 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+{% load i18n %}
 
-</body>
-</html>
+<section class="projects" id="projects">
+  <div class="container">
+    <div class="projects__head centered reveal">
+      <p class="projects__kicker">{% trans "Our Work" %}</p>
+      <h2 class="projects__title">{% trans "Completed Projects" %}</h2>
+      <p class="projects__lead">
+        {% trans "Examples of projects successfully completed by our team for residential and commercial properties." %}
+      </p>
+    </div>
+
+    <div class="projects__filters reveal" id="projectFilters">
+      <button class="projects__filter is-active" type="button" data-filter="all">
+        {% trans "All" %}
+      </button>
+      <button class="projects__filter" type="button" data-filter="residential">
+        {% trans "Residential" %}
+      </button>
+      <button class="projects__filter" type="button" data-filter="commercial">
+        {% trans "Commercial" %}
+      </button>
+    </div>
+
+    <div class="projects__grid">
+      {% for project in projects %}
+      <article class="projects__card reveal" data-category="{{ project.category }}">
+        <div class="projects__image">
+          <img
+                  src="{{ project.cover_image.url }}"
+                  alt="{{ project.title }}"
+                  class="projects__image-img"
+          >
+
+          <div class="projects__image-meta">
+            <p class="projects__image-date">{{ project.created_at|date:"F j, Y" }}</p>
+          </div>
+
+          <div class="projects__image-overlay">
+            <div class="projects__image-actions">
+              <button
+                      class="projects__image-icon"
+                      type="button"
+                      data-image="{{ project.cover_image.url }}"
+                      data-alt="{{ project.title }}"
+                      aria-label="{% trans 'Open full image' %}"
+                      title="{% trans 'Open full image' %}"
+              >
+                <span class="projects__expand-icon" aria-hidden="true">
+                  <span class="projects__expand-angle projects__expand-angle--tr"></span>
+                  <span class="projects__expand-angle projects__expand-angle--bl"></span>
+                </span>
+              </button>
+
+              <a class="projects__image-link" href="#">
+                <span>{% trans "View details" %}</span>
+                <span class="projects__image-link-arrow">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="projects__body">
+          <h3 class="projects__card-title">{{ project.title }}</h3>
+          <p class="projects__category">{{ project.get_category_display }}</p>
+          <p class="projects__text">{{ project.short_description }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    <div class="projects__cta centered reveal">
+      <a class="projects__cta-btn" href="#">
+        {% trans "View all projects" %}
+      </a>
+    </div>
+  </div>
+</section>
+
+<div class="projects-lightbox" id="projectsLightbox" aria-hidden="true">
+  <div class="projects-lightbox__backdrop" data-lightbox-close></div>
+
+  <div
+          class="projects-lightbox__dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-label="{% trans 'Project image preview' %}"
+  >
+    <button
+            class="projects-lightbox__close"
+            type="button"
+            id="projectsLightboxClose"
+            aria-label="{% trans 'Close image preview' %}"
+    >
+      ×
+    </button>
+
+    <img
+            class="projects-lightbox__image"
+            id="projectsLightboxImage"
+            src=""
+            alt=""
+    >
+  </div>
+</div>

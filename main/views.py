@@ -1,7 +1,7 @@
 from typing import Any
 from django.views.generic import TemplateView
 
-from main.models import CompanyProfile, Service, TeamMember
+from main.models import CompanyProfile, Service, TeamMember, Project
 
 
 class HomePageView(TemplateView):
@@ -21,12 +21,14 @@ class HomePageView(TemplateView):
         company_profile = CompanyProfile.objects.filter(is_active=True).first()
         team_members = TeamMember.objects.filter(is_visible=True)
         services = list(Service.objects.all())
+        projects = Project.objects.all()[:4]
 
         context.update(
             {
                 "company_profile": company_profile,
                 "service_pages": self.get_service_pages(services),
                 "team_members": team_members,
+                "projects": projects,
             }
         )
 
