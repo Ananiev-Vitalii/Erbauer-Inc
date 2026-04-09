@@ -8,7 +8,7 @@
   place-items: center;
   border: none;
   border-radius: 50%;
-  background: #111827;
+  background: transparent;
   color: #fff;
   cursor: pointer;
   box-shadow: 0 18px 38px rgba(15, 23, 42, 0.28);
@@ -59,6 +59,7 @@
   font-size: 26px;
   line-height: 1;
   font-weight: 700;
+  color: #fff;
   transform: translateY(-1px);
   transition: color 0.3s ease, transform 0.3s ease;
 }
@@ -80,7 +81,7 @@
 
 .back-to-top:hover span {
   color: #facc15;
-  transform: translateY(-2px);
+  transform: translateY(-6px);
 }
 
 @keyframes backToTopSpin {
@@ -94,13 +95,6 @@
 
 @media (max-width: 640px) {
   .back-to-top {
-    right: 18px;
-    bottom: 18px;
-    width: 56px;
-    height: 56px;
-  }
-
-  .back-to-top span {
-    font-size: 22px;
+    display: none !important;
   }
 }

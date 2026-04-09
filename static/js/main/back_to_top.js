@@ -1,9 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
   const backToTop = document.getElementById("backToTop");
-  if (!backToTop) return;
+  const footer = document.querySelector("footer");
+
+  if (!backToTop || !footer) return;
 
   function handleBackToTopVisibility() {
-    if (window.scrollY > 280) {
+    const footerRect = footer.getBoundingClientRect();
+    const footerVisible = footerRect.top <= window.innerHeight;
+
+    if (footerVisible) {
       backToTop.classList.add("is-visible");
     } else {
       backToTop.classList.remove("is-visible");
@@ -12,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   handleBackToTopVisibility();
   window.addEventListener("scroll", handleBackToTopVisibility);
+  window.addEventListener("resize", handleBackToTopVisibility);
 
   backToTop.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
