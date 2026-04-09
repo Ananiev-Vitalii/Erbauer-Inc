@@ -3,7 +3,13 @@ from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from user.admin import custom_admin_site
-from main.models import CompanyProfile, TeamMember, Service
+from main.models import (
+    CompanyProfile,
+    TeamMember,
+    Service,
+    Project,
+    ProjectImage,
+)
 
 
 @admin.register(CompanyProfile, site=custom_admin_site)
@@ -65,3 +71,79 @@ class ServiceAdmin(admin.ModelAdmin):
         return "—"
 
     icon_preview.short_description = _("Icon")
+
+
+class ProjectImageInline(admin.TabularInline):
+    model = ProjectImage
+    extra = 1
+    fields = ("image", "image_preview")
+    readonly_fields = ("image_preview",)
+
+    def image_preview(self, obj):
+        if obj.image:
+            return mark_safe(
+                f'<img src="{obj.image.url}" width="80" height="80" '
+                f'style="object-fit:cover;border-radius:8px;" />'
+            )
+        return "—"
+
+    image_preview.short_description = _("Preview")
+
+
+@admin.register(Project, site=custom_admin_site)
+class ProjectAdmin(admin.ModelAdmin):
+    list_display = (
+        "title",
+        "category",
+        "cover_preview",
+        "images_count",
+    )
+    list_filter = ("category",)
+    search_fields = ("title", "short_description")
+    fields = (
+        "title",
+        "category",
+        "short_description",
+        "cover_image",
+        "cover_preview",
+    )
+    readonly_fields = ("cover_preview",)
+    inlines = (ProjectImageInline,)
+
+    def cover_preview(self, obj):
+        if obj.cover_image:
+            return mark_safe(
+                f'<img src="{obj.cover_image.url}" width="80" height="80" '
+                f'style="object-fit:cover;border-radius:8px;" />'
+            )
+        return "—"
+
+    cover_preview.short_description = _("Cover preview")
+
+    def images_count(self, obj):
+        return obj.images.count()
+
+    images_count.short_description = _("Gallery images")
+
+
+@admin.register(ProjectImage, site=custom_admin_site)
+class ProjectImageAdmin(admin.ModelAdmin):
+    list_display = ("project", "image_preview")
+    list_filter = ("project__category",)
+    search_fields = ("project__title",)
+    fields = (
+        "project",
+        "image",
+        "image_preview",
+    )
+    readonly_fields = ("image_preview",)
+
+    def image_preview(self, obj):
+        if obj.image:
+            return mark_safe(
+                f'<img src="{obj.image.url}" width="80" height="80" '
+                f'style="object-fit:cover;border-radius:8px;" />'
+            )
+        return "—"
+
+    image_preview.short_description = _("Preview")

@@ -19,6 +19,16 @@ def service_icon_upload_path(instance: "Service", filename: str) -> str:
     return f"services/{service_slug}/icons/{filename}"
 
 
+def project_cover_upload_path(instance: "Project", filename: str) -> str:
+    project_slug = slugify(instance.title)
+    return f"projects/{project_slug}/cover/{filename}"
+
+
+def project_gallery_upload_path(instance: "ProjectImage", filename: str) -> str:
+    project_slug = slugify(instance.project.title)
+    return f"projects/{project_slug}/gallery/{filename}"
+
+
 class CompanyProfile(models.Model):
     name = models.CharField(_("Company name"), max_length=50, unique=True)
     primary_phone = models.CharField(_("Primary phone"), max_length=32)
@@ -107,3 +117,55 @@ class Service(models.Model):
 
     def __str__(self) -> str:
         return self.title
+
+
+class ProjectCategory(models.TextChoices):
+    RESIDENTIAL = "residential", _("Residential")
+    COMMERCIAL = "commercial", _("Commercial")
+
+
+class Project(models.Model):
+    title = models.CharField(_("Title"), max_length=120, unique=True)
+
+    category = models.CharField(
+        _("Category"),
+        max_length=20,
+        choices=ProjectCategory.choices,
+        default=ProjectCategory.RESIDENTIAL,
+    )
+
+    short_description = models.CharField(_("Short description"), max_length=255)
+
+    cover_image = models.ImageField(
+        _("Cover image"),
+        upload_to=project_cover_upload_path,
+    )
+
+    class Meta:
+        verbose_name = _("Project")
+        verbose_name_plural = _("Projects")
+        ordering = ["-id"]
+
+    def __str__(self) -> str:
+        return self.title
+
+
+class ProjectImage(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name="images",
+        verbose_name=_("Project"),
+    )
+    image = models.ImageField(
+        _("Image"),
+        upload_to=project_gallery_upload_path,
+    )
+
+    class Meta:
+        verbose_name = _("Project image")
+        verbose_name_plural = _("Project images")
+        ordering = ["-id"]
+
+    def __str__(self) -> str:
+        return f"{self.project.title}/{self.pk}"
