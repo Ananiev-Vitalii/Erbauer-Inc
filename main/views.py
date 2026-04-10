@@ -19,16 +19,18 @@ class HomePageView(TemplateView):
         context = super().get_context_data(**kwargs)
 
         company_profile = CompanyProfile.objects.filter(is_active=True).first()
-        team_members = TeamMember.objects.filter(is_visible=True)
         services = list(Service.objects.all())
         projects = Project.objects.all()[:4]
+        team_members = TeamMember.objects.filter(is_visible=True).select_related(
+            "employee", "employee__position"
+        )[:8]
 
         context.update(
             {
                 "company_profile": company_profile,
                 "service_pages": self.get_service_pages(services),
-                "team_members": team_members,
                 "projects": projects,
+                "team_members": team_members,
             }
         )
 

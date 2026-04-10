@@ -1,10 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>Title</title>
-</head>
-<body>
+{% load i18n static %}
 
-</body>
-</html>
+<section class="team" id="team">
+  <div class="container">
+    <div class="team__head centered">
+      <p class="team__kicker team__anim team__anim--down">
+        {% trans 'Who We Are' %}
+      </p>
+
+      <h2 class="team__title team__anim team__anim--down">
+        {% trans 'Meet Our Team' %}
+      </h2>
+
+      <p class="team__lead team__anim team__anim--down">
+        {% trans 'A team of experienced builders delivering reliable, high-quality work on every project.' %}
+      </p>
+    </div>
+
+    <div class="team__grid">
+      {% for employee in team_members %}
+      <article class="team__card team__anim team__anim--up">
+        <img
+                class="team__image"
+                src="{{ employee.photo.url }}"
+                alt="{{ employee }}"
+        />
+        <div class="team__body">
+          <h3 class="team__name">{{ employee }}</h3>
+          <p class="team__role">{{ employee.employee.position }}</p>
+          <p class="team__text">{{ employee.description }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
