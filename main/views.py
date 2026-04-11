@@ -1,10 +1,11 @@
 from typing import Any
-from django.views.generic import TemplateView
+from django.views import generic
 
+from main.forms import ContactForm
 from main.models import CompanyProfile, Service, TeamMember, Project
 
 
-class HomePageView(TemplateView):
+class HomePageView(generic.TemplateView):
     template_name = "main/home.html"
     services_page_size = 6
 
@@ -17,7 +18,6 @@ class HomePageView(TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-
         company_profile = CompanyProfile.objects.filter(is_active=True).first()
         services = list(Service.objects.all())
         projects = Project.objects.all()[:4]
@@ -31,7 +31,12 @@ class HomePageView(TemplateView):
                 "service_pages": self.get_service_pages(services),
                 "projects": projects,
                 "team_members": team_members,
+                "contact_form": ContactForm(),
             }
         )
 
         return context
+
+
+class ContactFormView(generic.FormView):
+    pass

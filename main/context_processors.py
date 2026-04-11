@@ -7,11 +7,6 @@ def company_base(request):
         .only(
             "name",
             "logo",
-            "address",
-            "primary_phone",
-            "secondary_phone",
-            "email",
-            "working_hours",
             "footer_description",
             "facebook_url",
             "instagram_url",

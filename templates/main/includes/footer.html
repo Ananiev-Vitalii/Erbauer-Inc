@@ -22,48 +22,9 @@
           {{ company_base.name|default:"Erbauer" }}
         </span>
       </a>
-
-      {% if company_base.footer_description %}
       <p>{{ company_base.footer_description }}</p>
-      {% endif %}
-
     </div>
 
-    <div class="footer-col">
-      <h4>{% trans "Contact information" %}</h4>
-
-      {% if company_base.address %}
-      <p>
-        <strong>{% trans "Address:" %}</strong><br>
-        {{ company_base.address }}
-      </p>
-      {% endif %}
-
-      {% if company_base.primary_phone %}
-      <p>
-        <strong>{% trans "Phone:" %}</strong><br>
-        <a href="tel:{{ company_base.primary_phone }}">{{ company_base.primary_phone }}</a>
-        {% if company_base.secondary_phone %}
-        <br>
-        <a href="tel:{{ company_base.secondary_phone }}">{{ company_base.secondary_phone }}</a>
-        {% endif %}
-      </p>
-      {% endif %}
-
-      {% if company_base.email %}
-      <p>
-        <strong>{% trans "Email:" %}</strong><br>
-        <a href="mailto:{{ company_base.email }}">{{ company_base.email }}</a>
-      </p>
-      {% endif %}
-
-      {% if company_base.working_hours %}
-      <p>
-        <strong>{% trans "Working hours:" %}</strong><br>
-        {{ company_base.working_hours|linebreaksbr }}
-      </p>
-      {% endif %}
-    </div>
 
     {% if company_base.facebook_url or company_base.instagram_url or company_base.telegram_url %}
     <div class="footer-col">
