@@ -80,7 +80,7 @@
 }
 
 .back-to-top:hover span {
-  color: #facc15;
+  color: var(--yellow-300);
   transform: translateY(-6px);
 }
 

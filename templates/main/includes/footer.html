@@ -6,25 +6,25 @@
       <a class="brand footer-brand-link" href="#hero" aria-label="{{ company_base.name|default:'Erbauer' }}">
         {% if company_base and company_base.logo %}
         <span class="brand-logo-wrap">
-            <img
-                    src="{{ company_base.logo.url }}"
-                    alt="{{ company_base.name|default:'Erbauer' }} logo"
-                    class="brand-logo"
-            >
-          </span>
+          <img
+                  src="{{ company_base.logo.url }}"
+                  alt="{{ company_base.name|default:'Erbauer' }} logo"
+                  class="brand-logo"
+          >
+        </span>
         {% else %}
         <span class="brand-mark">
-            {{ company_base.name|default:"Erbauer"|slice:":2"|upper }}
+          {{ company_base.name|default:"Erbauer"|slice:":2"|upper }}
         </span>
         {% endif %}
 
-        <span class="brand-text">
+        <span class="brand-text text-footer">
           {{ company_base.name|default:"Erbauer" }}
         </span>
       </a>
+
       <p>{{ company_base.footer_description }}</p>
     </div>
-
 
     {% if company_base.facebook_url or company_base.instagram_url or company_base.telegram_url %}
     <div class="footer-col">
@@ -59,16 +59,21 @@
       </div>
     </div>
     {% endif %}
-
   </div>
 
   <div class="container footer-bottom">
     <p>
-      © {% now "Y" %} {{ company_base.name|default:"Erbauer" }}
+    <span class="footer-meta-item">
+      © 2026 – {% now "Y" %} {{ company_base.name|default:"Erbauer" }}
+    </span>
       <span class="mx-2">|</span>
+      <span class="footer-meta-item">
       {% trans "All Rights Reserved" %}
+    </span>
       <span class="mx-2">|</span>
-      <a href="">{% trans "Privacy Policy" %}</a>
+      <a href="{% url 'main:privacy_policy' %}" class="footer-meta-item">
+        {% trans "Privacy Policy" %}
+      </a>
     </p>
   </div>
 </footer>
