@@ -1,6 +1,13 @@
 from typing import Any
+
 from django.views import generic
 
+from main.services.rate_limit import (
+    get_contact_form_rate_limit_state,
+    register_contact_form_attempt,
+    get_contact_form_cooldown_message,
+)
+from main.services.email import send_contact_email
 from main.forms import ContactForm
 from main.models import CompanyProfile, Service, TeamMember, Project
 
@@ -31,7 +38,7 @@ class HomePageView(generic.TemplateView):
                 "service_pages": self.get_service_pages(services),
                 "projects": projects,
                 "team_members": team_members,
-                "contact_form": ContactForm(),
+                "form": ContactForm(),
             }
         )
 
@@ -39,4 +46,30 @@ class HomePageView(generic.TemplateView):
 
 
 class ContactFormView(generic.FormView):
-    pass
+    form_class = ContactForm
+    http_method_names = ["post"]
+    template_name = "main/includes/sections/contacts.html#contact-form"
+
+    def post(self, request, *args, **kwargs):
+        state = get_contact_form_rate_limit_state(request)
+        if state.blocked:
+            form = self.get_form_class()(request.POST)
+            form.service_message = get_contact_form_cooldown_message(state)
+            return self.render_to_response(self.get_context_data(form=form))
+
+        state = register_contact_form_attempt(request)
+        if state.blocked:
+            form = self.get_form_class()(request.POST)
+            form.service_message = get_contact_form_cooldown_message(state)
+            return self.render_to_response(self.get_context_data(form=form))
+
+        return super().post(request, *args, **kwargs)
+
+    def form_valid(self, form):
+        send_contact_email(form.cleaned_data)
+        new_form = self.get_form_class()()
+        new_form.is_success = True
+        return self.render_to_response(self.get_context_data(form=new_form))
+
+    def form_invalid(self, form):
+        return self.render_to_response(self.get_context_data(form=form))

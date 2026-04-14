@@ -37,8 +37,10 @@
       </div>
     </div>
 
-    <div class="contacts__form-wrap reveal" data-delay="120">
-      {% crispy contact_form %}
+    <div class="contacts__form-wrap reveal" data-delay="120" id="contactFormWrapper">
+      {% partialdef contact-form inline %}
+      {% crispy form %}
+      {% endpartialdef contact-form %}
     </div>
   </div>
 </section>

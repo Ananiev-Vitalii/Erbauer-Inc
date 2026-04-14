@@ -1,7 +1,13 @@
 {% load i18n %}
 
-{% if form.service_message %}
-  <p class="error-message">{{ form.service_message }}</p>
+{% if form.is_success %}
+<div class="form-errors form-errors--success">
+  <p class="success-message">
+    {% trans "Your message has been sent successfully." %}
+  </p>
+</div>
+{% elif form.service_message %}
+<p class="error-message">{{ form.service_message }}</p>
 {% else %}
 {% for field in form %}
 {% if field.errors %}

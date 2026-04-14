@@ -1,4 +1,5 @@
 from django import forms
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Layout, Field, Submit, Div
@@ -8,6 +9,7 @@ class BaseStyledForm:
     def init_form_helper(self):
         self.helper = FormHelper()
         self.helper.form_method = "post"
+        self.helper.form_action = reverse_lazy("main:contact_submit")
         self.helper.html5_required = True
         self.helper.form_show_labels = False
         self.helper.form_show_errors = False
@@ -26,12 +28,11 @@ class ContactForm(BaseStyledForm, forms.Form):
     )
 
     phone = forms.CharField(
-        min_length=10,
         max_length=14,
         widget=forms.TextInput(
             attrs={
                 "class": "contacts__input contacts__input--phone",
-                "placeholder": "(236) 555-1234",
+                "placeholder": "(234) 567-8910",
                 "inputmode": "tel",
                 "autocomplete": "tel-national",
                 "aria-label": _("Phone number"),
@@ -65,8 +66,8 @@ class ContactForm(BaseStyledForm, forms.Form):
     def __init__(self, *args, **kwargs):
         self.service_message = kwargs.pop("service_message", "")
         super().__init__(*args, **kwargs)
+        self.is_success = False
         self.init_form_helper()
-
         self.helper.form_class = "contacts__form"
         self.helper.form_id = "contactForm"
 
