@@ -85,7 +85,7 @@ class ContactForm(BaseStyledForm, forms.Form):
                     Field("privacy_policy"),
                     HTML(f"""
                         <span>
-                          {_("I agree to the")}
+                          {_("I acknowledge the")}
                           <a href="{{% url 'main:privacy_policy' %}}">
                             {_("Privacy Policy")}
                           </a>
