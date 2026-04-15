@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% load static i18n %}
+
+{% block title %}
+  {% if company_base and company_base.name %}
+    {{ company_base.name }} | {{ title }}
+  {% else %}
+    {{ title }} | Admin
+  {% endif %}
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+
+  {% if company_base and company_base.logo %}
+    <link rel="icon" type="image/png" href="{{ company_base.logo.url }}">
+  {% else %}
+    <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  {% endif %}
+
+  <link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+  <h1 id="site-name">
+    <a href="{% url 'admin:index' %}">
+      {% if company_base and company_base.name %}
+        {{ company_base.name }}
+      {% else %}
+        {% trans "Administration" %}
+      {% endif %}
+    </a>
+  </h1>
+{% endblock %}

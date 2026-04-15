@@ -1,0 +1,29 @@
+/* Employee */
+.app-account .model-employee th,
+.app-account .model-employee td {
+  background: #dcfce7 !important;
+}
+
+.app-account .model-employee th a,
+.app-account .model-employee td a {
+  color: #166534 !important;
+  font-weight: 700;
+}
+
+
+/* Users */
+.app-user .model-user th,
+.app-user .model-user td {
+  background: #fef2f2 !important;
+}
+
+.app-user .model-user th a,
+.app-user .model-user td a {
+  color: #b91c1c !important;
+  font-weight: 700;
+}
+
+.app-user .model-user th a:hover,
+.app-user .model-user td a:hover {
+  color: #991b1b !important;
+}

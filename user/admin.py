@@ -27,11 +27,13 @@ class CustomAdminSite(AdminSite):
     def each_context(self, request):
         context = super().each_context(request)
         company = CompanyProfile.objects.filter(is_active=True).first()
+        context["company_base"] = company
         context["site_header"] = (
             f"{_('Site administration')} {company.name}"
             if company
             else str(_("Site administration"))
         )
+        context["custom_admin_css"] = "admin/css/custom_admin.css"
         return context
 
     def has_permission(self, request):
