@@ -13,6 +13,9 @@ def team_member_directory_path(instance: "TeamMember", filename: str) -> str:
 def company_logo_upload_path(instance: "CompanyProfile", filename: str) -> str:
     return f"company/logo/{filename}"
 
+def company_favicon_upload_path(instance: "CompanyProfile", filename: str) -> str:
+    return f"company/favicon/{filename}"
+
 
 def service_icon_upload_path(instance: "Service", filename: str) -> str:
     service_slug = slugify(instance.title)
@@ -36,6 +39,11 @@ class CompanyProfile(models.Model):
     email = models.EmailField(_("Email"))
     address = models.CharField(_("Address"), max_length=255)
     working_hours = models.TextField(_("Working hours"))
+    favicon = models.ImageField(
+        _("Company favicon"),
+        upload_to=company_favicon_upload_path,
+        blank=True,
+    )
     logo = models.ImageField(
         _("Company logo"),
         upload_to=company_logo_upload_path,

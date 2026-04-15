@@ -1,4 +1,4 @@
-{% load i18n %}
+{% load i18n static %}
 
 <header class="site-header" id="siteHeader">
   <div class="container nav-wrap">
@@ -11,9 +11,12 @@
               class="brand-logo"
       ></span>
       {% else %}
-      <span class="brand-mark">
-          {{ company_base.name|default:"Erbauer"|slice:":2"|upper }}
-      </span>
+      <span class="brand-logo-wrap">
+          <img
+                  src="{% static 'img/logo.png' %}"
+                  alt="{{ company_base.name|default:'Erbauer' }} logo"
+                  class="brand-logo"
+          ></span>
       {% endif %}
       <span class="brand-text text-navbar">
         {{ company_base.name|default:"Erbauer" }}

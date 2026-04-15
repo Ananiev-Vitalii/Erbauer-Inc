@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}{% endblock title %}</title>
 
-  {% if company_base and company_base.logo %}
-  <link rel="icon" type="image/png" href="{{ company_base.logo.url }}">
+  {% if company_base and company_base.favicon %}
+  <link rel="icon" type="image/png" href="{{ company_base.favicon.url }}">
   {% else %}
   <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
   {% endif %}

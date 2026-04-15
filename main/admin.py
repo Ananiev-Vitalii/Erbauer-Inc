@@ -21,6 +21,7 @@ class CompanyProfileAdmin(admin.ModelAdmin):
         "secondary_phone",
         "email",
         "address",
+        "favicon",
         "logo",
         "years_on_market",
         "completed_objects_count",

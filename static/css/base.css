@@ -116,8 +116,8 @@ p {
 }
 
 .brand-logo-wrap {
-  width: 52px;
-  height: 52px;
+  width: 72px;
+  height: 72px;
   flex-shrink: 0;
 }
 
@@ -126,18 +126,6 @@ p {
   height: 100%;
   object-fit: contain;
   border-radius: 14px;
-}
-
-.brand-mark {
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  border-radius: 14px;
-  background: var(--gradient-main);
-  color: var(--white);
-  font-weight: 800;
-  box-shadow: 0 10px 20px rgba(249, 115, 22, 0.18);
 }
 
 .brand-text {
@@ -368,8 +356,8 @@ p {
   }
 
   .brand-logo-wrap {
-    width: 40px;
-    height: 40px;
+    width: 52px;
+    height: 52px;
   }
 
   .brand-text {
