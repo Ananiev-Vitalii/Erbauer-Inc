@@ -86,8 +86,15 @@ class ContactForm(BaseStyledForm, forms.Form):
                     HTML(f"""
                         <span>
                           {_("I acknowledge the")}
-                          <a href="{{% url 'main:privacy_policy' %}}">
+                          <a href="{{% url 'main:privacy_policy' %}}" target="_blank" rel="noopener noreferrer" 
+                          class="external-link">
                             {_("Privacy Policy")}
+                            <span class="external-icon">
+                                <svg viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z"/>
+                                    <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"/>
+                                </svg>
+                            </span>
                           </a>
                         </span>
                         """),
