@@ -195,7 +195,13 @@
   }
 
   .team__image {
-    height: 260px;
+    height: 340px;
+  }
+}
+
+@media (max-width: 800px) {
+  .team__image {
+    height: 280px;
   }
 }
 

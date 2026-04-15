@@ -471,6 +471,16 @@ body.lightbox-open {
     left: 20px;
     right: 20px;
   }
+
+  .projects__image {
+    height: 400px;
+  }
+}
+
+@media (max-width: 800px) {
+  .projects__image {
+    height: 320px;
+  }
 }
 
 @media (max-width: 640px) {
