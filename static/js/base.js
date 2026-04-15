@@ -34,12 +34,64 @@ document.addEventListener("DOMContentLoaded", () => {
 
     navLinks.forEach((link) => {
       const href = link.getAttribute("href");
-      link.classList.toggle("is-active", href === `#${currentId}`);
+      const targetId = href.split("#")[1];
+      link.classList.toggle("is-active", targetId === currentId);
+    });
+  }
+
+  function setupSmoothScroll() {
+    document.querySelectorAll('a[href*="#"]').forEach((anchor) => {
+      anchor.addEventListener("click", function (e) {
+        const href = this.getAttribute("href");
+        if (!href.includes("#")) return;
+
+        const [path, id] = href.split("#");
+
+        if (path && path !== window.location.pathname && path !== "") return;
+
+        const target = document.getElementById(id);
+        if (!target) return;
+
+        e.preventDefault();
+
+        const headerOffset = siteHeader ? siteHeader.offsetHeight : 80;
+        const start = window.scrollY;
+        const end =
+          target.getBoundingClientRect().top +
+          window.scrollY -
+          headerOffset;
+
+        const distance = end - start;
+        const duration = 500;
+
+        let startTime = null;
+
+        function easeOutQuad(t) {
+          return t * (2 - t);
+        }
+
+        function animateScroll(timestamp) {
+          if (!startTime) startTime = timestamp;
+
+          const elapsed = timestamp - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const eased = easeOutQuad(progress);
+
+          window.scrollTo(0, start + distance * eased);
+
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          }
+        }
+
+        requestAnimationFrame(animateScroll);
+      });
     });
   }
 
   handleHeaderState();
   setActiveNavLink();
+  setupSmoothScroll();
 
   window.addEventListener("scroll", () => {
     handleHeaderState();
