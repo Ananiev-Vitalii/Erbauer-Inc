@@ -61,7 +61,6 @@
   grid-template-rows: minmax(0, 1fr) auto;
   row-gap: 24px;
   padding-top: 24px;
-  box-sizing: border-box;
 }
 
 .services__image {

@@ -8,12 +8,10 @@
 
   --slate-950: #0b1220;
   --slate-900: #101827;
-  --slate-800: #1d293d;
   --slate-700: #334155;
   --slate-600: #475569;
   --slate-300: #cbd5e1;
   --slate-200: #e2e8f0;
-  --slate-100: #f1f5f9;
   --slate-50: #f8fafc;
 
   --yellow-300: #ffe98a;
@@ -30,9 +28,7 @@
   --shadow-md: 0 18px 40px rgba(15, 23, 42, 0.1);
   --shadow-lg: 0 24px 60px rgba(15, 23, 42, 0.18);
 
-  --radius: 18px;
   --radius-lg: 24px;
-  --radius-xl: 30px;
 
   --container: 1280px;
   --header-h: 84px;
@@ -88,48 +84,6 @@ h4 {
 
 p {
   margin: 0 0 18px;
-}
-
-.centered {
-  text-align: center;
-}
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  min-height: 56px;
-  padding: 14px 28px;
-  border-radius: 14px;
-  border: 2px solid transparent;
-  font-weight: 800;
-  transition: 0.28s ease;
-  cursor: pointer;
-}
-
-.btn:hover {
-  transform: translateY(-2px) scale(1.01);
-}
-
-.btn-primary {
-  color: #111827;
-  background: var(--gradient-main);
-  box-shadow: 0 14px 30px rgba(249, 115, 22, 0.22);
-}
-
-.btn-primary:hover {
-  box-shadow: 0 20px 40px rgba(249, 115, 22, 0.32);
-}
-
-.btn-ghost {
-  color: var(--white);
-  border-color: rgba(250, 204, 21, 0.8);
-  background: rgba(255, 255, 255, 0.03);
-}
-
-.btn-ghost:hover {
-  background: rgba(250, 204, 21, 0.08);
 }
 
 .site-header {
@@ -390,33 +344,6 @@ p {
   transform: translateY(0);
 }
 
-
-/* external */
-.external-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  color: var(--orange-400);
-}
-
-.external-icon {
-  display: inline-flex;
-  width: 14px;
-  height: 14px;
-  transition: all 0.2s ease;
-}
-
-.external-icon svg {
-  width: 100%;
-  height: 100%;
-  fill: currentColor;
-}
-
-.external-link:hover .external-icon {
-  transform: translate(1px, -1px);
-}
-
-/* media */
 @media (max-width: 980px) {
   .main-nav {
     display: none;
@@ -446,9 +373,9 @@ p {
   }
 
   .brand-text {
-  display: inline;
-  font-size: 24px;
- }
+    display: inline;
+    font-size: 24px;
+  }
 
   .socials {
     flex-direction: column;
