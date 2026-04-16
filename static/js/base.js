@@ -5,6 +5,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll(".main-nav a, .mobile-nav a");
   const sections = document.querySelectorAll("section[id]");
 
+  const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
+  const homePath = "/";
+
+  function normalizePath(path) {
+    return (path || "").replace(/\/+$/, "") || "/";
+  }
+
   function handleHeaderState() {
     if (!siteHeader) return;
 
@@ -16,7 +23,14 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function setActiveNavLink() {
-    if (!sections.length || !navLinks.length) return;
+    if (!navLinks.length) return;
+
+    const isHomePage = currentPath === homePath;
+
+    if (!isHomePage || !sections.length) {
+      navLinks.forEach((link) => link.classList.remove("is-active"));
+      return;
+    }
 
     let currentId = "";
 
@@ -28,26 +42,37 @@ document.addEventListener("DOMContentLoaded", () => {
         window.scrollY >= sectionTop &&
         window.scrollY < sectionTop + sectionHeight
       ) {
-        currentId = section.getAttribute("id");
+        currentId = section.getAttribute("id") || "";
       }
     });
 
     navLinks.forEach((link) => {
-      const href = link.getAttribute("href");
-      const targetId = href.split("#")[1];
-      link.classList.toggle("is-active", targetId === currentId);
+      const href = link.getAttribute("href") || "";
+      const hashIndex = href.indexOf("#");
+      const targetId = hashIndex >= 0 ? href.slice(hashIndex + 1) : "";
+      link.classList.toggle(Boolean(currentId) && targetId === currentId);
     });
   }
 
   function setupSmoothScroll() {
     document.querySelectorAll('a[href*="#"]').forEach((anchor) => {
       anchor.addEventListener("click", function (e) {
-        const href = this.getAttribute("href");
-        if (!href.includes("#")) return;
+        const href = this.getAttribute("href") || "";
+        const hashIndex = href.indexOf("#");
 
-        const [path, id] = href.split("#");
+        if (hashIndex === -1) return;
 
-        if (path && path !== window.location.pathname && path !== "") return;
+        const path = normalizePath(href.slice(0, hashIndex));
+        const id = href.slice(hashIndex + 1);
+
+        if (!id) return;
+
+        const isSamePage =
+          path === "" ||
+          path === currentPath ||
+          (currentPath === homePath && path === "");
+
+        if (!isSamePage) return;
 
         const target = document.getElementById(id);
         if (!target) return;
@@ -85,6 +110,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         requestAnimationFrame(animateScroll);
+
+        if (mobileNav && mobileNav.classList.contains("is-open")) {
+          mobileNav.classList.remove("is-open");
+          if (menuToggle) {
+            menuToggle.setAttribute("aria-expanded", "false");
+          }
+        }
       });
     });
   }

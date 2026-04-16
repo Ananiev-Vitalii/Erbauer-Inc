@@ -9,7 +9,13 @@ from main.services.rate_limit import (
 )
 from main.services.email import send_contact_email
 from main.forms import ContactForm
-from main.models import CompanyProfile, Service, TeamMember, Project
+from main.models import (
+    CompanyProfile,
+    Service,
+    TeamMember,
+    Project,
+    ProjectCategory,
+)
 
 
 class HomePageView(generic.TemplateView):
@@ -73,3 +79,33 @@ class ContactFormView(generic.FormView):
 
     def form_invalid(self, form):
         return self.render_to_response(self.get_context_data(form=form))
+
+
+class ProjectDetailView(generic.DetailView):
+    model = Project
+    template_name = "main/project_detail.html"
+    context_object_name = "project"
+    queryset = Project.objects.prefetch_related("images")
+
+
+class ProjectListView(generic.ListView):
+    model = Project
+    template_name = "main/project_list.html"
+    context_object_name = "projects"
+    paginate_by = 6
+
+    @property
+    def current_category(self):
+        category = self.request.GET.get("category")
+        return category if category in ProjectCategory.values else "all"
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.current_category != "all":
+            queryset = queryset.filter(category=self.current_category)
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["current_category"] = self.current_category
+        return context

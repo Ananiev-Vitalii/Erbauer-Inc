@@ -6,6 +6,7 @@ def company_base(request):
         "company_base": CompanyProfile.objects.filter(is_active=True)
         .only(
             "name",
+            "favicon",
             "logo",
             "email",
             "footer_description",

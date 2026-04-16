@@ -52,7 +52,7 @@
                 </span>
               </button>
 
-              <a class="projects__image-link" href="#">
+              <a class="projects__image-link" href="{% url 'main:project_detail' project.pk %}">
                 <span>{% trans "View details" %}</span>
                 <span class="projects__image-link-arrow">→</span>
               </a>
@@ -70,7 +70,7 @@
     </div>
 
     <div class="projects__cta centered reveal">
-      <a class="projects__cta-btn" href="#">
+      <a class="projects__cta-btn" href="{% url 'main:project_list' %}">
         {% trans "View all projects" %}
       </a>
     </div>
