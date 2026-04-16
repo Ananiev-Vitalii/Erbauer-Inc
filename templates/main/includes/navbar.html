@@ -5,18 +5,20 @@
     <a class="brand" href="{% url 'main:home' %}#hero" aria-label="{{ company_base.name|default:'Erbauer' }}">
       {% if company_base and company_base.logo %}
       <span class="brand-logo-wrap">
-      <img
-              src="{{ company_base.logo.url }}"
-              alt="{{ company_base.name|default:'Erbauer' }} logo"
-              class="brand-logo"
-      ></span>
+        <img
+                src="{{ company_base.logo.url }}"
+                alt="{{ company_base.name|default:'Erbauer' }} logo"
+                class="brand-logo"
+        >
+      </span>
       {% else %}
       <span class="brand-logo-wrap">
-          <img
-                  src="{% static 'img/logo.png' %}"
-                  alt="{{ company_base.name|default:'Erbauer' }} logo"
-                  class="brand-logo"
-          ></span>
+        <img
+                src="{% static 'img/logo.png' %}"
+                alt="{{ company_base.name|default:'Erbauer' }} logo"
+                class="brand-logo"
+        >
+      </span>
       {% endif %}
       <span class="brand-text text-navbar">
         {{ company_base.name|default:"Erbauer" }}
@@ -30,6 +32,21 @@
       <a href="{% url 'main:home' %}#projects">{% trans "Projects" %}</a>
       <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
       <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
+
+      {% if user.is_staff %}
+      <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
+        {% trans "Admin panel" %}
+      </a>
+      {% endif %}
+
+      {% if user.is_authenticated %}
+      <form method="post" action="{% url 'user:logout' %}" class="nav-auth-form">
+        {% csrf_token %}
+        <button type="submit" class="nav-auth-button">{% trans "Log out" %}</button>
+      </form>
+      {% else %}
+      <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
+      {% endif %}
     </nav>
 
     <button
@@ -50,5 +67,20 @@
     <a href="{% url 'main:home' %}#projects">{% trans "Projects" %}</a>
     <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
     <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
+
+    {% if user.is_staff %}
+    <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
+      {% trans "Admin panel" %}
+    </a>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+    <form method="post" action="{% url 'user:logout' %}" class="mobile-nav-auth-form">
+      {% csrf_token %}
+      <button type="submit" class="mobile-nav-auth-button">{% trans "Log out" %}</button>
+    </form>
+    {% else %}
+    <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
+    {% endif %}
   </div>
 </header>

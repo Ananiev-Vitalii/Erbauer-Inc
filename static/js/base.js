@@ -5,8 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const navLinks = document.querySelectorAll(".main-nav a, .mobile-nav a");
   const sections = document.querySelectorAll("section[id]");
 
-  const currentPath = window.location.pathname.replace(/\/+$/, "") || "/";
-  const homePath = "/";
+  const currentPath = normalizePath(window.location.pathname);
+  const homePath = normalizePath("/");
 
   function normalizePath(path) {
     return (path || "").replace(/\/+$/, "") || "/";
@@ -22,35 +22,58 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  function clearActiveNavLinks() {
+    navLinks.forEach((link) => link.classList.remove("is-active"));
+  }
+
   function setActiveNavLink() {
     if (!navLinks.length) return;
 
     const isHomePage = currentPath === homePath;
 
-    if (!isHomePage || !sections.length) {
-      navLinks.forEach((link) => link.classList.remove("is-active"));
-      return;
-    }
+    clearActiveNavLinks();
 
-    let currentId = "";
+    if (isHomePage && sections.length) {
+      let currentId = "";
 
-    sections.forEach((section) => {
-      const sectionTop = section.offsetTop - 120;
-      const sectionHeight = section.offsetHeight;
+      sections.forEach((section) => {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.offsetHeight;
 
-      if (
-        window.scrollY >= sectionTop &&
-        window.scrollY < sectionTop + sectionHeight
-      ) {
-        currentId = section.getAttribute("id") || "";
+        if (
+          window.scrollY >= sectionTop &&
+          window.scrollY < sectionTop + sectionHeight
+        ) {
+          currentId = section.getAttribute("id") || "";
+        }
+      });
+
+      if (currentId) {
+        navLinks.forEach((link) => {
+          const href = link.getAttribute("href") || "";
+          const hashIndex = href.indexOf("#");
+          const targetId = hashIndex >= 0 ? href.slice(hashIndex + 1) : "";
+
+          if (targetId === currentId) {
+            link.classList.add("is-active");
+          }
+        });
+
+        return;
       }
-    });
+    }
 
     navLinks.forEach((link) => {
       const href = link.getAttribute("href") || "";
       const hashIndex = href.indexOf("#");
-      const targetId = hashIndex >= 0 ? href.slice(hashIndex + 1) : "";
-      link.classList.toggle(Boolean(currentId) && targetId === currentId);
+      const rawPath = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
+      const linkPath = normalizePath(rawPath);
+
+      if (!rawPath) return;
+
+      if (linkPath === currentPath) {
+        link.classList.add("is-active");
+      }
     });
   }
 
@@ -62,15 +85,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (hashIndex === -1) return;
 
-        const path = normalizePath(href.slice(0, hashIndex));
+        const rawPath = href.slice(0, hashIndex);
+        const path = normalizePath(rawPath);
         const id = href.slice(hashIndex + 1);
 
         if (!id) return;
 
-        const isSamePage =
-          path === "" ||
-          path === currentPath ||
-          (currentPath === homePath && path === "");
+        const isSamePage = rawPath === "" || path === currentPath;
 
         if (!isSamePage) return;
 
