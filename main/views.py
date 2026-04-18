@@ -1,5 +1,7 @@
 from typing import Any
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.views import generic
 
 from main.services.rate_limit import (
@@ -18,6 +20,7 @@ from main.models import (
 )
 
 
+@method_decorator(cache_page(60 * 1440), name="dispatch")
 class HomePageView(generic.TemplateView):
     template_name = "main/home.html"
     services_page_size = 6
