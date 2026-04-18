@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 load_dotenv(BASE_DIR / ".env")
 
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-DEBUG = os.environ.get("DJANGO_DEBUG", "") != "False"
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
+DEBUG = os.getenv("DJANGO_DEBUG", "") != "False"
 ALLOWED_HOSTS = ["127.0.0.1"]
 
 INSTALLED_APPS = [
@@ -119,9 +119,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Email
 EMAIL_BACKEND = "anymail.backends.brevo.EmailBackend"
 ANYMAIL = {
-    "BREVO_API_KEY": os.environ.get("BREVO_API_KEY"),
+    "BREVO_API_KEY": os.getenv("BREVO_API_KEY"),
 }
-DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL")
+DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 COMPANY_CONTACT_EMAIL = os.getenv("COMPANY_CONTACT_EMAIL")
 
@@ -163,3 +163,6 @@ AXES_USERNAME_FORM_FIELD = "username"
 # Cloudflare Turnstile captcha services/turnstile
 CF_TURNSTILE_SITE_KEY = os.getenv("CF_TURNSTILE_SITE_KEY", "")
 CF_TURNSTILE_SECRET_KEY = os.getenv("CF_TURNSTILE_SECRET_KEY", "")
+
+# Cache
+CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", 900))

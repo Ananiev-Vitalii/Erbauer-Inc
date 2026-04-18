@@ -1,18 +1,7 @@
-from .models import CompanyProfile
+from main.services.cache import get_company_base_cached
 
 
-def company_base(request):
+def company_base(request) -> dict:
     return {
-        "company_base": CompanyProfile.objects.filter(is_active=True)
-        .only(
-            "name",
-            "favicon",
-            "logo",
-            "email",
-            "footer_description",
-            "facebook_url",
-            "instagram_url",
-            "telegram_url",
-        )
-        .first()
+        "company_base": get_company_base_cached(),
     }

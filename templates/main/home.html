@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static %}
+{% load i18n static cache %}
 
 {% block title %}{{ company_profile.name|default:"Erbauer" }}{% endblock title %}
 {% block extra_css %}
@@ -14,11 +14,15 @@
 {% block content_wrapper %}
 <div class="page-noise"></div>
 
+{% cache 3600 homepage_static LANGUAGE_CODE %}
+
 {% include "main/includes/sections/hero.html" %}
 {% include "main/includes/sections/services.html" %}
 {% include "main/includes/sections/about.html" %}
 {% include "main/includes/sections/projects.html" %}
 {% include "main/includes/sections/team.html" %}
+{% endcache %}
+
 {% include "main/includes/sections/contacts.html" %}
 
 <button class="back-to-top" id="backToTop" aria-label="{% trans 'Back to top' %}">

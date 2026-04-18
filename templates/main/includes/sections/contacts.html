@@ -1,7 +1,8 @@
-{% load crispy_forms_tags i18n %}
+{% load crispy_forms_tags i18n cache %}
 
 <section class="contacts" id="contacts">
   <div class="container contacts__layout">
+    {% cache 3600 contacts_info LANGUAGE_CODE %}
     <div class="contacts__info reveal">
       <p class="contacts__kicker">{% trans "Get in Touch" %}</p>
       <h2 class="contacts__title">{% trans "Contact Us" %}</h2>
@@ -36,6 +37,7 @@
         </article>
       </div>
     </div>
+    {% endcache %}
 
     <div class="contacts__form-wrap reveal" data-delay="120" id="contactFormWrapper">
       {% partialdef contact-form inline %}

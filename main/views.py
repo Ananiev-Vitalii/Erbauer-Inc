@@ -1,7 +1,5 @@
 from typing import Any
 
-from django.utils.decorators import method_decorator
-from django.views.decorators.cache import cache_page
 from django.views import generic
 
 from main.services.rate_limit import (
@@ -11,16 +9,19 @@ from main.services.rate_limit import (
 )
 from main.services.email import send_contact_email
 from main.forms import ContactForm
+from main.services.cache import (
+    get_homepage_company_profile_cached,
+    get_homepage_projects_cached,
+    get_homepage_services_cached,
+    get_homepage_team_members_cached,
+)
 from main.models import (
-    CompanyProfile,
     Service,
-    TeamMember,
     Project,
     ProjectCategory,
 )
 
 
-@method_decorator(cache_page(60 * 1440), name="dispatch")
 class HomePageView(generic.TemplateView):
     template_name = "main/home.html"
     services_page_size = 6
@@ -34,19 +35,14 @@ class HomePageView(generic.TemplateView):
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
-        company_profile = CompanyProfile.objects.filter(is_active=True).first()
-        services = list(Service.objects.all())
-        projects = Project.objects.all()[:4]
-        team_members = TeamMember.objects.filter(is_visible=True).select_related(
-            "employee", "employee__position"
-        )[:8]
+        services = get_homepage_services_cached()
 
         context.update(
             {
-                "company_profile": company_profile,
+                "company_profile": get_homepage_company_profile_cached(),
                 "service_pages": self.get_service_pages(services),
-                "projects": projects,
-                "team_members": team_members,
+                "projects": get_homepage_projects_cached(),
+                "team_members": get_homepage_team_members_cached(),
                 "form": ContactForm(),
             }
         )
