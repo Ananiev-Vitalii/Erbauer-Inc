@@ -58,7 +58,8 @@
   min-height: 0;
   height: 100%;
   display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-content: end;
   row-gap: 24px;
   padding-top: 24px;
 }
@@ -66,8 +67,8 @@
 .services__image {
   width: 100%;
   min-height: 0;
-  height: 100%;
-  align-self: stretch;
+  height: auto;
+  align-self: end;
 }
 
 .services__image-frame {
@@ -90,8 +91,8 @@
 
 .services__image-frame--md {
   width: 100%;
-  min-height: 420px;
-  height: 100%;
+  height: 560px;
+  max-height: 560px;
 }
 
 .services__image-img {
@@ -267,10 +268,6 @@
   color: var(--muted);
   line-height: 1.6;
   white-space: normal;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
 }
 
 .services__icon {
@@ -367,6 +364,7 @@
     width: 100%;
     min-height: 420px;
     height: 420px;
+    max-height: 420px;
   }
 
   .services__slider {
@@ -417,6 +415,7 @@
     width: 100%;
     min-height: 260px;
     height: 260px;
+    max-height: 260px;
   }
 
   .services__card {

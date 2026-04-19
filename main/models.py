@@ -111,7 +111,7 @@ class TeamMember(models.Model):
 
 class Service(models.Model):
     title = models.CharField(_("Title"), max_length=50, unique=True)
-    description = models.TextField(_("Description"), max_length=160, blank=True)
+    description = models.TextField(_("Description"), max_length=200, blank=True)
     icon = models.ImageField(
         _("Icon"),
         upload_to=service_icon_upload_path,
