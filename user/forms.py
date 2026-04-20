@@ -155,11 +155,12 @@ class ResendVerificationEmailForm(BaseStyledForm, forms.Form):
 
     def __init__(self, *args, **kwargs):
         self.service_message = kwargs.pop("service_message", "")
+        self.success_message = kwargs.pop("success_message", "")
         super().__init__(*args, **kwargs)
         self.init_form_helper()
         self.helper.layout = Layout(
             HTML(
-                '{% include "forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
             ),
             Field("email"),
             self.get_turnstile_html(),

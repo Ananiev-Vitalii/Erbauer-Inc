@@ -1,7 +1,6 @@
 from django.views import generic
 from django.conf import settings
 from django.db import transaction
-from django.contrib import messages
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
@@ -12,8 +11,9 @@ from user import forms
 from user import mixins
 from user.services.rate_limits.resend_verification import (
     get_resend_verification_cooldown_message,
-    get_resend_verification_state,
+    get_resend_verification_rate_limit_state,
     register_resend_verification_attempt,
+    get_resend_verification_success_message,
 )
 
 from user.services.rate_limits.password_reset import (
@@ -31,7 +31,7 @@ from .services.login_lockout import (
     is_locked_after_failed_login,
 )
 
-from user.services.registration_rate_limit import (
+from user.services.rate_limits.registration import (
     get_registration_cooldown_message,
     get_registration_rate_limit_state,
     register_registration_attempt,
@@ -46,8 +46,6 @@ User = get_user_model()
 
 PASSWORD_RESET_ATTEMPTS = settings.PASSWORD_RESET_MAX_ATTEMPTS
 PASSWORD_RESET_COOLDOWN = settings.PASSWORD_RESET_COOLDOWN_SECONDS
-VERIFICATION_COOLDOWN = settings.RESEND_VERIFICATION_COOLDOWN_SECONDS
-VERIFICATION_ATTEMPTS = settings.RESEND_VERIFICATION_MAX_ATTEMPTS
 
 
 # <-- Register -->
@@ -121,7 +119,6 @@ class UserRegistrationView(
 
 
 class ConfirmUser(
-    mixins.ServiceMessageFormMixin,
     mixins.TurnstileMixin,
     mixins.AnonymousRequiredMixin,
     generic.FormView,
@@ -130,7 +127,7 @@ class ConfirmUser(
     1) Даем доступ к странице только неавторизованым пользователям
     2) Ограничиваем количество повторных отправок письма по полям: ["ip", "email"]
     3) Повторная отправка только если пользователь is_active=False
-    4) Используем messages в шаблонах для уведомлений
+    4) Показываем service/success message прямо в форме
     5) Turnstile captcha
     """
 
@@ -143,33 +140,26 @@ class ConfirmUser(
             return self.handle_turnstile_failure(form)
 
         email = form.cleaned_data["email"]
-        state = get_resend_verification_state(self.request, email)
 
-        if state["remaining_minutes"] > 0:
-            return self.form_invalid_with_message(
-                get_resend_verification_cooldown_message(state["remaining_minutes"])
-            )
+        state = get_resend_verification_rate_limit_state(self.request, email)
+        if state.blocked:
+            form.service_message = get_resend_verification_cooldown_message(state)
+            return self.render_to_response(self.get_context_data(form=form))
+
+        state = register_resend_verification_attempt(self.request, email)
+        if state.blocked:
+            form.service_message = get_resend_verification_cooldown_message(state)
+            return self.render_to_response(self.get_context_data(form=form))
 
         user = User.objects.filter(email__iexact=email, is_active=False).first()
-
-        register_resend_verification_attempt(
-            request=self.request,
-            email=email,
-            attempts_limit=VERIFICATION_ATTEMPTS,
-            cooldown_seconds=VERIFICATION_COOLDOWN,
-        )
 
         if user:
             send_verification_email(self.request, user)
 
-        messages.success(
-            self.request,
-            _(
-                "If this email address is associated with an unverified account, "
-                "we have sent a new verification email."
-            ),
+        new_form = self.get_form_class()(
+            success_message=get_resend_verification_success_message()
         )
-        return redirect("user:confirm_user")
+        return self.render_to_response(self.get_context_data(form=new_form))
 
 
 @transaction.atomic
