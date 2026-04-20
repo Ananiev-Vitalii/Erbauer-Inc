@@ -9,6 +9,12 @@ from django.utils.translation import gettext_lazy as _
 
 from user import forms
 from user import mixins
+from user.services.rate_limits.login import (
+    get_login_rate_limit_state,
+    get_login_cooldown_message,
+    reset_login_rate_limit,
+    register_login_attempt,
+)
 from user.services.rate_limits.resend_verification import (
     get_resend_verification_cooldown_message,
     get_resend_verification_rate_limit_state,
@@ -22,14 +28,6 @@ from user.services.rate_limits.password_reset import (
     get_password_reset_cooldown_message,
 )
 
-from .services.login_lockout import (
-    clear_login_email,
-    full_reset_lockout_state,
-    get_lockout_data,
-    remember_login_email,
-    start_fixed_lockout,
-    is_locked_after_failed_login,
-)
 
 from user.services.rate_limits.registration import (
     get_registration_cooldown_message,
@@ -190,22 +188,13 @@ class InvalidVerify(generic.TemplateView):
 
 # < -- Login -->
 class LoginUser(
-    mixins.ServiceMessageFormMixin, mixins.TurnstileMixin, auth_views.LoginView
+    mixins.TurnstileMixin,
+    auth_views.LoginView,
 ):
     """
-    Django login + CustomForm + Django axes + Turnstile captcha
-
-    Логика Django axes:
-    1) Блокировка срабатывает после 3 ошибок:
-       - либо по одному IP
-       - либо по одному username
-    2) После успешного логина сбрасываются обе оси:
-       - username
-       - ip
-    3) После истечения таймаута также сбрасываются обе оси:
-       - username
-       - ip
-    4) Во время блокировки запросы не выполняются
+    1) Лимитируем попытки логина по полям: ["ip", "email"]
+    2) После успешного логина сбрасываем счетчики
+    3) Turnstile captcha
     """
 
     template_name = "registration/login.html"
@@ -213,40 +202,34 @@ class LoginUser(
     redirect_authenticated_user = True
     turnstile_error_message = _("Please confirm that you are not a robot.")
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["service_message"] = get_lockout_data(self.request)["message"]
-        return kwargs
-
-    def _handle_successful_login(self, request, response):
-        full_reset_lockout_state(request)
-        clear_login_email(request)
-        return response
-
-    def _handle_failed_login(self, request, response):
-        if not is_locked_after_failed_login(request):
-            return response
-
-        start_fixed_lockout(request)
-        lockout = get_lockout_data(request)
-        return self.form_invalid_with_message(lockout["message"])
-
     def post(self, request, *args, **kwargs):
-        remember_login_email(request)
-
-        lockout = get_lockout_data(request)
-        if lockout["is_locked"]:
-            return self.form_invalid_with_message(lockout["message"])
+        state = get_login_rate_limit_state(request)
+        if state.blocked:
+            form = self.authentication_form(
+                request=request,
+                data=request.POST or None,
+                service_message=get_login_cooldown_message(state),
+            )
+            return self.render_to_response(self.get_context_data(form=form))
 
         if not self.is_turnstile_valid():
-            return self.handle_turnstile_failure()
+            form = self.authentication_form(request=request, data=request.POST or None)
+            return self.handle_turnstile_failure(form)
 
-        response = super().post(request, *args, **kwargs)
+        return super().post(request, *args, **kwargs)
 
-        if request.user.is_authenticated:
-            return self._handle_successful_login(request, response)
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        reset_login_rate_limit(self.request)
+        return response
 
-        return self._handle_failed_login(request, response)
+    def form_invalid(self, form):
+        state = register_login_attempt(self.request)
+
+        if state.blocked:
+            form.service_message = get_login_cooldown_message(state)
+
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 # <-- Password reset -->

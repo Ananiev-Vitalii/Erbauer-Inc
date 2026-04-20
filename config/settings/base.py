@@ -14,7 +14,6 @@ INSTALLED_APPS = [
     "main",
     "user",
     "account",
-    "axes",
     "anymail",
     "crispy_forms",
     "crispy_bootstrap5",
@@ -144,21 +143,10 @@ REGISTRATION_ATTEMPTS = int(os.getenv("REGISTRATION_ATTEMPTS", 10))
 REGISTRATION_WINDOW = int(os.getenv("REGISTRATION_WINDOW", 120))
 REGISTRATION_COOLDOWN = int(os.getenv("REGISTRATION_COOLDOWN", 300))
 
-# Django-axes services/login_lockout
-LOGIN_LOCKOUT_MINUTES = int(os.getenv("LOGIN_LOCKOUT_MINUTES", 5))
-LOGIN_FAILURE_LIMIT = int(os.getenv("LOGIN_FAILURE_LIMIT", 5))
-
-AUTHENTICATION_BACKENDS = [
-    "axes.backends.AxesStandaloneBackend",
-    "django.contrib.auth.backends.ModelBackend",
-]
-
-AXES_FAILURE_LIMIT = LOGIN_FAILURE_LIMIT
-AXES_COOLOFF_TIME = None
-AXES_RESET_ON_SUCCESS = False
-AXES_USE_ATTEMPT_EXPIRATION = False
-AXES_LOCKOUT_PARAMETERS = ["username", "ip_address"]
-AXES_USERNAME_FORM_FIELD = "username"
+# services/rate_limits/login
+LOGIN_ATTEMPTS = int(os.getenv("LOGIN_ATTEMPTS", 10))
+LOGIN_WINDOW = int(os.getenv("LOGIN_WINDOW", 120))
+LOGIN_COOLDOWN = int(os.getenv("LOGIN_COOLDOWN", 300))
 
 # Cloudflare Turnstile captcha services/turnstile
 CF_TURNSTILE_SITE_KEY = os.getenv("CF_TURNSTILE_SITE_KEY", "")

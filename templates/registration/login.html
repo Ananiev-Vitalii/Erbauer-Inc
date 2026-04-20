@@ -1,48 +1,50 @@
 {% extends "base.html" %}
 {% load static crispy_forms_tags i18n %}
 
-{% block title %}
+{% block title %}{{ company_base.name|default:"Erbauer" }} | {% trans "Log in" %}{% endblock title %}
 
-{% endblock title %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/user/user_base.css' %}">
+<link rel="stylesheet" href="{% static 'css/user/user_forms.css' %}">
+{% endblock extra_css %}
 
-
-{% block content %}
-
+{% block content_wrapper %}
 <section class="auth-page">
   <div class="container">
-    <div class="row justify-content-center">
-      <div class="col-12 col-sm-10 col-md-8 col-lg-6 col-xl-4">
-        <div class="card p-4 p-md-5">
-          <h1 class="h4 text-center mb-4">{% trans "Log in" %}</h1>
+    <div class="auth-shell">
+      <div class="auth-shell__head">
+        <p class="auth-shell__kicker">{% trans "Account" %}</p>
+        <h1 class="auth-shell__title">{% trans "Log in" %}</h1>
+        <p class="auth-shell__lead">
+          {% trans "Sign in to access your account." %}
+        </p>
+      </div>
 
-          {% crispy form %}
+      <div class="auth-form-wrap">
+        {% crispy form %}
 
-          <div class="auth-links mt-3">
-            <p class="small mb-2 text-center">
-              <a href="{% url 'user:password-reset' %}" class="link-secondary">
-                {% trans "Forgot password?" %}
-              </a>
-            </p>
+        <div class="auth-links">
+          <p class="mb-2">
+            <a href="{% url 'user:password-reset' %}">
+              {% trans "Forgot password?" %}
+            </a>
+          </p>
 
-            <p class="small mb-0 text-center text-muted">
-              {% trans "Don’t have an account?" %}
-              <a href="{% url 'user:register' %}" class="link-primary">
-                {% trans "Sign up" %}
-              </a>
-            </p>
-          </div>
+          <p>
+            {% trans "Don’t have an account?" %}
+            <a href="{% url 'user:register' %}">
+              {% trans "Sign up" %}
+            </a>
+          </p>
         </div>
       </div>
     </div>
   </div>
 </section>
-{% endblock content %}
+{% endblock content_wrapper %}
 
-{% block js %}
-<!-- Cloudflare Turnstile captcha-->
-<script src="{% static 'js/turnstile_captcha_button.js' %}"></script>
+{% block extra_js %}
+<script src="{% static 'js/user/turnstile_captcha_button.js' %}"></script>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-
-<!-- Password toggle -->
-<script src="{% static 'js/password-toggle.js' %}" defer></script>
-{% endblock js %}
+<script src="{% static 'js/user/password-toggle.js' %}" defer></script>
+{% endblock extra_js %}
