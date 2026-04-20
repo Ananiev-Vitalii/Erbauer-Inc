@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-{% load i18n static %}
+{% load i18n %}
 
 <html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
 <head>
@@ -17,22 +17,14 @@
       <table width="600" cellpadding="0" cellspacing="0"
              style="background:#ffffff; border-radius:12px; overflow:hidden; box-shadow:0 10px 25px rgba(0,0,0,0.08);">
 
-        <!-- header -->
         <tr>
           <td style="background:#0057b7; padding:20px; text-align:center;">
-
-            {% if company_base and company_base.logo %}
-            <img src="{{ company_base.logo.url }}" alt="Logo" style="max-height:40px;">
-            {% else %}
             <span style="color:#ffffff; font-size:20px; font-weight:bold;">
               {{ company_base.name|default:"Company" }}
             </span>
-            {% endif %}
-
           </td>
         </tr>
 
-        <!-- content -->
         <tr>
           <td style="padding:30px;">
 
@@ -59,7 +51,6 @@
           </td>
         </tr>
 
-        <!-- footer -->
         <tr>
           <td style="background:#ffd700; padding:20px; text-align:center; font-size:12px; color:#111827; font-weight:600;">
             © {% now "Y" %} {{ company_base.name|default:"Company" }}

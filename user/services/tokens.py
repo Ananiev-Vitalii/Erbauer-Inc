@@ -26,7 +26,7 @@ def build_verification_context(request, user):
     current_site = get_current_site(request)
 
     return {
-        "config": user,
+        "user": user,
         "domain": current_site.domain,
         "uid": urlsafe_base64_encode(force_bytes(user.pk)),
         "token": token_generator.make_token(user),

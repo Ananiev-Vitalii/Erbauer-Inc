@@ -6,7 +6,7 @@ from core.services.email import EmailPayload, send_html_email
 
 
 def send_contact_email(data: dict) -> None:
-    company = CompanyProfile.objects.filter(is_active=True).only("name", "logo").first()
+    company = CompanyProfile.objects.filter(is_active=True).only("name").first()
 
     context = {
         **data,
