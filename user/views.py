@@ -32,10 +32,11 @@ from .services.login_lockout import (
 )
 
 from user.services.registration_rate_limit import (
-    is_blocked,
-    registration_attempt,
-    cooldown_message,
+    get_registration_cooldown_message,
+    get_registration_rate_limit_state,
+    register_registration_attempt,
 )
+
 from user.services.email import send_verification_email
 from user.services.tokens import get_user_from_verification_data
 
@@ -47,13 +48,10 @@ PASSWORD_RESET_ATTEMPTS = settings.PASSWORD_RESET_MAX_ATTEMPTS
 PASSWORD_RESET_COOLDOWN = settings.PASSWORD_RESET_COOLDOWN_SECONDS
 VERIFICATION_COOLDOWN = settings.RESEND_VERIFICATION_COOLDOWN_SECONDS
 VERIFICATION_ATTEMPTS = settings.RESEND_VERIFICATION_MAX_ATTEMPTS
-REGISTRATION_ATTEMPTS = settings.REGISTRATION_ATTEMPTS_LIMIT
-REGISTRATION_COOLDOWN = settings.REGISTRATION_COOLDOWN_SECONDS
 
 
 # <-- Register -->
 class UserRegistrationView(
-    mixins.ServiceMessageFormMixin,
     mixins.TurnstileMixin,
     mixins.AnonymousRequiredMixin,
     generic.CreateView,
@@ -72,13 +70,24 @@ class UserRegistrationView(
     turnstile_error_message = _("The captcha check failed. Please try again.")
 
     def post(self, request, *args, **kwargs):
-        blocked, remaining_minutes = is_blocked(request)
-        if blocked:
-            return self.form_invalid_with_message(cooldown_message(remaining_minutes))
+        state = get_registration_rate_limit_state(request)
+        if state.blocked:
+            self.object = None
+            form = self.get_form_class()(
+                request.POST or None,
+                service_message=get_registration_cooldown_message(state),
+            )
+            return self.render_to_response(self.get_context_data(form=form))
+
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
         if not self.is_turnstile_valid():
+            state = register_registration_attempt(self.request)
+
+            if state.blocked:
+                form.service_message = get_registration_cooldown_message(state)
+
             return self.handle_turnstile_failure(form)
 
         employee = form.employee
@@ -102,14 +111,13 @@ class UserRegistrationView(
         return redirect("user:confirm_user")
 
     def form_invalid(self, form):
-        blocked, _ = is_blocked(self.request)
-        if not blocked:
-            registration_attempt(
-                request=self.request,
-                attempts_limit=REGISTRATION_ATTEMPTS,
-                cooldown_seconds=REGISTRATION_COOLDOWN,
-            )
-        return super().form_invalid(form)
+        self.object = None
+        state = register_registration_attempt(self.request)
+
+        if state.blocked:
+            form.service_message = get_registration_cooldown_message(state)
+
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 class ConfirmUser(

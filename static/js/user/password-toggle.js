@@ -1,18 +1,15 @@
-document.addEventListener('click', function (e) {
-  const btn = e.target.closest('.password-toggle');
+document.addEventListener("click", function (e) {
+  const btn = e.target.closest(".password-toggle");
   if (!btn) return;
 
-  const id = btn.getAttribute('data-target');
-  const input = document.getElementById(id);
+  const inputId = btn.getAttribute("data-target");
+  const input = document.getElementById(inputId);
   if (!input) return;
 
-  const icon = btn.querySelector('i');
-  const isShown = input.type === 'text';
-  input.type = isShown ? 'password' : 'text';
+  const isVisible = input.type === "text";
+  input.type = isVisible ? "password" : "text";
 
-  if (icon) {
-    icon.classList.toggle('fa-eye', isShown);
-    icon.classList.toggle('fa-eye-slash', !isShown);
-  }
-  btn.setAttribute('aria-label', isShown ? 'Show password' : 'Hide password');
+  btn.classList.toggle("is-active", !isVisible);
+  btn.setAttribute("aria-pressed", String(!isVisible));
+  btn.setAttribute("aria-label", isVisible ? "Show password" : "Hide password");
 });

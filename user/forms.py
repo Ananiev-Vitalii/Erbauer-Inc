@@ -3,7 +3,7 @@ from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext as _
 from django.contrib.auth import forms as auth_forms
-from crispy_forms.layout import HTML, Layout, Field, Submit
+from crispy_forms.layout import HTML, Layout, Field, Submit, Div
 
 from account.models import Employee
 
@@ -12,7 +12,7 @@ User = get_user_model()
 
 class BaseStyledForm:
     turnstile_submit_css_id = "form-submit-btn"
-    submit_css_class = "btn btn-primary text-white btn-lg w-100 mt-4"
+    submit_css_class = "base_submit_btn"
 
     def init_form_helper(self):
         self.helper = FormHelper()
@@ -24,8 +24,17 @@ class BaseStyledForm:
 
     def style_fields(self):
         for field_name, field in self.fields.items():
+            if isinstance(field.widget, forms.CheckboxInput):
+                continue
+
+            existing_classes = field.widget.attrs.get("class", "").strip()
+            classes = f"{existing_classes} form-control".strip()
+
             field.widget.attrs.update(
-                {"class": "form-control", "placeholder": f"{field.label}"}
+                {
+                    "class": classes,
+                    "placeholder": f"{field.label}",
+                }
             )
 
     def get_turnstile_html(self, extra_classes="mt-3"):
@@ -53,11 +62,22 @@ class BaseStyledForm:
 
 
 class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
-    employee: Employee | None
+    employee: Employee | None = None
+
+    privacy_policy = forms.BooleanField(
+        required=True,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "user-checkbox-input",
+                "required": False,
+            }
+        ),
+        error_messages={"required": _("You must agree to the Privacy Policy.")},
+    )
 
     class Meta:
         model = User
-        fields = ["email", "password1", "password2"]
+        fields = ["email", "password1", "password2", "privacy_policy"]
 
     def __init__(self, *args, **kwargs):
         self.service_message = kwargs.pop("service_message", "")
@@ -69,11 +89,35 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
             ),
             Field("email"),
-            Field("password1", template="forms/fields/password.html"),
-            Field("password2", template="forms/fields/password.html"),
+            Field("password1", template="user/forms/fields/password.html"),
+            Field("password2", template="user/forms/fields/password.html"),
+            Div(
+                Div(
+                    Field("privacy_policy"),
+                    HTML(f"""
+                        <span>
+                          {_("I acknowledge the")}
+                          <a href="{{% url 'main:privacy_policy' %}}"
+                             target="_blank"
+                             rel="noopener noreferrer"
+                             class="external-link">
+                            {_("Privacy Policy")}
+                            <span class="external-icon">
+                              <svg viewBox="0 0 24 24" aria-hidden="true">
+                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z"/>
+                                <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"/>
+                              </svg>
+                            </span>
+                          </a>
+                        </span>
+                        """),
+                    css_class="user-checkbox-label",
+                ),
+                css_class="user-checkbox-field",
+            ),
             self.get_turnstile_html(),
             self.get_turnstile_submit(value=_("Register")),
         )
@@ -96,7 +140,6 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
             )
 
         self.employee = employee
-
         return email
 
 
@@ -136,10 +179,10 @@ class UserAuthenticationForm(BaseStyledForm, auth_forms.AuthenticationForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "forms/includes/form_errors.html" with error_mode="login" %}'
+                '{% include "user/forms/includes/form_errors.html" with error_mode="login" %}'
             ),
             Field("username"),
-            Field("password", template="forms/fields/password.html"),
+            Field("password", template="user/forms/fields/password.html"),
             self.get_turnstile_html(),
             self.get_turnstile_submit(value=_("Log in")),
         )
