@@ -20,44 +20,70 @@
         >
       </span>
       {% endif %}
+
       <span class="brand-text text-navbar">
         {{ company_base.name|default:"Erbauer" }}
       </span>
     </a>
 
-    <nav class="main-nav" aria-label="{% trans 'Main menu' %}">
-      <a href="{% url 'main:home' %}#hero">{% trans "Home" %}</a>
-      <a href="{% url 'main:home' %}#services">{% trans "Services" %}</a>
-      <a href="{% url 'main:home' %}#about">{% trans "About" %}</a>
-      <a href="{% url 'main:home' %}#projects">{% trans "Projects" %}</a>
-      <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
-      <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
+    <div class="nav-right">
+      <nav class="main-nav" aria-label="{% trans 'Main menu' %}">
+        <a href="{% url 'main:home' %}#hero">{% trans "Home" %}</a>
+        <a href="{% url 'main:home' %}#services">{% trans "Services" %}</a>
+        <a href="{% url 'main:home' %}#about">{% trans "About" %}</a>
+        <a href="{% url 'main:home' %}#projects">{% trans "Projects" %}</a>
+        <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
+        <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
 
-      {% if user.is_staff %}
-      <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
-        {% trans "Admin panel" %}
-      </a>
-      {% endif %}
+        {% if user.is_staff %}
+        <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
+          {% trans "Admin panel" %}
+        </a>
+        {% endif %}
 
-      {% if user.is_authenticated %}
-      <form method="post" action="{% url 'user:logout' %}" class="nav-auth-form">
-        {% csrf_token %}
-        <button type="submit" class="nav-auth-button">{% trans "Log out" %}</button>
-      </form>
-      {% else %}
-      <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
-      {% endif %}
-    </nav>
+        {% if user.is_authenticated %}
+        <form method="post" action="{% url 'user:logout' %}" class="nav-auth-form">
+          {% csrf_token %}
+          <button type="submit" class="nav-auth-button">{% trans "Log out" %}</button>
+        </form>
+        {% else %}
+        <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
+        {% endif %}
 
-    <button
-            class="menu-toggle"
-            id="menuToggle"
-            aria-label="{% trans 'Open menu' %}"
-            aria-expanded="false"
-            type="button"
-    >
-      <span></span><span></span><span></span>
-    </button>
+        {% if user.is_authenticated and profile %}
+        <a href="{% url 'main:home' %}" class="nav-avatar-link" aria-label="{% trans 'Open profile menu' %}">
+          <img
+                  src="{{ profile.avatar.url }}"
+                  alt="{% trans 'User avatar' %}"
+                  class="nav-avatar-image"
+          >
+        </a>
+        {% endif %}
+      </nav>
+
+      <div class="nav-actions">
+        {% if user.is_authenticated and profile %}
+        <a href="{% url 'main:home' %}" class="nav-avatar-link nav-avatar-link--mobile"
+           aria-label="{% trans 'Open profile menu' %}">
+          <img
+                  src="{{ profile.avatar.url }}"
+                  alt="{% trans 'User avatar' %}"
+                  class="nav-avatar-image"
+          >
+        </a>
+        {% endif %}
+
+        <button
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="{% trans 'Open menu' %}"
+                aria-expanded="false"
+                type="button"
+        >
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div class="mobile-nav" id="mobileNav">

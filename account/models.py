@@ -25,6 +25,7 @@ class Employee(models.Model):
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="employee",
+        verbose_name=_("User"),
         null=True,
         blank=True,
     )
@@ -67,4 +68,4 @@ class Profile(models.Model):
         verbose_name_plural = _("Profiles")
 
     def __str__(self) -> str:
-        return f"Profile: {self.employee}"
+        return str(self.employee)

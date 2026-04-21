@@ -104,9 +104,18 @@ p {
   min-height: var(--header-h);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 24px;
   flex-wrap: nowrap;
+}
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .brand {
@@ -161,9 +170,12 @@ p {
 .main-nav {
   display: flex;
   align-items: center;
+  justify-content: flex-end;
   gap: 34px;
   flex-wrap: nowrap;
   white-space: nowrap;
+  min-width: 0;
+  margin-left: auto;
 }
 
 .main-nav a,
@@ -185,6 +197,49 @@ p {
 .main-nav a:hover,
 .mobile-nav a:hover {
   color: var(--orange-500);
+}
+
+/* Avatar */
+.nav-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 0 0 auto;
+}
+
+.nav-avatar-link {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+  border: 1px solid rgba(203, 213, 225, 0.95);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.nav-avatar-link:hover {
+  transform: translateY(-1px);
+  border-color: var(--orange-400);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+.nav-avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-avatar-link--mobile {
+  display: none;
 }
 
 /* Auth links in navbar */
@@ -393,13 +448,29 @@ p {
   transform: translateY(0);
 }
 
+
+/* MEDIA */
 @media (max-width: 1120px) {
+  .nav-wrap {
+    gap: 16px;
+  }
+
+  .nav-right {
+    flex: 0 0 auto;
+    margin-left: auto;
+    gap: 10px;
+  }
+
   .main-nav {
     display: none;
   }
 
   .menu-toggle {
     display: inline-block;
+  }
+
+  .nav-avatar-link--mobile {
+    display: inline-flex;
   }
 
   .footer-grid {
@@ -424,6 +495,28 @@ p {
   .brand-text {
     display: inline;
     font-size: 24px;
+  }
+
+  .nav-wrap {
+    gap: 12px;
+  }
+
+  .nav-right {
+    gap: 8px;
+  }
+
+  .nav-actions {
+    gap: 8px;
+  }
+
+  .nav-avatar-link {
+    width: 40px;
+    height: 40px;
+  }
+
+  .menu-toggle {
+    width: 42px;
+    height: 42px;
   }
 
   .socials {
