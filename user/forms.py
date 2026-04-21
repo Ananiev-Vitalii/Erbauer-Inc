@@ -198,7 +198,7 @@ class CustomPasswordResetForm(BaseStyledForm, auth_forms.PasswordResetForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
             ),
             Field("email"),
             self.get_turnstile_html(),
@@ -220,13 +220,13 @@ class CustomSetPasswordForm(BaseStyledForm, auth_forms.SetPasswordForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
             ),
-            Field("new_password1", template="forms/fields/password.html"),
-            Field("new_password2", template="forms/fields/password.html"),
+            Field("new_password1", template="user/forms/fields/password.html"),
+            Field("new_password2", template="user/forms/fields/password.html"),
             Submit(
                 "submit",
-                "Change Password",
-                css_class="btn btn-primary text-white btn-lg w-100 mt-4",
+                _("Change Password"),
+                css_class=self.submit_css_class,
             ),
         )

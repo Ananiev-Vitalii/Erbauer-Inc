@@ -1,11 +1,12 @@
 from django.views import generic
-from django.conf import settings
 from django.db import transaction
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import get_user_model, login
 from django.utils.translation import gettext_lazy as _
+
+from main.models import CompanyProfile
 
 from user import forms
 from user import mixins
@@ -23,11 +24,10 @@ from user.services.rate_limits.resend_verification import (
 )
 
 from user.services.rate_limits.password_reset import (
-    get_password_reset_state,
     register_password_reset_attempt,
     get_password_reset_cooldown_message,
+    get_password_reset_rate_limit_state,
 )
-
 
 from user.services.rate_limits.registration import (
     get_registration_cooldown_message,
@@ -41,9 +41,6 @@ from user.services.tokens import get_user_from_verification_data
 from account.models import Profile
 
 User = get_user_model()
-
-PASSWORD_RESET_ATTEMPTS = settings.PASSWORD_RESET_MAX_ATTEMPTS
-PASSWORD_RESET_COOLDOWN = settings.PASSWORD_RESET_COOLDOWN_SECONDS
 
 
 # <-- Register -->
@@ -234,20 +231,20 @@ class LoginUser(
 
 # <-- Password reset -->
 class CustomPasswordResetView(
-    mixins.ServiceMessageFormMixin,
     mixins.TurnstileMixin,
     mixins.AnonymousRequiredMixin,
     auth_views.PasswordResetView,
 ):
     """
     1) Доступ только анонимным пользователям
-    2) Turnstile captcha
-    3) Стандартный Django password reset flow
-    4) Ограничение количества попыток по IP и email
+    2) Ограничение количества попыток по  ["ip", "email"]
+    3) Turnstile captcha
+    4) Стандартный Django password reset flow
     """
 
     form_class = forms.CustomPasswordResetForm
     template_name = "registration/password_reset_form.html"
+    html_email_template_name = "registration/password_reset_email.html"
     success_url = reverse_lazy("user:password-reset-done")
     turnstile_error_message = _("The captcha check failed. Please try again.")
 
@@ -256,18 +253,19 @@ class CustomPasswordResetView(
             return self.handle_turnstile_failure(form)
 
         email = form.cleaned_data["email"]
-        state = get_password_reset_state(self.request, email)
 
-        if state["remaining_minutes"] > 0:
-            return self.form_invalid_with_message(
-                get_password_reset_cooldown_message(state["remaining_minutes"])
-            )
+        state = get_password_reset_rate_limit_state(self.request, email)
+        if state.blocked:
+            form.service_message = get_password_reset_cooldown_message(state)
+            return self.render_to_response(self.get_context_data(form=form))
 
-        register_password_reset_attempt(
-            request=self.request,
-            email=email,
-            attempts_limit=PASSWORD_RESET_ATTEMPTS,
-            cooldown_seconds=PASSWORD_RESET_COOLDOWN,
-        )
+        state = register_password_reset_attempt(self.request, email)
+        if state.blocked:
+            form.service_message = get_password_reset_cooldown_message(state)
+            return self.render_to_response(self.get_context_data(form=form))
+
+        self.extra_email_context = {
+            "company_base": CompanyProfile.objects.only("name").get(is_active=True),
+        }
 
         return super().form_valid(form)

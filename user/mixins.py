@@ -13,24 +13,6 @@ class AnonymousRequiredMixin:
         return super().dispatch(request, *args, **kwargs)
 
 
-class ServiceMessageFormMixin:
-    service_message = ""
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs["service_message"] = self.service_message
-        return kwargs
-
-    def form_invalid_with_message(self, message):
-        self.service_message = message
-
-        if not hasattr(self, "object"):
-            self.object = None
-
-        form = self.get_form()
-        return self.form_invalid(form)
-
-
 class TurnstileMixin:
     turnstile_context_key = "CF_TURNSTILE_SITE_KEY"
     turnstile_error_message = _("Please confirm that you are not a robot.")

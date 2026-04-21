@@ -1,7 +1,9 @@
 {% extends "base.html" %}
 {% load static crispy_forms_tags i18n %}
 
-{% block title %}{{ company_base.name|default:"Erbauer" }} | Confirm User{% endblock title %}
+{% block title %}
+{{ company_base.name|default:"Erbauer" }} | {% trans 'Confirm User' %}
+{% endblock title %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/user/user_base.css' %}">
