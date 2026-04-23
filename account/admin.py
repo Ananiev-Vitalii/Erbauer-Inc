@@ -1,14 +1,15 @@
 from django.contrib import admin
+from modeltranslation.admin import TranslationAdmin
 
 from account.models import Position, Employee, Profile
 from user.admin import custom_admin_site
 
 
-class PositionAdmin(admin.ModelAdmin):
+class PositionAdmin(TranslationAdmin):
     list_display = ("name",)
 
 
-class EmployeeAdmin(admin.ModelAdmin):
+class EmployeeAdmin(TranslationAdmin):
     list_display = ("first_name", "last_name", "email", "position", "is_active")
     list_filter = ("is_active", "position")
     search_fields = ("first_name", "last_name", "email")

@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
 from user.admin import custom_admin_site
 from main.models import (
@@ -13,7 +14,7 @@ from main.models import (
 
 
 @admin.register(CompanyProfile, site=custom_admin_site)
-class CompanyProfileAdmin(admin.ModelAdmin):
+class CompanyProfileAdmin(TranslationAdmin):
     list_display = ("name", "is_active")
     fields = (
         "name",
@@ -41,7 +42,7 @@ class CompanyProfileAdmin(admin.ModelAdmin):
 
 
 @admin.register(TeamMember, site=custom_admin_site)
-class TeamMemberAdmin(admin.ModelAdmin):
+class TeamMemberAdmin(TranslationAdmin):
     list_display = ("employee", "display_order", "is_visible")
     list_filter = ("is_visible",)
     search_fields = ("employee__first_name", "employee__last_name")
@@ -55,9 +56,9 @@ class TeamMemberAdmin(admin.ModelAdmin):
 
 
 @admin.register(Service, site=custom_admin_site)
-class ServiceAdmin(admin.ModelAdmin):
+class ServiceAdmin(TranslationAdmin):
     list_display = ("title", "icon_preview")
-
+    search_fields = ("title", "description")
     fields = (
         "title",
         "description",
@@ -92,7 +93,7 @@ class ProjectImageInline(admin.TabularInline):
 
 
 @admin.register(Project, site=custom_admin_site)
-class ProjectAdmin(admin.ModelAdmin):
+class ProjectAdmin(TranslationAdmin):
     list_display = (
         "title",
         "category",

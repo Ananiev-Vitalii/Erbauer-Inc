@@ -3,23 +3,13 @@
 <header class="site-header" id="siteHeader">
   <div class="container nav-wrap">
     <a class="brand" href="{% url 'main:home' %}#hero" aria-label="{{ company_base.name|default:'Erbauer' }}">
-      {% if company_base and company_base.logo %}
       <span class="brand-logo-wrap">
         <img
-                src="{{ company_base.logo.url }}"
+                src="{% if company_base and company_base.logo %}{{ company_base.logo.url }}{% else %}{% static 'img/logo.png' %}{% endif %}"
                 alt="{{ company_base.name|default:'Erbauer' }} logo"
                 class="brand-logo"
         >
       </span>
-      {% else %}
-      <span class="brand-logo-wrap">
-        <img
-                src="{% static 'img/logo.png' %}"
-                alt="{{ company_base.name|default:'Erbauer' }} logo"
-                class="brand-logo"
-        >
-      </span>
-      {% endif %}
 
       <span class="brand-text text-navbar">
         {{ company_base.name|default:"Erbauer" }}
@@ -49,21 +39,35 @@
         {% else %}
         <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
         {% endif %}
-
-        {% if user.is_authenticated and profile %}
-        <a href="{% url 'main:home' %}" class="nav-avatar-link" aria-label="{% trans 'Open profile menu' %}">
-          <img
-                  src="{{ profile.avatar.url }}"
-                  alt="{% trans 'User avatar' %}"
-                  class="nav-avatar-image"
-          >
-        </a>
-        {% endif %}
       </nav>
 
       <div class="nav-actions">
+        <form method="post" action="{% url 'set_language' %}" class="language-switcher"
+              aria-label="{% trans 'Language switcher' %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+          <button
+                  type="submit"
+                  name="language"
+                  value="en"
+                  class="language-switcher__button{% if LANGUAGE_CODE == 'en' %} is-active{% endif %}"
+          >
+            EN
+          </button>
+
+          <button
+                  type="submit"
+                  name="language"
+                  value="uk"
+                  class="language-switcher__button{% if LANGUAGE_CODE == 'uk' %} is-active{% endif %}"
+          >
+            UA
+          </button>
+        </form>
+
         {% if user.is_authenticated and profile %}
-        <a href="{% url 'main:home' %}" class="nav-avatar-link nav-avatar-link--mobile"
+        <a href="{% url 'main:home' %}" class="nav-avatar-link"
            aria-label="{% trans 'Open profile menu' %}">
           <img
                   src="{{ profile.avatar.url }}"
@@ -87,6 +91,31 @@
   </div>
 
   <div class="mobile-nav" id="mobileNav">
+    <div class="mobile-nav__language">
+      <form method="post" action="{% url 'set_language' %}" class="language-switcher language-switcher--mobile">
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+        <button
+                type="submit"
+                name="language"
+                value="en"
+                class="language-switcher__button{% if LANGUAGE_CODE == 'en' %} is-active{% endif %}"
+        >
+          EN
+        </button>
+
+        <button
+                type="submit"
+                name="language"
+                value="uk"
+                class="language-switcher__button{% if LANGUAGE_CODE == 'uk' %} is-active{% endif %}"
+        >
+          UA
+        </button>
+      </form>
+    </div>
+
     <a href="{% url 'main:home' %}#hero">{% trans "Home" %}</a>
     <a href="{% url 'main:home' %}#services">{% trans "Services" %}</a>
     <a href="{% url 'main:home' %}#about">{% trans "About" %}</a>

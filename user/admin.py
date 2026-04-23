@@ -1,14 +1,12 @@
 """
 - Общая точка входа: user:login
 - Доступ к /admin/ только для пользователей с правами "is_staff", "is_active".
-- Использование кастомной админки для всех моделей с украинским переводом атрибутов и activate("uk")
 - При выходе из админки перенаправляет на главную
 """
 
 from functools import update_wrapper
 from django.shortcuts import redirect
 from django.contrib.admin import AdminSite
-from django.utils.translation import activate
 from django.http import HttpResponseNotAllowed
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout as auth_logout
@@ -54,7 +52,6 @@ class CustomAdminSite(AdminSite):
         wrapped_view = super().admin_view(view, cacheable=cacheable)
 
         def inner(request, *args, **kwargs):
-            activate("uk")
 
             if not request.user.is_authenticated:
                 return redirect("user:login")
