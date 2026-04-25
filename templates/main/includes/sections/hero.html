@@ -4,39 +4,40 @@
   <div class="hero-glow hero-glow-1"></div>
   <div class="hero-glow hero-glow-2"></div>
 
-  <div class="container hero-grid">
-    <div class="hero-copy reveal">
-      <p class="eyebrow">
-        {{ company_profile.hero_badge }}
-      </p>
+  <div class="container hero-layout">
+    <div class="hero-main reveal">
+      <div class="hero-text-panel" data-hero-text-panel>
+        <p class="eyebrow">
+          {{ company_profile.hero_badge }}
+        </p>
 
-      <h1>
-        {{ company_profile.hero_title }}
-      </h1>
-    </div>
+        <h1 data-hero-title>
+          {{ company_profile.hero_title }}
+        </h1>
 
-    <div class="hero-media reveal">
-      <div class="image-frame image-frame-lg">
-        <img
-                src="{% static 'img/hero-placeholder.jpg' %}"
-                alt="{% trans 'Completed projects' %}"
-        />
+        <p class="hero-text">
+          {{ company_profile.hero_description }}
+        </p>
+      </div>
+
+      <div class="hero-media">
+        <div class="image-frame image-frame-lg">
+          <img
+            src="{% static 'img/hero-placeholder.jpg' %}"
+            alt="{% trans 'Completed projects' %}"
+          />
+        </div>
       </div>
     </div>
 
-    <div class="hero-copy-extra reveal">
-      <p class="hero-text">
-        {{ company_profile.hero_description }}
-      </p>
+    <div class="hero-actions reveal">
+      <a class="hero-btn hero-btn-primary" href="#contacts">
+        {% trans "Discuss the project" %}
+      </a>
 
-      <div class="hero-actions">
-        <a class="hero-btn hero-btn-primary" href="#contacts">
-          {% trans "Discuss the project" %}
-        </a>
-        <a class="hero-btn hero-btn-secondary" href="#projects">
-          {% trans "Our projects" %}
-        </a>
-      </div>
+      <a class="hero-btn hero-btn-secondary" href="#projects">
+        {% trans "Our projects" %}
+      </a>
     </div>
   </div>
 
@@ -49,7 +50,7 @@
 
       <article class="hero-stat">
         <span class="hero-stat-value">{{ company_profile.completed_objects_count|default:"100" }}+</span>
-        <span class="hero-stat-label">{% trans "Completed projects" %}</span>
+        <span class="hero-stat-label">{% trans "Completed projects" context "hero stat label" %}</span>
       </article>
 
       <article class="hero-stat">

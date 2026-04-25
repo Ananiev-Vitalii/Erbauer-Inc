@@ -2,55 +2,109 @@ document.addEventListener("DOMContentLoaded", () => {
   const heroStatsSection = document.querySelector(".hero-stats");
   const heroStatValues = document.querySelectorAll(".hero-stat-value");
 
+  const heroTextPanel = document.querySelector("[data-hero-text-panel]");
+  const heroTitle = document.querySelector("[data-hero-title]");
+
+  let heroFitFrame = null;
+
   function syncSiteHeaderHeight() {
     const siteHeader = document.getElementById("siteHeader");
     if (!siteHeader) return;
 
     const headerHeight = siteHeader.getBoundingClientRect().height;
+
     document.documentElement.style.setProperty(
       "--site-header-height",
       `${Math.round(headerHeight)}px`
     );
   }
 
-  function syncHeroImageToTitle() {
-    if (window.innerWidth <= 980) {
-      const heroMedia = document.querySelector(".hero-media");
-      const heroImageFrame = document.querySelector(".hero-media .image-frame");
+  function getCssNumberVariable(element, variableName, fallback) {
+    const value = window
+      .getComputedStyle(element)
+      .getPropertyValue(variableName)
+      .trim();
 
-      if (heroMedia) {
-        heroMedia.style.removeProperty("--hero-media-offset");
+    const parsed = parseFloat(value);
+
+    return Number.isNaN(parsed) ? fallback : parsed;
+  }
+
+  function getHeroTitleMaxSize() {
+    if (!heroTitle) return 84;
+
+    const hero = document.querySelector(".hero");
+    if (!hero) return 84;
+
+    return getCssNumberVariable(hero, "--hero-title-max", 84);
+  }
+
+  function getHeroTitleMinSize() {
+    if (!heroTitle) return 24;
+
+    const hero = document.querySelector(".hero");
+    if (!hero) return 24;
+
+    return getCssNumberVariable(hero, "--hero-title-min", 24);
+  }
+
+  function fitHeroTitleNow() {
+    if (!heroTextPanel || !heroTitle) return;
+
+    const maxSize = getHeroTitleMaxSize();
+    const minSize = getHeroTitleMinSize();
+
+    heroTitle.style.fontSize = `${maxSize}px`;
+
+    let low = minSize;
+    let high = maxSize;
+    let best = minSize;
+
+    while (low <= high) {
+      const middle = Math.floor((low + high) / 2);
+
+      heroTitle.style.fontSize = `${middle}px`;
+
+      const isFitting =
+        heroTextPanel.scrollHeight <= heroTextPanel.clientHeight;
+
+      if (isFitting) {
+        best = middle;
+        low = middle + 1;
+      } else {
+        high = middle - 1;
       }
-
-      if (heroImageFrame) {
-        heroImageFrame.style.removeProperty("--hero-image-height");
-      }
-
-      return;
     }
 
-    const heroCopy = document.querySelector(".hero-copy");
-    const heroTitle = document.querySelector(".hero-copy h1");
-    const heroMedia = document.querySelector(".hero-media");
-    const heroImageFrame = document.querySelector(".hero-media .image-frame");
+    heroTitle.style.fontSize = `${best}px`;
 
-    if (!heroCopy || !heroTitle || !heroMedia || !heroImageFrame) return;
+    /*
+      Финальная страховочная проверка.
+      Иногда браузер после изменения размера шрифта пересчитывает переносы не мгновенно.
+    */
+    let safetySize = best;
 
-    const copyRect = heroCopy.getBoundingClientRect();
-    const titleRect = heroTitle.getBoundingClientRect();
+    while (
+      heroTextPanel.scrollHeight > heroTextPanel.clientHeight &&
+      safetySize > minSize
+    ) {
+      safetySize -= 1;
+      heroTitle.style.fontSize = `${safetySize}px`;
+    }
+  }
 
-    const titleOffsetTop = titleRect.top - copyRect.top;
-    const titleHeight = titleRect.height;
+  function fitHeroTitle() {
+    if (heroFitFrame) {
+      cancelAnimationFrame(heroFitFrame);
+    }
 
-    heroMedia.style.setProperty(
-      "--hero-media-offset",
-      `${Math.max(titleOffsetTop, 0)}px`
-    );
+    heroFitFrame = requestAnimationFrame(() => {
+      fitHeroTitleNow();
 
-    heroImageFrame.style.setProperty(
-      "--hero-image-height",
-      `${Math.max(titleHeight, 220)}px`
-    );
+      requestAnimationFrame(() => {
+        fitHeroTitleNow();
+      });
+    });
   }
 
   function easeOutCubic(t) {
@@ -147,33 +201,25 @@ document.addEventListener("DOMContentLoaded", () => {
     statsObserver.observe(heroStatsSection);
   }
 
-  function bindHeroImageEvents() {
-    const heroImage = document.querySelector(".hero-media .image-frame img");
-    if (!heroImage) return;
-
-    if (heroImage.complete) {
-      syncHeroImageToTitle();
-    } else {
-      heroImage.addEventListener("load", syncHeroImageToTitle);
-    }
-  }
-
   initStatsRevealAndCounter();
 
   syncSiteHeaderHeight();
-  syncHeroImageToTitle();
+  fitHeroTitle();
 
   window.addEventListener("resize", () => {
     syncSiteHeaderHeight();
-    syncHeroImageToTitle();
+    fitHeroTitle();
   });
 
-  bindHeroImageEvents();
+  window.addEventListener("load", () => {
+    syncSiteHeaderHeight();
+    fitHeroTitle();
+  });
 
   if (document.fonts && document.fonts.ready) {
     document.fonts.ready.then(() => {
       syncSiteHeaderHeight();
-      syncHeroImageToTitle();
+      fitHeroTitle();
     });
   }
 });

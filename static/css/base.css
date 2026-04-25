@@ -526,7 +526,7 @@ p {
 }
 
 /* MEDIA */
-@media (max-width: 1200px) {
+@media (max-width: 1400px) {
   .nav-wrap {
     gap: 16px;
   }

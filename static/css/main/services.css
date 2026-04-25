@@ -157,15 +157,15 @@
   color: #ffffff !important;
   background: linear-gradient(
     120deg,
-    #fde68a 0%,
-    #facc15 22%,
-    #fbbf24 48%,
-    #f59e0b 78%,
-    #fcd34d 100%
+    #facc15 0%,
+    #f59e0b 24%,
+    #f97316 52%,
+    #ea580c 78%,
+    #fb923c 100%
   ) !important;
   box-shadow:
-    0 16px 34px rgba(245, 158, 11, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    0 16px 34px rgba(249, 115, 22, 0.26),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
 }
 
 .services-cta-btn--primary:hover,
@@ -173,9 +173,17 @@
 .services-cta-btn--primary:focus-visible,
 .services-cta-btn--primary:active {
   color: #ffffff !important;
+  background: linear-gradient(
+    120deg,
+    #facc15 0%,
+    #f59e0b 20%,
+    #f97316 48%,
+    #ea580c 74%,
+    #fb923c 100%
+  ) !important;
   box-shadow:
-    0 22px 42px rgba(245, 158, 11, 0.26),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+    0 22px 42px rgba(249, 115, 22, 0.32),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
 }
 
 .services__slider {

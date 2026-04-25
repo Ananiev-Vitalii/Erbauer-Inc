@@ -14,9 +14,11 @@
 {% block content_wrapper %}
 <div class="page-noise"></div>
 
-{% cache 3600 homepage_static LANGUAGE_CODE %}
+
 
 {% include "main/includes/sections/hero.html" %}
+
+{% cache 3600 homepage_static_v2 LANGUAGE_CODE %}
 {% include "main/includes/sections/services.html" %}
 {% include "main/includes/sections/about.html" %}
 {% include "main/includes/sections/projects.html" %}

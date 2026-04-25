@@ -1,6 +1,6 @@
 from django import forms
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy  as _, pgettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Layout, Field, Submit, Div
 
@@ -71,6 +71,9 @@ class ContactForm(BaseStyledForm, forms.Form):
         self.helper.form_class = "contacts__form"
         self.helper.form_id = "contactForm"
 
+        privacy_acknowledge_text = _("I acknowledge the")
+        privacy_policy_text = pgettext_lazy("contact form checkbox link","Privacy Policy")
+
         self.helper.layout = Layout(
             HTML('{% include "main/includes/forms/form_errors.html" %}'),
             Field("name"),
@@ -85,10 +88,10 @@ class ContactForm(BaseStyledForm, forms.Form):
                     Field("privacy_policy"),
                     HTML(f"""
                         <span>
-                          {_("I acknowledge the")}
+                          {privacy_acknowledge_text}
                           <a href="{{% url 'main:privacy_policy' %}}" target="_blank" rel="noopener noreferrer" 
                           class="external-link">
-                            {_("Privacy Policy")}
+                            {privacy_policy_text}
                             <span class="external-icon">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
                                     <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z"/>

@@ -1,7 +1,7 @@
 from django import forms
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django.contrib.auth import forms as auth_forms
 from crispy_forms.layout import HTML, Layout, Field, Submit, Div
 
@@ -87,6 +87,9 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
         self.fields["password1"].help_text = ""
         self.fields["password2"].help_text = ""
 
+        privacy_acknowledge_text = _("I acknowledge the")
+        privacy_policy_text = pgettext_lazy("register checkbox link", "Privacy Policy")
+
         self.helper.layout = Layout(
             HTML(
                 '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
@@ -99,12 +102,12 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
                     Field("privacy_policy"),
                     HTML(f"""
                         <span>
-                          {_("I acknowledge the")}
+                          {privacy_acknowledge_text}
                           <a href="{{% url 'main:privacy_policy' %}}"
                              target="_blank"
                              rel="noopener noreferrer"
                              class="external-link">
-                            {_("Privacy Policy")}
+                            {privacy_policy_text}
                             <span class="external-icon">
                               <svg viewBox="0 0 24 24" aria-hidden="true">
                                 <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z"/>
