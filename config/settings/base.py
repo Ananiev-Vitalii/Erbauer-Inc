@@ -12,7 +12,7 @@ ALLOWED_HOSTS = ["127.0.0.1"]
 
 INSTALLED_APPS = [
     "core",
-    "main",
+    "main.apps.MainConfig",
     "user",
     "account",
     "anymail",
