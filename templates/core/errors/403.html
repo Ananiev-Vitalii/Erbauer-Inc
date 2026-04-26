@@ -1,21 +1,35 @@
 {% extends "base.html" %}
-{% load i18n %}
+{% load i18n static %}
 
-{% block content %}
+{% block title %}{% trans "Access denied" %}{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core/errors.css' %}">
+{% endblock extra_css %}
+
+{% block content_wrapper %}
 <section class="error-page">
-  <h1>{% translate "403 — Access denied" %}</h1>
+  <div class="error-page__container">
+    <p class="error-page__code">403</p>
 
-  <p>
-    {% blocktranslate %}
-    You do not have permission to access this page.
-    {% endblocktranslate %}
-  </p>
+    <h1 class="error-page__title">
+      {% trans "Access denied" %}
+    </h1>
 
-  <p>
-    {% blocktranslate %}
-    This may be because your account does not have the required privileges
-    or because the requested action is restricted.
-    {% endblocktranslate %}
-  </p>
+    <p class="error-page__text">
+      {% trans "You do not have permission to access this page." %}
+    </p>
+
+    <p class="error-page__description">
+      {% blocktranslate %}
+      This may be because your account does not have the required privileges
+      or because the requested action is restricted.
+      {% endblocktranslate %}
+    </p>
+
+    <a href="{% url 'main:home' %}" class="error-page__button">
+      {% trans "Return to homepage" %}
+    </a>
+  </div>
 </section>
-{% endblock content %}
+{% endblock content_wrapper %}
