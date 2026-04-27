@@ -9,9 +9,11 @@
   <title>{% block title %}{% endblock title %}</title>
 
   {% if company_base and company_base.favicon %}
-  <link rel="icon" type="image/png" href="{{ company_base.favicon.url }}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ company_base.favicon.url }}?v=3">
+  <link rel="shortcut icon" type="image/png" href="{{ company_base.favicon.url }}?v=3">
   {% else %}
-  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon.png' %}?v=3">
+  <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.png' %}?v=3">
   {% endif %}
 
   <!-- Bootstrap CSS -->

@@ -13,6 +13,7 @@ def team_member_directory_path(instance: "TeamMember", filename: str) -> str:
 def company_logo_upload_path(instance: "CompanyProfile", filename: str) -> str:
     return f"company/logo/{filename}"
 
+
 def company_favicon_upload_path(instance: "CompanyProfile", filename: str) -> str:
     return f"company/favicon/{filename}"
 
@@ -57,12 +58,12 @@ class CompanyProfile(models.Model):
         _("Completed objects count"), default=0
     )
     employees_count = models.PositiveIntegerField(_("Employees count"), default=0)
-    about_description = models.TextField(_("About description"), blank=True)
-    hero_badge = models.CharField("Hero badge", max_length=50, blank=True)
-    hero_title = models.TextField(_("Hero title"), blank=True)
-    hero_description = models.TextField(_("Hero description"), blank=True)
-    services_description = models.TextField(_("Services description"), blank=True)
-    footer_description = models.TextField(_("Footer description"), blank=True)
+    about_description = models.TextField(_("About description"))
+    hero_badge = models.CharField("Hero badge", max_length=50)
+    hero_title = models.TextField(_("Hero title"))
+    hero_description = models.TextField(_("Hero description"))
+    services_description = models.TextField(_("Services description"))
+    footer_description = models.TextField(_("Footer description"))
 
     created_at = models.DateTimeField(_("Created at"), auto_now_add=True)
     updated_at = models.DateTimeField(_("Updated at"), auto_now=True)
@@ -89,7 +90,7 @@ class TeamMember(models.Model):
         related_name="team_member",
         verbose_name=_("Employee"),
     )
-    description = models.TextField(_("Description"), blank=True)
+    description = models.TextField(_("Description"))
     photo = models.ImageField(
         _("Photo"),
         upload_to=team_member_directory_path,
@@ -111,7 +112,7 @@ class TeamMember(models.Model):
 
 class Service(models.Model):
     title = models.CharField(_("Title"), max_length=50, unique=True)
-    description = models.TextField(_("Description"), max_length=200, blank=True)
+    description = models.TextField(_("Description"), max_length=200)
     icon = models.ImageField(
         _("Icon"),
         upload_to=service_icon_upload_path,
