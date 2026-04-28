@@ -6,9 +6,9 @@ INSTALLED_APPS += [
     "debug_toolbar",
 ]
 
-MIDDLEWARE.insert(1, "debug_toolbar.middleware.DebugToolbarMiddleware")
+MIDDLEWARE.insert(2, "debug_toolbar.middleware.DebugToolbarMiddleware")
 
-INTERNAL_IPS = ["127.0.0.1"]
+INTERNAL_IPS = ["127.0.0.1", "localhost"]
 
 DATABASES = {
     "default": {
@@ -17,7 +17,7 @@ DATABASES = {
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": int(os.getenv("POSTGRES_DB_PORT")),
+        "PORT": int(os.getenv("POSTGRES_DB_PORT", 5432)),
     }
 }
 

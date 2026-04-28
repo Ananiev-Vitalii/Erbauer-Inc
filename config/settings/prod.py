@@ -13,7 +13,7 @@ DATABASES = {
         "USER": os.getenv("POSTGRES_USER"),
         "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
         "HOST": os.getenv("POSTGRES_HOST"),
-        "PORT": int(os.getenv("POSTGRES_DB_PORT")),
+        "PORT": int(os.getenv("POSTGRES_DB_PORT", 5432)),
     }
 }
 
@@ -25,6 +25,10 @@ CACHES = {
 
 STORAGES["default"] = {
     "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+}
+
+STORAGES["staticfiles"] = {
+    "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
 }
 
 CLOUDINARY_STORAGE = {
