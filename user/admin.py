@@ -31,7 +31,7 @@ class CustomAdminSite(AdminSite):
             if company
             else str(_("Site administration"))
         )
-        context["custom_admin_css"] = "admin/css/custom_admin.css"
+        context["custom_admin_css"] = "custom_admin/css/custom_admin.css"
         return context
 
     def has_permission(self, request):
