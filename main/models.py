@@ -94,7 +94,7 @@ class TeamMember(models.Model):
     photo = models.ImageField(
         _("Photo"),
         upload_to=team_member_directory_path,
-        default="team_member/default.jpg",
+        default="team_member/default",
         blank=True,
     )
     display_order = models.PositiveSmallIntegerField(_("Display order"), unique=True)

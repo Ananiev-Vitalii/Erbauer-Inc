@@ -58,7 +58,7 @@ class Profile(models.Model):
     avatar = models.ImageField(
         _("Avatar"),
         upload_to=profile_directory_path,
-        default="profiles/default.png",
+        default="profiles/default",
         blank=True,
     )
     phone = models.CharField(_("Phone"), max_length=30, blank=True)
