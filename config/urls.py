@@ -2,7 +2,6 @@ from django.conf import settings
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf.urls.i18n import set_language
-from debug_toolbar.toolbar import debug_toolbar_urls
 
 from user.admin import custom_admin_site
 
@@ -20,6 +19,9 @@ urlpatterns = [
 
 
 if settings.DEBUG:
+    from debug_toolbar.toolbar import debug_toolbar_urls
+
+
     urlpatterns += debug_toolbar_urls()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
