@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     "crispy_bootstrap5",
     "cloudinary",
     "cloudinary_storage",
-    "debug_toolbar",
     "modeltranslation",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -34,7 +33,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -123,11 +121,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 AUTH_USER_MODEL = "user.User"
 LOGIN_REDIRECT_URL = "/"
-
-# Debug-toolbar
-INTERNAL_IPS = [
-    "127.0.0.1",
-]
 
 # Crispy-forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
