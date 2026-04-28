@@ -18,6 +18,8 @@ INSTALLED_APPS = [
     "anymail",
     "crispy_forms",
     "crispy_bootstrap5",
+    "cloudinary",
+    "cloudinary_storage",
     "debug_toolbar",
     "modeltranslation",
     "django.contrib.admin",
