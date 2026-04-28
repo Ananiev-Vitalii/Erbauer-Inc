@@ -20,7 +20,6 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "cloudinary",
-    "cloudinary_storage",
     "modeltranslation",
 
     "django.contrib.admin",
@@ -30,6 +29,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
+    "cloudinary_storage",
     "django_cleanup.apps.CleanupConfig",
 ]
 
@@ -117,6 +117,8 @@ STORAGES = {
         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
     },
 }
+# Compatibility for third-party packages that still expect STATICFILES_STORAGE.
+STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
 
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"

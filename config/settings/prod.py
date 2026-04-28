@@ -31,6 +31,9 @@ STORAGES["staticfiles"] = {
     "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
 }
 
+# Compatibility for django-cloudinary-storage collectstatic command.
+STATICFILES_STORAGE = STORAGES["staticfiles"]["BACKEND"]
+
 CLOUDINARY_STORAGE = {
     "CLOUD_NAME": os.getenv("CLOUDINARY_CLOUD_NAME"),
     "API_KEY": os.getenv("CLOUDINARY_API_KEY"),
