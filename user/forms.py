@@ -42,7 +42,7 @@ class BaseStyledForm:
         return HTML(f"""
             <div
                 class="{classes}"
-                data-theme="auto"
+                data-theme="light"
                 data-size="flexible"
                 data-sitekey="{{{{ CF_TURNSTILE_SITE_KEY }}}}"
                 data-callback="turnstileSuccess"
