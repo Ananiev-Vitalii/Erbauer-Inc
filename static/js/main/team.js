@@ -67,8 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       obs.unobserve(teamSection);
     },
     {
-      threshold: 0.3,
-      rootMargin: '0px 0px -10% 0px'
+      threshold: 0.05,
     }
   );
 
