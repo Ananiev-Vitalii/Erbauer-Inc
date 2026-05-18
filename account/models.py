@@ -44,6 +44,14 @@ class Employee(models.Model):
         verbose_name = _("Employee")
         verbose_name_plural = _("Employees")
 
+    def save(self, *args, **kwargs) -> None:
+        super().save(*args, **kwargs)
+
+        # noinspection PyUnresolvedReferences
+        if self.user_id and self.user.email != self.email:
+            self.user.email = self.email
+            self.user.save(update_fields=["email"])
+
     def __str__(self) -> str:
         return f"{self.first_name} {self.last_name}".strip() or self.email
 

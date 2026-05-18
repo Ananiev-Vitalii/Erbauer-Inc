@@ -88,8 +88,8 @@ class UserRegistrationView(
         with transaction.atomic():
             user = form.save(commit=False)
             user.email = employee.email
-            user.first_name = employee.first_name
-            user.last_name = employee.last_name
+            user.first_name = employee.first_name_en or employee.first_name
+            user.last_name = employee.last_name_en or employee.last_name
             user.is_active = False
             user.save()
 
