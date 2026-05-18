@@ -26,56 +26,55 @@ document.addEventListener("DOMContentLoaded", () => {
     navLinks.forEach((link) => link.classList.remove("is-active"));
   }
 
-  function setActiveNavLink() {
-    if (!navLinks.length) return;
+function setActiveNavLink() {
+  if (!navLinks.length) return;
 
-    const isHomePage = currentPath === homePath;
+  const isHomePage = currentPath === homePath;
 
-    clearActiveNavLinks();
+  clearActiveNavLinks();
 
-    if (isHomePage && sections.length) {
-      let currentId = "";
+  if (isHomePage && sections.length) {
+    let currentId = "";
 
-      sections.forEach((section) => {
-        const sectionTop = section.offsetTop - 120;
-        const sectionHeight = section.offsetHeight;
+    sections.forEach((section) => {
+      const sectionTop = section.offsetTop - 120;
+      const sectionHeight = section.offsetHeight;
 
-        if (
-          window.scrollY >= sectionTop &&
-          window.scrollY < sectionTop + sectionHeight
-        ) {
-          currentId = section.getAttribute("id") || "";
-        }
-      });
-
-      if (currentId) {
-        navLinks.forEach((link) => {
-          const href = link.getAttribute("href") || "";
-          const hashIndex = href.indexOf("#");
-          const targetId = hashIndex >= 0 ? href.slice(hashIndex + 1) : "";
-
-          if (targetId === currentId) {
-            link.classList.add("is-active");
-          }
-        });
-
-        return;
-      }
-    }
-
-    navLinks.forEach((link) => {
-      const href = link.getAttribute("href") || "";
-      const hashIndex = href.indexOf("#");
-      const rawPath = hashIndex >= 0 ? href.slice(0, hashIndex) : href;
-      const linkPath = normalizePath(rawPath);
-
-      if (!rawPath) return;
-
-      if (linkPath === currentPath) {
-        link.classList.add("is-active");
+      if (
+        window.scrollY >= sectionTop &&
+        window.scrollY < sectionTop + sectionHeight
+      ) {
+        currentId = section.getAttribute("id") || "";
       }
     });
+
+    if (currentId) {
+      navLinks.forEach((link) => {
+        const href = link.getAttribute("href") || "";
+        const hashIndex = href.indexOf("#");
+        const targetId = hashIndex >= 0 ? href.slice(hashIndex + 1) : "";
+
+        if (targetId === currentId) {
+          link.classList.add("is-active");
+        }
+      });
+    }
+
+    return;
   }
+
+  navLinks.forEach((link) => {
+    const href = link.getAttribute("href") || "";
+
+    if (href.includes("#")) return;
+
+    const linkPath = normalizePath(href);
+
+    if (linkPath === currentPath) {
+      link.classList.add("is-active");
+    }
+  });
+}
 
   function setupSmoothScroll() {
     document.querySelectorAll('a[href*="#"]').forEach((anchor) => {
