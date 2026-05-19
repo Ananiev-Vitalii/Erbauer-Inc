@@ -1,8 +1,8 @@
 from django import forms
 from django.urls import reverse_lazy
-from django.utils.translation import gettext_lazy  as _, pgettext_lazy
+from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import HTML, Layout, Field, Submit, Div
+from crispy_forms.layout import HTML, Layout, Field, Div
 
 
 class BaseStyledForm:
@@ -72,7 +72,9 @@ class ContactForm(BaseStyledForm, forms.Form):
         self.helper.form_id = "contactForm"
 
         privacy_acknowledge_text = _("I acknowledge the")
-        privacy_policy_text = pgettext_lazy("contact form checkbox link","Privacy Policy")
+        privacy_policy_text = pgettext_lazy(
+            "contact form checkbox link", "Privacy Policy"
+        )
 
         self.helper.layout = Layout(
             HTML('{% include "main/includes/forms/form_errors.html" %}'),
@@ -105,11 +107,15 @@ class ContactForm(BaseStyledForm, forms.Form):
                 ),
                 css_class="contacts__checkbox-field",
             ),
-            Submit(
-                "submit",
-                _("Send message"),
-                css_class="contacts__submit",
-            ),
+            HTML(f"""
+                <button
+                    type="submit"
+                    name="submit"
+                    class="contacts__submit"
+                >
+                    {_("Send message")}
+                </button>
+            """),
         )
 
     def clean_phone(self):

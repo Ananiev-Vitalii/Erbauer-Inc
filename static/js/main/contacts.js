@@ -14,6 +14,15 @@ document.addEventListener("DOMContentLoaded", function () {
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
   }
 
+  function setSubmitLoading(form, isLoading) {
+    const submitButton = form.querySelector(".contacts__submit");
+
+    if (!submitButton) return;
+
+    submitButton.disabled = isLoading;
+    submitButton.classList.toggle("is-loading", isLoading);
+  }
+
   function bindContactForm() {
     const form = wrapper.querySelector("#contactForm");
 
@@ -38,7 +47,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     form.addEventListener("submit", async function (event) {
       event.preventDefault();
-      console.log("AJAX submit intercepted");
+
+      setSubmitLoading(form, true);
 
       try {
         const response = await fetch(form.action, {
@@ -54,6 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
         bindContactForm();
       } catch (error) {
         console.error("Contact form AJAX error:", error);
+        setSubmitLoading(form, false);
       }
     });
   }

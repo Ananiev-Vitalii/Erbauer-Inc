@@ -103,6 +103,35 @@
 }
 
 
+/* submit-loading */
+.base_submit_btn.is-loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+  opacity: 0.85;
+  cursor: wait;
+}
+
+.base_submit_btn.is-loading::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: submit-spinner-rotate 0.7s linear infinite;
+}
+
+@keyframes submit-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
 /* form-errors and form-success */
 .form-errors {
     margin-bottom: 18px;

@@ -256,6 +256,34 @@
   border: none !important;
 }
 
+/* submit-loading */
+.contacts__submit.is-loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+  opacity: 0.85;
+  cursor: wait;
+}
+
+.contacts__submit.is-loading::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: contacts-submit-spinner-rotate 0.7s linear infinite;
+}
+
+@keyframes contacts-submit-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* checkbox */
 .contacts__checkbox-field {
   margin: 18px 0 22px;

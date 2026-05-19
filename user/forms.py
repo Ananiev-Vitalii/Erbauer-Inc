@@ -3,7 +3,7 @@ from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from django.contrib.auth import forms as auth_forms
-from crispy_forms.layout import HTML, Layout, Field, Submit, Div
+from crispy_forms.layout import HTML, Layout, Field, Div
 
 from account.models import Employee
 
@@ -52,13 +52,17 @@ class BaseStyledForm:
             """)
 
     def get_turnstile_submit(self, name="submit", value="Submit", css_class=None):
-        return Submit(
-            name,
-            value,
-            css_id=self.turnstile_submit_css_id,
-            css_class=css_class or self.submit_css_class,
-            disabled=True,
-        )
+        return HTML(f"""
+            <button
+                type="submit"
+                name="{name}"
+                id="{self.turnstile_submit_css_id}"
+                class="{css_class or self.submit_css_class}"
+                disabled
+            >
+                {value}
+            </button>
+        """)
 
 
 class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
@@ -227,9 +231,13 @@ class CustomSetPasswordForm(BaseStyledForm, auth_forms.SetPasswordForm):
             ),
             Field("new_password1", template="user/forms/fields/password.html"),
             Field("new_password2", template="user/forms/fields/password.html"),
-            Submit(
-                "submit",
-                _("Change Password"),
-                css_class=self.submit_css_class,
-            ),
+            HTML(f"""
+                <button
+                    type="submit"
+                    name="submit"
+                    class="{self.submit_css_class}"
+                >
+                    {_("Change Password")}
+                </button>
+            """),
         )
