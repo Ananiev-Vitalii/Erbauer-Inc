@@ -117,10 +117,6 @@
   transition: opacity 0.25s ease;
 }
 
-.about__stat-card:hover::after {
-  opacity: 1;
-}
-
 .about__stat-value {
   display: block;
   margin-bottom: 10px;
@@ -140,6 +136,20 @@
   letter-spacing: 0.12em;
   font-weight: 800;
   font-size: 14px;
+}
+
+/* Desktop-only hover effects */
+@media (hover: hover) and (pointer: fine) {
+  .about__stat-card:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Touch/mobile devices: show bottom accent line permanently */
+@media (hover: none), (pointer: coarse) {
+  .about__stat-card::after {
+    opacity: 1;
+  }
 }
 
 @media (max-width: 1024px) {

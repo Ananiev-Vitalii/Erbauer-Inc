@@ -143,8 +143,12 @@
     color 0.28s ease;
 }
 
-.hero-btn:hover {
-  transform: translateY(-4px);
+.hero-btn,
+.hero-btn:link,
+.hero-btn:visited,
+.hero-btn:focus,
+.hero-btn:focus-visible,
+.hero-btn:active {
   text-decoration: none !important;
 }
 
@@ -152,7 +156,6 @@
 .hero-btn:focus-visible,
 .hero-btn:active {
   outline: none !important;
-  text-decoration: none !important;
 }
 
 .hero-btn::before,
@@ -164,11 +167,7 @@
 /* LEFT HERO BUTTON */
 .hero-btn-primary,
 .hero-btn-primary:link,
-.hero-btn-primary:visited,
-.hero-btn-primary:hover,
-.hero-btn-primary:focus,
-.hero-btn-primary:focus-visible,
-.hero-btn-primary:active {
+.hero-btn-primary:visited {
   color: #111827 !important;
   border: none !important;
   outline: none !important;
@@ -187,25 +186,6 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
-.hero-btn-primary:hover,
-.hero-btn-primary:focus,
-.hero-btn-primary:focus-visible,
-.hero-btn-primary:active {
-  color: #111827 !important;
-  background:
-    linear-gradient(
-      120deg,
-      #fde68a 0%,
-      #facc15 18%,
-      #f59e0b 45%,
-      #f97316 72%,
-      #fdba74 100%
-    ) !important;
-  box-shadow:
-    0 22px 42px rgba(249, 115, 22, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
-}
-
 /* RIGHT HERO BUTTON */
 .hero-btn-secondary,
 .hero-btn-secondary:link,
@@ -218,16 +198,37 @@
   box-shadow: none !important;
 }
 
-.hero-btn-secondary:hover,
-.hero-btn-secondary:focus,
-.hero-btn-secondary:focus-visible,
-.hero-btn-secondary:active {
-  color: var(--white) !important;
-  border: 2px solid rgba(250, 204, 21, 0.8) !important;
-  outline: none !important;
-  text-decoration: none !important;
-  background: rgba(255, 255, 255, 0.03) !important;
-  box-shadow: none !important;
+/* Desktop-only hover/click effects */
+@media (hover: hover) and (pointer: fine) {
+  .hero-btn:hover {
+    transform: translateY(-4px);
+    text-decoration: none !important;
+  }
+
+  .hero-btn-primary:hover,
+  .hero-btn-primary:active {
+    color: #111827 !important;
+    background:
+      linear-gradient(
+        120deg,
+        #fde68a 0%,
+        #facc15 18%,
+        #f59e0b 45%,
+        #f97316 72%,
+        #fdba74 100%
+      ) !important;
+    box-shadow:
+      0 22px 42px rgba(249, 115, 22, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+  }
+
+  .hero-btn-secondary:hover,
+  .hero-btn-secondary:active {
+    color: var(--white) !important;
+    border: 2px solid rgba(250, 204, 21, 0.8) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    box-shadow: none !important;
+  }
 }
 
 /* Glows */
