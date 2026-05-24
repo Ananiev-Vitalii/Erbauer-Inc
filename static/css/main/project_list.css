@@ -105,11 +105,6 @@
   line-height: 1;
   text-decoration: none;
   white-space: nowrap;
-  transition:
-    box-shadow 0.25s ease,
-    border-color 0.25s ease,
-    color 0.25s ease,
-    background 0.25s ease;
 }
 
 .projects-pagination__link {
@@ -126,13 +121,6 @@
 .projects-pagination__link-text {
   display: inline;
   line-height: 1;
-}
-
-.projects-pagination__link:hover,
-.projects-pagination__number:hover {
-  color: var(--orange-500);
-  border-color: rgba(249, 115, 22, 0.26);
-  box-shadow: 0 10px 22px rgba(249, 115, 22, 0.12);
 }
 
 .projects-pagination__number.is-active {
@@ -207,18 +195,39 @@
   box-shadow:
     0 16px 34px rgba(180, 83, 9, 0.24),
     inset 0 1px 0 rgba(255, 255, 255, 0.14);
-  transition:
-    transform 0.28s ease,
-    box-shadow 0.28s ease,
-    filter 0.28s ease;
 }
 
-.projects-page__empty-btn:hover {
-  transform: translateY(-2px);
-  box-shadow:
-    0 22px 42px rgba(180, 83, 9, 0.30),
-    inset 0 1px 0 rgba(255, 255, 255, 0.10);
-  filter: saturate(1.04);
+@media (hover: hover) and (pointer: fine) {
+  .projects-pagination__link,
+  .projects-pagination__number {
+    transition:
+      box-shadow 0.25s ease,
+      border-color 0.25s ease,
+      color 0.25s ease,
+      background 0.25s ease;
+  }
+
+  .projects-pagination__link:hover,
+  .projects-pagination__number:hover {
+    color: var(--orange-500);
+    border-color: rgba(249, 115, 22, 0.26);
+    box-shadow: 0 10px 22px rgba(249, 115, 22, 0.12);
+  }
+
+  .projects-page__empty-btn {
+    transition:
+      transform 0.28s ease,
+      box-shadow 0.28s ease,
+      filter 0.28s ease;
+  }
+
+  .projects-page__empty-btn:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 22px 42px rgba(180, 83, 9, 0.30),
+      inset 0 1px 0 rgba(255, 255, 255, 0.10);
+    filter: saturate(1.04);
+  }
 }
 
 @media (max-width: 1024px) {

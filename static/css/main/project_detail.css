@@ -162,10 +162,6 @@
     0 20px 46px rgba(15, 23, 42, 0.08),
     0 6px 18px rgba(15, 23, 42, 0.04);
   isolation: isolate;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
 }
 
 .project-detail__media-frame::before {
@@ -179,13 +175,11 @@
     rgba(15, 23, 42, 0.42) 100%
   );
   opacity: 0;
-  transition: opacity 0.3s ease;
 }
 
 .project-detail__media-frame img {
   display: block;
   width: 100%;
-  transition: transform 0.45s ease;
 }
 
 .project-detail__media-frame--hero {
@@ -221,7 +215,6 @@
   justify-content: center;
   gap: 12px;
   opacity: 0;
-  transition: opacity 0.28s ease;
   pointer-events: none;
 }
 
@@ -258,8 +251,26 @@
   box-shadow: 0 10px 24px rgba(15, 23, 42, 0.16);
 }
 
-/* Hover only for devices that actually have hover */
 @media (hover: hover) and (pointer: fine) {
+  .project-detail__media-frame {
+    transition:
+      transform 0.3s ease,
+      box-shadow 0.3s ease,
+      border-color 0.3s ease;
+  }
+
+  .project-detail__media-frame::before {
+    transition: opacity 0.3s ease;
+  }
+
+  .project-detail__media-frame img {
+    transition: transform 0.45s ease;
+  }
+
+  .project-detail__media-overlay {
+    transition: opacity 0.28s ease;
+  }
+
   .project-detail__media-frame:hover {
     transform: translateY(-4px);
     box-shadow:
@@ -278,6 +289,15 @@
 
   .project-detail__media-frame:hover .project-detail__media-overlay {
     opacity: 1;
+  }
+
+  .project-lightbox__close {
+    transition: transform 0.25s ease, color 0.25s ease, opacity 0.25s ease;
+  }
+
+  .project-lightbox__close:hover {
+    transform: scale(1.08);
+    color: var(--orange-500);
   }
 }
 
@@ -406,27 +426,15 @@ body.project-lightbox-open {
   top: 24px;
   right: 24px;
   z-index: 2002;
-  width: 44px;
-  height: 44px;
+  width: 42px;
+  height: 42px;
   border: 0;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: transparent;
   color: #fff;
   font-size: 32px;
   line-height: 1;
   cursor: pointer;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  transition:
-    transform 0.25s ease,
-    background 0.25s ease,
-    color 0.25s ease;
-}
-
-.project-lightbox__close:hover {
-  transform: scale(1.08);
-  background: rgba(249, 115, 22, 0.9);
-  color: #fff;
 }
 
 @keyframes projectLightboxIn {
@@ -515,8 +523,8 @@ body.project-lightbox-open {
   .project-lightbox__close {
     top: 18px;
     right: 18px;
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     font-size: 28px;
   }
 
