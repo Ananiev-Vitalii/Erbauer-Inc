@@ -67,14 +67,27 @@
         </form>
 
         {% if user.is_authenticated and profile %}
-        <a href="{% url 'main:home' %}" class="nav-avatar-link"
-           aria-label="{% trans 'Open profile menu' %}">
-          <img
-                  src="{{ profile.avatar.url }}"
-                  alt="{% trans 'User avatar' %}"
-                  class="nav-avatar-image"
+        <div class="profile-menu">
+          <button
+                  class="nav-avatar-link"
+                  id="profileToggle"
+                  aria-label="{% trans 'Open profile menu' %}"
+                  aria-expanded="false"
+                  type="button"
           >
-        </a>
+            <img
+                    src="{{ profile.avatar.url }}"
+                    alt="{% trans 'User avatar' %}"
+                    class="nav-avatar-image"
+            >
+          </button>
+
+          <div class="profile-dropdown" id="profileDropdown">
+            <a href="{% url 'main:home' %}">{% trans "Profile" %}</a>
+            <a href="{% url 'main:home' %}">{% trans "Cheat sheet" %}</a>
+            <a href="{% url 'main:home' %}">{% trans "Submit invoice" %}</a>
+          </div>
+        </div>
         {% endif %}
 
         <button

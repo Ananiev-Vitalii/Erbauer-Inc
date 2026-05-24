@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-25 16:30-0700\n"
+"POT-Creation-Date: 2026-05-24 15:02-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -45,8 +45,8 @@ msgstr "Ім’я"
 msgid "Last name"
 msgstr "Прізвище"
 
-#: .\account\models.py:40 .\main\models.py:39
-#: .\templates\main\includes\sections\contacts.html:30 .\user\forms.py:154
+#: .\account\models.py:40 .\main\models.py:40
+#: .\templates\main\includes\sections\contacts.html:30 .\user\forms.py:158
 msgid "Email"
 msgstr "Електронна пошта"
 
@@ -54,7 +54,7 @@ msgstr "Електронна пошта"
 msgid "Currently employed"
 msgstr "Працює зараз"
 
-#: .\account\models.py:44 .\account\models.py:56 .\main\models.py:90
+#: .\account\models.py:44 .\account\models.py:64 .\main\models.py:91
 msgid "Employee"
 msgstr "Співробітник"
 
@@ -62,32 +62,32 @@ msgstr "Співробітник"
 msgid "Employees"
 msgstr "Співробітники"
 
-#: .\account\models.py:59
+#: .\account\models.py:67
 msgid "Avatar"
 msgstr "Аватар"
 
-#: .\account\models.py:64 .\templates\main\contact_email.html:40
+#: .\account\models.py:72 .\templates\main\contact_email.html:40
 #: .\templates\main\includes\sections\contacts.html:22
 msgid "Phone"
 msgstr "Телефон"
 
-#: .\account\models.py:67
+#: .\account\models.py:75 .\templates\main\includes\navbar.html:86
 msgid "Profile"
 msgstr "Профіль"
 
-#: .\account\models.py:68
+#: .\account\models.py:76
 msgid "Profiles"
 msgstr "Профілі"
 
-#: .\config\settings\base.py:90
+#: .\config\settings\base.py:95
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: .\config\settings\base.py:91
+#: .\config\settings\base.py:96
 msgid "English"
 msgstr "Англійська"
 
-#: .\main\admin.py:75 .\main\models.py:116
+#: .\main\admin.py:75 .\main\models.py:117
 msgid "Icon"
 msgstr "Іконка"
 
@@ -119,20 +119,20 @@ msgstr "Номер телефону"
 msgid "Message"
 msgstr "Повідомлення"
 
-#: .\main\forms.py:63 .\user\forms.py:75
+#: .\main\forms.py:63 .\user\forms.py:79
 msgid "You must agree to the Privacy Policy."
 msgstr "Ви повинні погодитися з Політикою конфіденційності."
 
-#: .\main\forms.py:74 .\user\forms.py:90
+#: .\main\forms.py:74 .\user\forms.py:94
 msgid "I acknowledge the"
 msgstr "Я ознайомився та погоджуюсь з"
 
-#: .\main\forms.py:75
+#: .\main\forms.py:76
 msgctxt "contact form checkbox link"
 msgid "Privacy Policy"
 msgstr "Політикою конфіденційності"
 
-#: .\main\forms.py:110
+#: .\main\forms.py:116
 msgid "Send message"
 msgstr "Надіслати повідомлення"
 
@@ -140,176 +140,176 @@ msgstr "Надіслати повідомлення"
 msgid "Please enter a valid 10-digit Canadian phone number."
 msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
 
-#: .\main\models.py:36
+#: .\main\models.py:37
 msgid "Company name"
 msgstr "Назва компанії"
 
-#: .\main\models.py:37
+#: .\main\models.py:38
 msgid "Primary phone"
 msgstr "Основний номер телефону"
 
-#: .\main\models.py:38
+#: .\main\models.py:39
 msgid "Secondary phone"
 msgstr "Додатковий номер телефону"
 
-#: .\main\models.py:40 .\templates\main\includes\sections\contacts.html:16
+#: .\main\models.py:41 .\templates\main\includes\sections\contacts.html:16
 msgid "Address"
 msgstr "Адреса"
 
-#: .\main\models.py:41
+#: .\main\models.py:42
 msgid "Working hours"
 msgstr "Робочий час"
 
-#: .\main\models.py:43
+#: .\main\models.py:44
 msgid "Company favicon"
 msgstr "Фавікон компанії"
 
-#: .\main\models.py:48
+#: .\main\models.py:49
 msgid "Company logo"
 msgstr "Логотип компанії"
 
-#: .\main\models.py:54
+#: .\main\models.py:55
 msgid "Years on the market"
 msgstr "Років на ринку"
 
-#: .\main\models.py:57
+#: .\main\models.py:58
 msgid "Completed objects count"
 msgstr "Кількість завершених об’єктів"
 
-#: .\main\models.py:59
+#: .\main\models.py:60
 msgid "Employees count"
 msgstr "Кількість працівників"
 
-#: .\main\models.py:60
+#: .\main\models.py:61
 msgid "About description"
 msgstr "Опис про компанію"
 
-#: .\main\models.py:62
+#: .\main\models.py:63
 msgid "Hero title"
 msgstr "Заголовок головного блоку"
 
-#: .\main\models.py:63
+#: .\main\models.py:64
 msgid "Hero description"
 msgstr "Опис головного блоку"
 
-#: .\main\models.py:64
+#: .\main\models.py:65
 msgid "Services description"
 msgstr "Опис послуг"
 
-#: .\main\models.py:65
+#: .\main\models.py:66
 msgid "Footer description"
 msgstr "Опис у підвалі сайту"
 
-#: .\main\models.py:67 .\main\models.py:151
+#: .\main\models.py:68 .\main\models.py:152
 msgid "Created at"
 msgstr "Дата створення"
 
-#: .\main\models.py:68
+#: .\main\models.py:69
 msgid "Updated at"
 msgstr "Дата оновлення"
 
-#: .\main\models.py:70
+#: .\main\models.py:71
 msgid "Facebook URL"
 msgstr "Посилання на Facebook"
 
-#: .\main\models.py:71
+#: .\main\models.py:72
 msgid "Instagram URL"
 msgstr "Посилання на Instagram"
 
-#: .\main\models.py:72
+#: .\main\models.py:73
 msgid "Telegram URL"
 msgstr "Посилання на Telegram"
 
-#: .\main\models.py:74
+#: .\main\models.py:75
 msgid "Is active"
 msgstr "Активний"
 
-#: .\main\models.py:77
+#: .\main\models.py:78
 msgid "Company Profile"
 msgstr "Профіль компанії"
 
-#: .\main\models.py:78
+#: .\main\models.py:79
 msgid "Company Profiles"
 msgstr "Профілі компаній"
 
-#: .\main\models.py:92 .\main\models.py:114
+#: .\main\models.py:93 .\main\models.py:115
 msgid "Description"
 msgstr "Опис"
 
-#: .\main\models.py:94
+#: .\main\models.py:95
 msgid "Photo"
 msgstr "Фото"
 
-#: .\main\models.py:99
+#: .\main\models.py:100
 msgid "Display order"
 msgstr "Порядок відображення"
 
-#: .\main\models.py:100
+#: .\main\models.py:101
 msgid "Is visible"
 msgstr "Відображається"
 
-#: .\main\models.py:103
+#: .\main\models.py:104
 msgid "Team Member"
 msgstr "Член команди"
 
-#: .\main\models.py:104
+#: .\main\models.py:105
 msgid "Team Members"
 msgstr "Члени команди"
 
-#: .\main\models.py:113 .\main\models.py:136
+#: .\main\models.py:114 .\main\models.py:137
 msgid "Title"
 msgstr "Заголовок"
 
-#: .\main\models.py:122
+#: .\main\models.py:123
 msgid "Service"
 msgstr "Послуга"
 
-#: .\main\models.py:123 .\templates\main\includes\navbar.html:22
-#: .\templates\main\includes\navbar.html:120
+#: .\main\models.py:124 .\templates\main\includes\navbar.html:22
+#: .\templates\main\includes\navbar.html:133
 msgid "Services"
 msgstr "Послуги"
 
-#: .\main\models.py:131 .\templates\main\includes\sections\projects.html:18
+#: .\main\models.py:132 .\templates\main\includes\sections\projects.html:18
 #: .\templates\main\project_list.html:38
 msgid "Residential"
 msgstr "Житлові"
 
-#: .\main\models.py:132 .\templates\main\includes\sections\projects.html:21
+#: .\main\models.py:133 .\templates\main\includes\sections\projects.html:21
 #: .\templates\main\project_list.html:45
 msgid "Commercial"
 msgstr "Комерційні"
 
-#: .\main\models.py:139
+#: .\main\models.py:140
 msgid "Category"
 msgstr "Категорія"
 
-#: .\main\models.py:145
+#: .\main\models.py:146
 msgid "Short description"
 msgstr "Короткий опис"
 
-#: .\main\models.py:148
+#: .\main\models.py:149
 msgid "Cover image"
 msgstr "Обкладинка"
 
-#: .\main\models.py:154 .\main\models.py:167
+#: .\main\models.py:155 .\main\models.py:168
 msgid "Project"
 msgstr "Проєкт"
 
-#: .\main\models.py:155 .\templates\main\includes\navbar.html:24
-#: .\templates\main\includes\navbar.html:122
+#: .\main\models.py:156 .\templates\main\includes\navbar.html:24
+#: .\templates\main\includes\navbar.html:135
 #: .\templates\main\project_list.html:4
 msgid "Projects"
 msgstr "Проєкти"
 
-#: .\main\models.py:170
+#: .\main\models.py:171
 msgid "Image"
 msgstr "Зображення"
 
-#: .\main\models.py:175
+#: .\main\models.py:176
 msgid "Project image"
 msgstr "Зображення проєкту"
 
-#: .\main\models.py:176
+#: .\main\models.py:177
 msgid "Project images"
 msgstr "Галерея зображень проєкту"
 
@@ -349,7 +349,6 @@ msgid "Administration"
 msgstr "Адміністрування"
 
 #: .\templates\core\errors\403.html:4 .\templates\core\errors\403.html:16
-#| msgid "403 — Access denied"
 msgid "Access denied"
 msgstr "Доступ заборонено"
 
@@ -457,41 +456,41 @@ msgid "Main menu"
 msgstr "Головне меню"
 
 #: .\templates\main\includes\navbar.html:21
-#: .\templates\main\includes\navbar.html:119
+#: .\templates\main\includes\navbar.html:132
 msgid "Home"
 msgstr "Головна"
 
 #: .\templates\main\includes\navbar.html:23
-#: .\templates\main\includes\navbar.html:121
+#: .\templates\main\includes\navbar.html:134
 msgid "About"
 msgstr "Про нас"
 
 #: .\templates\main\includes\navbar.html:25
-#: .\templates\main\includes\navbar.html:123
+#: .\templates\main\includes\navbar.html:136
 msgid "Team"
 msgstr "Команда"
 
 #: .\templates\main\includes\navbar.html:26
-#: .\templates\main\includes\navbar.html:124
+#: .\templates\main\includes\navbar.html:137
 msgid "Contacts"
 msgstr "Контакти"
 
 #: .\templates\main\includes\navbar.html:30
-#: .\templates\main\includes\navbar.html:128
+#: .\templates\main\includes\navbar.html:141
 msgid "Admin panel"
 msgstr "Адмін панель"
 
 #: .\templates\main\includes\navbar.html:37
-#: .\templates\main\includes\navbar.html:135
+#: .\templates\main\includes\navbar.html:148
 msgid "Log out"
 msgstr "Вийти"
 
 #: .\templates\main\includes\navbar.html:40
-#: .\templates\main\includes\navbar.html:138
+#: .\templates\main\includes\navbar.html:151
 #: .\templates\registration\login.html:5 .\templates\registration\login.html:19
 #: .\templates\registration\password_reset_confirm.html:32
 #: .\templates\registration\password_reset_form.html:33
-#: .\templates\registration\register.html:31 .\user\forms.py:191
+#: .\templates\registration\register.html:31 .\user\forms.py:195
 msgid "Log in"
 msgstr "Увійти"
 
@@ -499,15 +498,23 @@ msgstr "Увійти"
 msgid "Language switcher"
 msgstr "Перемикач мов"
 
-#: .\templates\main\includes\navbar.html:71
+#: .\templates\main\includes\navbar.html:74
 msgid "Open profile menu"
 msgstr "Відкрити меню профілю"
 
-#: .\templates\main\includes\navbar.html:74
+#: .\templates\main\includes\navbar.html:80
 msgid "User avatar"
 msgstr "Аватар користувача"
 
-#: .\templates\main\includes\navbar.html:83
+#: .\templates\main\includes\navbar.html:88
+msgid "Submit invoice"
+msgstr "Надіслати інвойс"
+
+#: .\templates\main\includes\navbar.html:87
+msgid "Cheat sheet"
+msgstr "Шпаргалка"
+
+#: .\templates\main\includes\navbar.html:96
 msgid "Open menu"
 msgstr "Відкрити меню"
 
@@ -1238,7 +1245,7 @@ msgstr ""
 "скидання пароля.\n"
 "          "
 
-#: .\templates\registration\register.html:21 .\user\forms.py:137
+#: .\templates\registration\register.html:21 .\user\forms.py:141
 msgid "Registration is available only for active company employees."
 msgstr "Реєстрація доступна лише для чинних працівників компанії."
 
@@ -1343,32 +1350,32 @@ msgstr "Виберіть користувача для зміни"
 msgid "Users"
 msgstr "Користувачі"
 
-#: .\user\forms.py:91
+#: .\user\forms.py:95
 msgctxt "register checkbox link"
 msgid "Privacy Policy"
 msgstr "Політикою конфіденційності"
 
-#: .\user\forms.py:125
+#: .\user\forms.py:129
 msgid "Register"
 msgstr "Зареєструватися"
 
-#: .\user\forms.py:133
+#: .\user\forms.py:137
 msgid "User with this email already exists"
 msgstr "Користувач із цією електронною адресою вже існує"
 
-#: .\user\forms.py:142
+#: .\user\forms.py:146
 msgid "A user with this employee email is already registered."
 msgstr "Користувач із цією робочою електронною адресою вже зареєстрований."
 
-#: .\user\forms.py:170
+#: .\user\forms.py:174
 msgid "Resend verification email"
 msgstr "Надіслати лист для підтвердження повторно"
 
-#: .\user\forms.py:208
+#: .\user\forms.py:212
 msgid "Send an email"
 msgstr "Надіслати лист"
 
-#: .\user\forms.py:232
+#: .\user\forms.py:240
 msgid "Change Password"
 msgstr "Змінити пароль"
 
