@@ -178,7 +178,6 @@ p {
   color: var(--orange-500);
 }
 
-/* Действия в navbar */
 .nav-actions {
   display: flex;
   align-items: center;
@@ -187,7 +186,6 @@ p {
   flex: 0 0 auto;
 }
 
-/* Аватар и dropdown профиля */
 .profile-menu {
   position: static;
   flex-shrink: 0;
@@ -248,7 +246,6 @@ p {
   transition: color 0.2s ease, background 0.2s ease;
 }
 
-/* Ссылки авторизации в navbar */
 .nav-auth-form,
 .mobile-nav-auth-form {
   margin: 0;
@@ -277,7 +274,6 @@ p {
   white-space: nowrap;
 }
 
-/* Бургер */
 .menu-toggle {
   display: none;
   width: 46px;
@@ -314,7 +310,6 @@ p {
   transform: translateY(-7px) rotate(-45deg);
 }
 
-/* Мобильное меню */
 .mobile-nav {
   display: none;
   padding: 0 16px 16px;
@@ -348,7 +343,6 @@ p {
   text-align: center;
 }
 
-/* Переключатель языка */
 .language-switcher {
   display: inline-flex;
   align-items: center;
@@ -392,7 +386,6 @@ p {
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
 }
 
-/* Порядок элементов справа: язык -> аватар -> бургер */
 .nav-actions > .language-switcher {
   order: 1;
   margin-left: 30px;
@@ -513,7 +506,6 @@ p {
   transform: translateY(0);
 }
 
-/* Эффекты hover только для устройств с реальным hover */
 @media (hover: hover) and (pointer: fine) {
   .brand:hover .text-navbar {
     color: var(--orange-500);
@@ -644,18 +636,7 @@ p {
     --header-h: 74px;
   }
 
-  .mobile-nav {
-    position: static;
-    width: auto;
-    max-width: none;
-    padding: 0 16px 16px;
-    border: 0;
-    border-top: 1px solid var(--line);
-    border-radius: 0;
-    background: #ffffff;
-    box-shadow: none;
-  }
-
+  .mobile-nav,
   .profile-dropdown {
     position: absolute;
     top: 100%;
@@ -669,6 +650,13 @@ p {
     border-radius: 0;
     background: #ffffff;
     box-shadow: none;
+  }
+
+  .mobile-nav {
+    z-index: 110;
+  }
+
+  .profile-dropdown {
     z-index: 120;
   }
 
