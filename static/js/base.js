@@ -14,6 +14,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return (path || "").replace(/\/+$/, "") || "/";
   }
 
+  function updateHeaderHeightVar() {
+    if (!siteHeader) return;
+
+    document.documentElement.style.setProperty(
+      "--site-header-height",
+      `${siteHeader.offsetHeight}px`,
+    );
+  }
+
   function closeMobileNav() {
     if (!mobileNav) return;
 
@@ -37,6 +46,37 @@ document.addEventListener("DOMContentLoaded", () => {
   function closeAllDropdowns() {
     closeMobileNav();
     closeProfileDropdown();
+  }
+
+  function getHeaderOffset() {
+    updateHeaderHeightVar();
+    return siteHeader ? siteHeader.offsetHeight : 80;
+  }
+
+  function scrollToTarget(target, behavior = "smooth") {
+    if (!target) return;
+
+    const headerOffset = getHeaderOffset();
+    const targetPosition =
+      target.getBoundingClientRect().top + window.scrollY - headerOffset;
+
+    window.scrollTo({
+      top: targetPosition,
+      behavior,
+    });
+  }
+
+  function scrollToCurrentHash(behavior = "auto") {
+    const hash = window.location.hash;
+
+    if (!hash) return;
+
+    const targetId = decodeURIComponent(hash.slice(1));
+    const target = document.getElementById(targetId);
+
+    if (!target) return;
+
+    scrollToTarget(target, behavior);
   }
 
   function handleHeaderState() {
@@ -64,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
       let currentId = "";
 
       sections.forEach((section) => {
-        const sectionTop = section.offsetTop - 120;
+        const sectionTop = section.offsetTop - getHeaderOffset() - 24;
         const sectionHeight = section.offsetHeight;
 
         if (
@@ -119,52 +159,53 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const isSamePage = rawPath === "" || path === currentPath;
 
-        if (!isSamePage) return;
+        if (!isSamePage) {
+          closeAllDropdowns();
+          return;
+        }
 
         const target = document.getElementById(id);
         if (!target) return;
 
         e.preventDefault();
 
-        const headerOffset = siteHeader ? siteHeader.offsetHeight : 80;
-        const start = window.scrollY;
-        const end =
-          target.getBoundingClientRect().top +
-          window.scrollY -
-          headerOffset;
-
-        const distance = end - start;
-        const duration = 500;
-
-        let startTime = null;
-
-        function easeOutQuad(t) {
-          return t * (2 - t);
-        }
-
-        function animateScroll(timestamp) {
-          if (!startTime) startTime = timestamp;
-
-          const elapsed = timestamp - startTime;
-          const progress = Math.min(elapsed / duration, 1);
-          const eased = easeOutQuad(progress);
-
-          window.scrollTo(0, start + distance * eased);
-
-          if (progress < 1) {
-            requestAnimationFrame(animateScroll);
-          }
-        }
-
-        requestAnimationFrame(animateScroll);
+        scrollToTarget(target);
         closeAllDropdowns();
+
+        if (window.location.hash !== `#${id}`) {
+          window.history.pushState(null, "", `#${id}`);
+        }
       });
     });
   }
 
+  updateHeaderHeightVar();
   handleHeaderState();
   setActiveNavLink();
   setupSmoothScroll();
+
+  window.addEventListener("load", () => {
+    updateHeaderHeightVar();
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        scrollToCurrentHash("auto");
+        setActiveNavLink();
+      });
+    });
+  });
+
+  window.addEventListener("resize", () => {
+    updateHeaderHeightVar();
+    setActiveNavLink();
+  });
+
+  window.addEventListener("hashchange", () => {
+    requestAnimationFrame(() => {
+      scrollToCurrentHash("smooth");
+      setActiveNavLink();
+    });
+  });
 
   window.addEventListener("scroll", () => {
     handleHeaderState();
