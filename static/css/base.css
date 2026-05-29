@@ -183,6 +183,7 @@ p {
 }
 
 .nav-actions {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -191,7 +192,7 @@ p {
 }
 
 .profile-menu {
-  position: static;
+  position: relative;
   flex-shrink: 0;
 }
 
@@ -224,8 +225,8 @@ p {
 .profile-dropdown {
   display: none;
   position: absolute;
-  top: calc(100% + 6px);
-  right: 16px;
+  top: calc(100% + ((var(--header-h) - 44px) / 2) + 6px);
+  right: 0;
   width: 220px;
   max-width: calc(100vw - 32px);
   padding: 12px;
@@ -347,6 +348,24 @@ p {
   text-align: center;
 }
 
+.profile-dropdown .mobile-nav-auth-form {
+  width: 100%;
+}
+
+.profile-dropdown .mobile-nav-auth-button {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 12px;
+  text-align: left;
+  justify-content: flex-start;
+}
+
+.profile-dropdown .mobile-nav-auth-button:hover {
+  color: var(--orange-500);
+  background: #fff8e7;
+}
+
 .language-switcher {
   display: inline-flex;
   align-items: center;
@@ -401,6 +420,10 @@ p {
 
 .nav-actions > .menu-toggle {
   order: 3;
+}
+
+.nav-actions > .mobile-nav {
+  order: 4;
 }
 
 .mobile-nav__language {
@@ -601,17 +624,17 @@ p {
   }
 
   .mobile-nav {
-    position: absolute;
-    top: calc(100% + 6px);
-    right: 16px;
-    width: 220px;
-    max-width: calc(100vw - 32px);
-    padding: 12px;
-    border: 1px solid rgba(226, 232, 240, 0.95);
-    border-radius: 18px;
-    background: #ffffff;
-    box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
-    z-index: 110;
+  position: absolute;
+  top: calc(100% + ((var(--header-h) - 46px) / 2) + 6px);
+  right: 0;
+  width: 220px;
+  max-width: calc(100vw - 32px);
+  padding: 12px;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 18px;
+  background: #ffffff;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.14);
+  z-index: 110;
   }
 
   .mobile-nav.is-open {
@@ -638,6 +661,20 @@ p {
 @media (max-width: 640px) {
   :root {
     --header-h: 74px;
+  }
+
+  .nav-actions {
+    position: static;
+  }
+
+  .profile-menu {
+    position: static;
+    order: 1;
+  }
+
+  .profile-dropdown .mobile-nav-auth-button {
+    justify-content: center;
+    text-align: center;
   }
 
   .mobile-nav,
@@ -708,10 +745,6 @@ p {
 
   .nav-actions {
     gap: 8px;
-  }
-
-  .profile-menu {
-    order: 1;
   }
 
   .nav-avatar-link {
