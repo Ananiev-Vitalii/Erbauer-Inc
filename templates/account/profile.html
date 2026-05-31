@@ -1,0 +1,421 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}
+{{ company_profile.name|default:"Erbauer" }} / {% trans "My profile" %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/account/profile.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/back_to_top.css' %}">
+{% endblock extra_css %}
+
+{% block content_wrapper %}
+<section class="profile-page">
+  <div class="container profile-container">
+
+    <div class="profile-hero">
+      <div class="profile-hero__content">
+        <p class="profile-eyebrow">{% trans "Account settings" %}</p>
+
+        <h1 class="profile-title">
+          {% trans "My profile" %}
+        </h1>
+
+        <p class="profile-subtitle">
+          {% trans "Manage your personal details, work profile, contact information, and account security." %}
+        </p>
+      </div>
+
+      <div class="profile-status-card">
+        <span class="profile-status-card__label">{% trans "Status" %}</span>
+
+        {% if employee.is_active %}
+        <span class="profile-status profile-status--active">
+          {% trans "Active employee" %}
+        </span>
+        {% else %}
+        <span class="profile-status profile-status--inactive">
+          {% trans "Inactive employee" %}
+        </span>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="profile-panel">
+
+      <section class="profile-panel-section profile-panel-section--personal">
+        <div class="profile-section-header">
+          <div>
+            <span class="profile-section-kicker">{% trans "Personal details" %}</span>
+            <h2>{% trans "Personal & Contact Details" %}</h2>
+          </div>
+
+          <p>
+            {% trans "Manage your avatar, phone number, and the email address used to sign in to your account." %}
+          </p>
+        </div>
+
+        <div class="profile-personal-grid">
+          <div class="profile-identity-card">
+            <form
+                    method="post"
+                    action="{% url 'account:update_avatar' %}"
+                    enctype="multipart/form-data"
+                    class="profile-avatar-form"
+                    data-avatar-form
+            >
+              {% csrf_token %}
+
+              <div class="profile-avatar">
+                <img
+                        src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'img/default_profile.png' %}{% endif %}"
+                        alt="{% trans 'User avatar' %}"
+                        class="profile-avatar__image"
+                        id="profile-avatar-image"
+                >
+
+                <label
+                        class="profile-avatar__edit"
+                        for="id_avatar"
+                        aria-label="{% trans 'Change avatar' %}"
+                >
+                  <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 16.5V20h3.5L17.8 9.7l-3.5-3.5L4 16.5Zm16.7-9.6a1 1 0 0 0 0-1.4l-2.2-2.2a1 1 0 0 0-1.4 0l-1.7 1.7 3.5 3.5 1.8-1.6Z"/>
+                  </svg>
+                </label>
+
+                <input
+                        type="file"
+                        name="avatar"
+                        id="id_avatar"
+                        accept="image/jpeg,image/png,image/webp"
+                        data-avatar-input
+                >
+              </div>
+
+              <div class="profile-avatar-actions" data-avatar-actions hidden>
+                <span class="profile-avatar-file" data-avatar-file-name></span>
+
+                <button
+                        type="submit"
+                        class="profile-button profile-button--primary profile-avatar-upload-button"
+                        data-loading-text="{% trans 'Uploading...' %}"
+                >
+                  {% trans "Upload photo" %}
+                </button>
+              </div>
+
+              <div class="profile-field-error profile-avatar-error" data-avatar-error hidden></div>
+            </form>
+
+            <div class="profile-identity">
+              <h3>
+                {{ employee.first_name }} {{ employee.last_name }}
+              </h3>
+
+              <p>
+                {{ employee.position.name }}
+              </p>
+            </div>
+          </div>
+
+          {% partialdef contact-form inline %}
+          <div id="profile-contact-form">
+            <form
+                    method="post"
+                    action="{% url 'account:update_contact_details' %}"
+                    class="profile-form profile-form--contact"
+                    data-contact-details-form
+                    data-target="#profile-contact-form"
+            >
+              {% csrf_token %}
+
+              <div class="profile-form-grid">
+                <div class="profile-field">
+                  <label for="id_phone">{% trans "Phone" %}</label>
+
+                  <div class="profile-phone-field">
+                    <span class="profile-phone-prefix">+1</span>
+
+                    <input
+                            type="tel"
+                            name="phone"
+                            id="id_phone"
+                            value="{{ contact_form.phone.value|default_if_none:'' }}"
+                            placeholder="(555) 555-5555"
+                            inputmode="tel"
+                            autocomplete="tel-national"
+                            maxlength="14"
+                            class="profile-phone-input"
+                    >
+                  </div>
+
+                  <div class="profile-field-error">
+                    {% if contact_form.phone.errors %}
+                    {% for error in contact_form.phone.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="profile-field">
+                  <label for="id_email">{% trans "Email" %}</label>
+
+                  <input
+                          type="email"
+                          name="email"
+                          id="id_email"
+                          value="{{ contact_form.email.value|default_if_none:'' }}"
+                          placeholder="{% trans 'Enter email address' %}"
+                          inputmode="email"
+                          autocomplete="email"
+                          autocapitalize="none"
+                          spellcheck="false"
+                  >
+
+                  <div class="profile-field-error">
+                    {% if contact_form.email.errors %}
+                    {% for error in contact_form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+
+              {% if contact_form.non_field_errors %}
+              <div class="profile-form-error">
+                {{ contact_form.non_field_errors }}
+              </div>
+              {% endif %}
+
+              {% if contact_form.is_success %}
+              <div class="profile-form-success">
+                {% trans "Contact details updated successfully." %}
+              </div>
+              {% endif %}
+
+              <div class="profile-form-actions">
+                <button
+                        type="submit"
+                        class="profile-button profile-button--primary"
+                        data-loading-text="{% trans 'Saving...' %}"
+                >
+                  {% trans "Save contact details" %}
+                </button>
+              </div>
+            </form>
+          </div>
+          {% endpartialdef %}
+        </div>
+      </section>
+
+      <div class="profile-section-divider" aria-hidden="true">
+        <span></span>
+      </div>
+
+      <section class="profile-panel-section">
+        <div class="profile-section-header">
+          <div>
+            <span class="profile-section-kicker">{% trans "Work profile" %}</span>
+            <h2>{% trans "Employee Information" %}</h2>
+          </div>
+
+          <p>
+            {% trans "Update your work-related information and current job title." %}
+          </p>
+        </div>
+
+        {% partialdef employee-position-form inline %}
+        <div id="profile-employee-position-form">
+          <form
+                  method="post"
+                  action="{% url 'account:update_employee_position' %}"
+                  class="profile-form"
+                  data-employee-position-form
+                  data-target="#profile-employee-position-form"
+          >
+            {% csrf_token %}
+
+            <div class="profile-form-grid profile-form-grid--single">
+              <div class="profile-field">
+                <label for="{{ position_form.position.id_for_label }}">
+                  {% trans "Job title" %}
+                </label>
+
+                <div class="profile-select-wrap">
+                  {{ position_form.position }}
+                </div>
+
+                <div class="profile-field-error">
+                  {% if position_form.position.errors %}
+                  {% for error in position_form.position.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {% if position_form.non_field_errors %}
+            <div class="profile-form-error">
+              {{ position_form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            {% if position_form.is_success %}
+            <div class="profile-form-success">
+              {% trans "Job title updated successfully." %}
+            </div>
+            {% endif %}
+
+            <div class="profile-form-actions">
+              <button
+                      type="submit"
+                      class="profile-button profile-button--primary"
+                      data-loading-text="{% trans 'Saving...' %}"
+              >
+                {% trans "Save employee info" %}
+              </button>
+            </div>
+          </form>
+        </div>
+        {% endpartialdef %}
+      </section>
+
+      <div class="profile-section-divider" aria-hidden="true">
+        <span></span>
+      </div>
+
+      <section class="profile-panel-section profile-panel-section--security">
+        <div class="profile-section-header">
+          <div>
+            <span class="profile-section-kicker">{% trans "Security" %}</span>
+            <h2>{% trans "Change Password" %}</h2>
+          </div>
+
+          <p>
+            {% trans "Choose a strong password to keep your account protected." %}
+          </p>
+        </div>
+
+        {% partialdef password-form inline %}
+        <div id="profile-password-form">
+          <form
+                  method="post"
+                  action="{% url 'account:update_password' %}"
+                  class="profile-form"
+                  data-password-form
+                  data-target="#profile-password-form"
+          >
+            {% csrf_token %}
+
+            <div class="profile-form-grid">
+              <div class="profile-field">
+                <label for="id_old_password">{% trans "Current password" %}</label>
+
+                <input
+                        type="password"
+                        name="old_password"
+                        id="id_old_password"
+                        autocomplete="current-password"
+                        placeholder="{% trans 'Enter current password' %}"
+                        required
+                >
+
+                <div class="profile-field-error">
+                  {% if password_form.old_password.errors %}
+                  {% for error in password_form.old_password.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="profile-field">
+                <label for="id_new_password1">{% trans "New password" %}</label>
+
+                <input
+                        type="password"
+                        name="new_password1"
+                        id="id_new_password1"
+                        autocomplete="new-password"
+                        placeholder="{% trans 'Enter new password' %}"
+                        required
+                >
+
+                <div class="profile-field-error">
+                  {% if password_form.new_password1.errors %}
+                  {% for error in password_form.new_password1.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="profile-field">
+                <label for="id_new_password2">{% trans "Confirm new password" context "label" %}</label>
+
+                <input
+                        type="password"
+                        name="new_password2"
+                        id="id_new_password2"
+                        autocomplete="new-password"
+                        placeholder="{% trans 'Confirm new password' context 'placeholder' %}"
+                        required
+                >
+
+                <div class="profile-field-error">
+                  {% if password_form.new_password2.errors %}
+                  {% for error in password_form.new_password2.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            {% if password_form.non_field_errors %}
+            <div class="profile-form-error">
+              {{ password_form.non_field_errors }}
+            </div>
+            {% endif %}
+
+            {% if password_form.is_success %}
+            <div class="profile-form-success">
+              {% trans "Password updated successfully." %}
+            </div>
+            {% endif %}
+
+            <div class="profile-form-actions">
+              <button
+                      type="submit"
+                      class="profile-button profile-button--dark"
+                      data-loading-text="{% trans 'Updating...' %}"
+              >
+                {% trans "Update password" %}
+              </button>
+            </div>
+          </form>
+        </div>
+        {% endpartialdef %}
+      </section>
+
+    </div>
+  </div>
+</section>
+
+<button class="back-to-top" id="backToTop" aria-label="{% trans 'Back to top' %}">
+  <span>↑</span>
+</button>
+{% endblock content_wrapper %}
+
+{% block extra_js %}
+<script src="{% static 'js/main/back_to_top.js' %}"></script>
+<script src="{% static 'js/account/avatar_upload.js' %}"></script>
+<script src="{% static 'js/account/contact_details.js' %}"></script>
+<script src="{% static 'js/account/employee_position.js' %}"></script>
+<script src="{% static 'js/account/password_change.js' %}"></script>
+{% endblock extra_js %}

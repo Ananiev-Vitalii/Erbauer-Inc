@@ -13,7 +13,7 @@ class EmployeeAdmin(TranslationAdmin):
     list_display = ("first_name", "last_name", "email", "position", "is_active")
     list_filter = ("is_active", "position")
     search_fields = ("first_name", "last_name", "email")
-    fields = ("first_name", "last_name", "email", "position", "is_active")
+    fields = ("first_name", "last_name", "email", "phone", "position", "is_active")
 
     def delete_model(self, request, obj):
         user = obj.user
@@ -32,14 +32,13 @@ class EmployeeAdmin(TranslationAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("get_first_name", "get_last_name", "phone")
+    list_display = ("get_first_name", "get_last_name")
     search_fields = (
         "employee__first_name",
         "employee__last_name",
         "employee__email",
-        "phone",
     )
-    fields = ("get_first_name", "get_last_name", "avatar", "phone")
+    fields = ("get_first_name", "get_last_name", "avatar")
     readonly_fields = ("get_first_name", "get_last_name")
 
     @admin.display(description="First name")

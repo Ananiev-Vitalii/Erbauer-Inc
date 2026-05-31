@@ -38,6 +38,7 @@ class Employee(models.Model):
         verbose_name=_("Job title"),
     )
     email = models.EmailField(_("Email"), unique=True)
+    phone = models.CharField(_("Phone"), max_length=30, blank=True)
     is_active = models.BooleanField(_("Currently employed"), default=True)
 
     class Meta:
@@ -69,7 +70,6 @@ class Profile(models.Model):
         default="profiles/default.png",
         blank=True,
     )
-    phone = models.CharField(_("Phone"), max_length=30, blank=True)
 
     class Meta:
         verbose_name = _("Profile")
