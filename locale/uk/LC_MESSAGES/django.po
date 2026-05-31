@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-30 20:59-0700\n"
+"POT-Creation-Date: 2026-05-30 22:00-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -429,7 +429,7 @@ msgstr "Збереження..."
 
 #: .\templates\account\profile.html:206
 msgid "Save contact details"
-msgstr "Зберегти контактну інформацію"
+msgstr "Зберегти інформацію"
 
 #: .\templates\account\profile.html:222
 msgid "Work profile"
@@ -449,7 +449,7 @@ msgstr "Посаду успішно оновлено."
 
 #: .\templates\account\profile.html:280
 msgid "Save employee info"
-msgstr "Зберегти інформацію співробітника"
+msgstr "Зберегти інформацію"
 
 #: .\templates\account\profile.html:295
 msgid "Security"
