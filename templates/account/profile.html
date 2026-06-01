@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block extra_css %}
+<link rel="stylesheet" href="{% static 'vendor/uppy/uppy.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/account/profile.css' %}">
 <link rel="stylesheet" href="{% static 'css/main/back_to_top.css' %}">
 {% endblock extra_css %}
@@ -64,6 +65,17 @@
                     enctype="multipart/form-data"
                     class="profile-avatar-form"
                     data-avatar-form
+                    data-uppy-bundle-url="{% static 'vendor/uppy/uppy.min.mjs' %}"
+                    data-upload-error-text="{% trans 'Could not upload avatar.' %}"
+                    data-network-error-text="{% trans 'Upload failed. Please try again.' %}"
+                    data-editor-title="{% trans 'Update profile photo' %}"
+                    data-open-editor-text="{% trans 'Choose photo' %}"
+                    data-upload-button-text="{% trans 'Save avatar' %}"
+                    data-drop-hint-text="{% trans 'Drop your photo here or' %}"
+                    data-cancel-text="{% trans 'Cancel' %}"
+                    data-save-text="{% trans 'Save' %}"
+                    data-save-changes-text="{% trans 'Save changes' %}"
+                    data-cancel-changes-text="{% trans 'Cancel' %}"
             >
               {% csrf_token %}
 
@@ -75,36 +87,19 @@
                         id="profile-avatar-image"
                 >
 
-                <label
+                <button
+                        type="button"
                         class="profile-avatar__edit"
-                        for="id_avatar"
+                        data-avatar-editor-open
                         aria-label="{% trans 'Change avatar' %}"
                 >
                   <svg viewBox="0 0 24 24" aria-hidden="true">
                     <path d="M4 16.5V20h3.5L17.8 9.7l-3.5-3.5L4 16.5Zm16.7-9.6a1 1 0 0 0 0-1.4l-2.2-2.2a1 1 0 0 0-1.4 0l-1.7 1.7 3.5 3.5 1.8-1.6Z"/>
                   </svg>
-                </label>
-
-                <input
-                        type="file"
-                        name="avatar"
-                        id="id_avatar"
-                        accept="image/jpeg,image/png,image/webp"
-                        data-avatar-input
-                >
-              </div>
-
-              <div class="profile-avatar-actions" data-avatar-actions hidden>
-                <span class="profile-avatar-file" data-avatar-file-name></span>
-
-                <button
-                        type="submit"
-                        class="profile-button profile-button--primary profile-avatar-upload-button"
-                        data-loading-text="{% trans 'Uploading...' %}"
-                >
-                  {% trans "Upload photo" %}
                 </button>
               </div>
+
+              <div id="profile-avatar-uploader"></div>
 
               <div class="profile-field-error profile-avatar-error" data-avatar-error hidden></div>
             </form>
@@ -414,7 +409,7 @@
 
 {% block extra_js %}
 <script src="{% static 'js/main/back_to_top.js' %}"></script>
-<script src="{% static 'js/account/avatar_upload.js' %}"></script>
+<script type="module" src="{% static 'js/account/avatar_upload.js' %}"></script>
 <script src="{% static 'js/account/contact_details.js' %}"></script>
 <script src="{% static 'js/account/employee_position.js' %}"></script>
 <script src="{% static 'js/account/password_change.js' %}"></script>
