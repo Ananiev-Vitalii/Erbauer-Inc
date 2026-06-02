@@ -38,7 +38,12 @@ class CompanyProfile(models.Model):
     primary_phone = models.CharField(_("Primary phone"), max_length=32)
     secondary_phone = models.CharField(_("Secondary phone"), max_length=32, blank=True)
     email = models.EmailField(_("Email"))
+
     address = models.CharField(_("Address"), max_length=255)
+    city = models.CharField(_("City"), max_length=50)
+    province = models.CharField(_("Province"), max_length=50)
+    postal_code = models.CharField(_("Postal Code"), max_length=10)
+
     working_hours = models.TextField(_("Working hours"))
     favicon = models.ImageField(
         _("Company favicon"),

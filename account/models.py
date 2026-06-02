@@ -77,3 +77,10 @@ class Profile(models.Model):
 
     def __str__(self) -> str:
         return str(self.employee)
+
+
+class CompanySimpleInvoice(models.Model):
+    pass
+
+class EmployeeSimpleInvoice(models.Model):
+    pass

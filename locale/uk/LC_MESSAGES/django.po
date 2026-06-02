@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-31 22:59-0700\n"
+"POT-Creation-Date: 2026-06-01 22:35-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -64,13 +64,13 @@ msgstr "Прізвище"
 
 #: .\account\models.py:40 .\main\models.py:40
 #: .\templates\account\profile.html:159
-#: .\templates\main\includes\sections\contacts.html:30 .\user\forms.py:158
+#: .\templates\main\includes\sections\contacts.html:32 .\user\forms.py:158
 msgid "Email"
 msgstr "Електронна пошта"
 
 #: .\account\models.py:41 .\templates\account\profile.html:131
 #: .\templates\main\contact_email.html:40
-#: .\templates\main\includes\sections\contacts.html:22
+#: .\templates\main\includes\sections\contacts.html:24
 msgid "Phone"
 msgstr "Телефон"
 
@@ -78,7 +78,7 @@ msgstr "Телефон"
 msgid "Currently employed"
 msgstr "Працює зараз"
 
-#: .\account\models.py:45 .\account\models.py:65 .\main\models.py:91
+#: .\account\models.py:45 .\account\models.py:65 .\main\models.py:96
 msgid "Employee"
 msgstr "Співробітник"
 
@@ -106,19 +106,19 @@ msgstr "Українська"
 msgid "English"
 msgstr "Англійська"
 
-#: .\main\admin.py:75 .\main\models.py:117
+#: .\main\admin.py:78 .\main\models.py:122
 msgid "Icon"
 msgstr "Іконка"
 
-#: .\main\admin.py:92 .\main\admin.py:151
+#: .\main\admin.py:95 .\main\admin.py:154
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: .\main\admin.py:123
+#: .\main\admin.py:126
 msgid "Cover preview"
 msgstr "Попередній перегляд обкладинки"
 
-#: .\main\admin.py:128
+#: .\main\admin.py:131
 msgid "Gallery images"
 msgstr "Зображення галереї"
 
@@ -163,164 +163,176 @@ msgstr "Основний номер телефону"
 msgid "Secondary phone"
 msgstr "Додатковий номер телефону"
 
-#: .\main\models.py:41 .\templates\main\includes\sections\contacts.html:16
+#: .\main\models.py:42 .\templates\main\includes\sections\contacts.html:16
 msgid "Address"
 msgstr "Адреса"
 
-#: .\main\models.py:42
+#: .\main\models.py:43
+msgid "City"
+msgstr "Місто"
+
+#: .\main\models.py:44
+msgid "Province"
+msgstr "Провінція"
+
+#: .\main\models.py:45
+msgid "Postal Code"
+msgstr "Поштовий індекс"
+
+#: .\main\models.py:47
 msgid "Working hours"
 msgstr "Робочий час"
 
-#: .\main\models.py:44
+#: .\main\models.py:49
 msgid "Company favicon"
 msgstr "Фавікон компанії"
 
-#: .\main\models.py:49
+#: .\main\models.py:54
 msgid "Company logo"
 msgstr "Логотип компанії"
 
-#: .\main\models.py:55
+#: .\main\models.py:60
 msgid "Years on the market"
 msgstr "Років на ринку"
 
-#: .\main\models.py:58
+#: .\main\models.py:63
 msgid "Completed objects count"
 msgstr "Кількість завершених об’єктів"
 
-#: .\main\models.py:60
+#: .\main\models.py:65
 msgid "Employees count"
 msgstr "Кількість працівників"
 
-#: .\main\models.py:61
+#: .\main\models.py:66
 msgid "About description"
 msgstr "Опис про компанію"
 
-#: .\main\models.py:63
+#: .\main\models.py:68
 msgid "Hero title"
 msgstr "Заголовок головного блоку"
 
-#: .\main\models.py:64
+#: .\main\models.py:69
 msgid "Hero description"
 msgstr "Опис головного блоку"
 
-#: .\main\models.py:65
+#: .\main\models.py:70
 msgid "Services description"
 msgstr "Опис послуг"
 
-#: .\main\models.py:66
+#: .\main\models.py:71
 msgid "Footer description"
 msgstr "Опис у підвалі сайту"
 
-#: .\main\models.py:68 .\main\models.py:152
+#: .\main\models.py:73 .\main\models.py:157
 msgid "Created at"
 msgstr "Дата створення"
 
-#: .\main\models.py:69
+#: .\main\models.py:74
 msgid "Updated at"
 msgstr "Дата оновлення"
 
-#: .\main\models.py:71
+#: .\main\models.py:76
 msgid "Facebook URL"
 msgstr "Посилання на Facebook"
 
-#: .\main\models.py:72
+#: .\main\models.py:77
 msgid "Instagram URL"
 msgstr "Посилання на Instagram"
 
-#: .\main\models.py:73
+#: .\main\models.py:78
 msgid "Telegram URL"
 msgstr "Посилання на Telegram"
 
-#: .\main\models.py:75
+#: .\main\models.py:80
 msgid "Is active"
 msgstr "Активний"
 
-#: .\main\models.py:78
+#: .\main\models.py:83
 msgid "Company Profile"
 msgstr "Профіль компанії"
 
-#: .\main\models.py:79
+#: .\main\models.py:84
 msgid "Company Profiles"
 msgstr "Профілі компаній"
 
-#: .\main\models.py:93 .\main\models.py:115
+#: .\main\models.py:98 .\main\models.py:120
 msgid "Description"
 msgstr "Опис"
 
-#: .\main\models.py:95
+#: .\main\models.py:100
 msgid "Photo"
 msgstr "Фото"
 
-#: .\main\models.py:100
+#: .\main\models.py:105
 msgid "Display order"
 msgstr "Порядок відображення"
 
-#: .\main\models.py:101
+#: .\main\models.py:106
 msgid "Is visible"
 msgstr "Відображається"
 
-#: .\main\models.py:104
+#: .\main\models.py:109
 msgid "Team Member"
 msgstr "Член команди"
 
-#: .\main\models.py:105
+#: .\main\models.py:110
 msgid "Team Members"
 msgstr "Члени команди"
 
-#: .\main\models.py:114 .\main\models.py:137
+#: .\main\models.py:119 .\main\models.py:142
 msgid "Title"
 msgstr "Заголовок"
 
-#: .\main\models.py:123
+#: .\main\models.py:128
 msgid "Service"
 msgstr "Послуга"
 
-#: .\main\models.py:124 .\templates\main\includes\navbar.html:22
+#: .\main\models.py:129 .\templates\main\includes\navbar.html:22
 #: .\templates\main\includes\navbar.html:136
 msgid "Services"
 msgstr "Послуги"
 
-#: .\main\models.py:132 .\templates\main\includes\sections\projects.html:18
+#: .\main\models.py:137 .\templates\main\includes\sections\projects.html:18
 #: .\templates\main\project_list.html:38
 msgid "Residential"
 msgstr "Житлові"
 
-#: .\main\models.py:133 .\templates\main\includes\sections\projects.html:21
+#: .\main\models.py:138 .\templates\main\includes\sections\projects.html:21
 #: .\templates\main\project_list.html:45
 msgid "Commercial"
 msgstr "Комерційні"
 
-#: .\main\models.py:140
+#: .\main\models.py:145
 msgid "Category"
 msgstr "Категорія"
 
-#: .\main\models.py:146
+#: .\main\models.py:151
 msgid "Short description"
 msgstr "Короткий опис"
 
-#: .\main\models.py:149
+#: .\main\models.py:154
 msgid "Cover image"
 msgstr "Обкладинка"
 
-#: .\main\models.py:155 .\main\models.py:168
+#: .\main\models.py:160 .\main\models.py:173
 msgid "Project"
 msgstr "Проєкт"
 
-#: .\main\models.py:156 .\templates\main\includes\navbar.html:24
+#: .\main\models.py:161 .\templates\main\includes\navbar.html:24
 #: .\templates\main\includes\navbar.html:138
 #: .\templates\main\project_list.html:4
 msgid "Projects"
 msgstr "Проєкти"
 
-#: .\main\models.py:171
+#: .\main\models.py:176
 msgid "Image"
 msgstr "Зображення"
 
-#: .\main\models.py:176
+#: .\main\models.py:181
 msgid "Project image"
 msgstr "Зображення проєкту"
 
-#: .\main\models.py:177
+#: .\main\models.py:182
 msgid "Project images"
 msgstr "Галерея зображень проєкту"
 
@@ -738,7 +750,7 @@ msgid "Reach out to us to discuss your project or join our team"
 msgstr ""
 "Зв’яжіться з нами, щоб обговорити ваш проєкт або приєднатися до нашої команди"
 
-#: .\templates\main\includes\sections\contacts.html:35
+#: .\templates\main\includes\sections\contacts.html:37
 msgid "Working Hours"
 msgstr "Години роботи"
 
