@@ -15,8 +15,7 @@
         <article class="contacts__item">
           <h3 class="contacts__item-title">{% trans "Address" %}</h3>
           <p class="contacts__item-text">{{ company_profile.address }}</p>
-          <p class="contacts__item-text">{{ company_profile.city }} {{ company_profile.province }}</p>
-          <p class="contacts__item-text">{{ company_profile.postal_code }}</p>
+          <p class="contacts__item-text">{{ company_profile.city }}, {{ company_profile.province }} {{ company_profile.postal_code }}</p>
         </article>
         {% endif %}
 
