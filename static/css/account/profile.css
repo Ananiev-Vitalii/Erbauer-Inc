@@ -211,10 +211,12 @@
 }
 
 .profile-identity-card {
-  display: grid;
+  display: inline-grid;
   justify-items: center;
+  justify-self: start;
   gap: 18px;
-  height: 100%;
+  width: fit-content;
+  height: fit-content;
   padding: 26px;
   border: 1px solid var(--profile-border-light);
   border-radius: 26px;
@@ -367,6 +369,12 @@
 .profile-field textarea:focus {
   border-color: var(--profile-green-700);
   box-shadow: 0 0 0 4px var(--profile-green-ring);
+}
+
+.profile-postal-code-input {
+  max-width: 110px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
 }
 
 .profile-panel-section--security .profile-field input:focus,

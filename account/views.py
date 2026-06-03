@@ -2,9 +2,17 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
+from django.shortcuts import render, redirect
 from django.views import generic
 
-from account.forms import EmployeeContactForm, EmployeePositionForm, ProfileAvatarForm
+from account.forms import (
+    EmployeeContactForm,
+    EmployeePositionForm,
+    ProfileAvatarForm,
+    SimpleInvoiceForm,
+    EmployeeInvoiceForm,
+)
+from account.models import EmployeeSimpleInvoice
 
 
 class MyProfileView(LoginRequiredMixin, generic.TemplateView):
@@ -121,3 +129,7 @@ class UpdatePasswordView(PartialFormSuccessMixin, generic.FormView):
         success_form.is_success = True
 
         return self.render_to_response(self.get_context_data(form=success_form))
+
+
+class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
+    pass

@@ -53,7 +53,10 @@
           </div>
 
           <p>
-            {% trans "Manage your avatar, phone number, and the email address used to sign in to your account." %}
+            {% blocktrans trimmed %}
+            Manage your avatar, contact details, and address details. Your email address is used to log in to your
+            account, and your address details are used to pre-fill invoice forms.
+            {% endblocktrans %}
           </p>
         </div>
 
@@ -173,6 +176,89 @@
                   <div class="profile-field-error">
                     {% if contact_form.email.errors %}
                     {% for error in contact_form.email.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="profile-field profile-field--full">
+                  <label for="id_street_address">{% trans "Street address" %}</label>
+
+                  <input
+                          type="text"
+                          name="street_address"
+                          id="id_street_address"
+                          value="{{ contact_form.street_address.value|default_if_none:'' }}"
+                          placeholder="{% trans 'Enter street address' %}"
+                          autocomplete="street-address"
+                  >
+
+                  <div class="profile-field-error">
+                    {% if contact_form.street_address.errors %}
+                    {% for error in contact_form.street_address.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="profile-field">
+                  <label for="id_city">{% trans "City" %}</label>
+
+                  <input
+                          type="text"
+                          name="city"
+                          id="id_city"
+                          value="{{ contact_form.city.value|default_if_none:'' }}"
+                          placeholder="{% trans 'Enter city' %}"
+                          autocomplete="address-level2"
+                  >
+
+                  <div class="profile-field-error">
+                    {% if contact_form.city.errors %}
+                    {% for error in contact_form.city.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="profile-field">
+                  <label for="id_province">{% trans "Province" %}</label>
+
+                  <div class="profile-select-wrap">
+                    {{ contact_form.province }}
+                  </div>
+
+                  <div class="profile-field-error">
+                    {% if contact_form.province.errors %}
+                    {% for error in contact_form.province.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                    {% endif %}
+                  </div>
+                </div>
+
+                <div class="profile-field">
+                  <label for="id_postal_code">{% trans "Postal code" %}</label>
+
+                  <input
+                          type="text"
+                          name="postal_code"
+                          id="id_postal_code"
+                          value="{{ contact_form.postal_code.value|default_if_none:'' }}"
+                          placeholder="{% trans 'A1A 1A1' %}"
+                          inputmode="text"
+                          autocomplete="postal-code"
+                          autocapitalize="characters"
+                          maxlength="7"
+                          class="profile-postal-code-input"
+                  >
+
+                  <div class="profile-field-error">
+                    {% if contact_form.postal_code.errors %}
+                    {% for error in contact_form.postal_code.errors %}
                     <span>{{ error }}</span>
                     {% endfor %}
                     {% endif %}

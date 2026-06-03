@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-01 22:35-0700\n"
+"POT-Creation-Date: 2026-06-03 14:29-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,78 +25,189 @@ msgstr ""
 msgid "Staff"
 msgstr "Персонал"
 
-#: .\account\forms.py:21 .\main\forms.py:127
+#: .\account\forms.py:27 .\main\forms.py:127
 msgid "Please enter a valid 10-digit Canadian phone number."
 msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
 
-#: .\account\forms.py:40
+#: .\account\forms.py:46
 msgid "A user with this email is already registered."
 msgstr "Користувач із цією робочою електронною адресою вже зареєстрований."
 
-#: .\account\forms.py:71
+#: .\account\forms.py:72
+msgid "Please enter a valid Canadian postal code."
+msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
+
+#: .\account\forms.py:102
 msgid "Please upload a JPG, PNG, or WEBP image."
 msgstr "Будь ласка, завантажте зображення JPG, PNG або WEBP."
 
-#: .\account\forms.py:76
+#: .\account\forms.py:107
 msgid "Avatar image must be smaller than 5 MB."
 msgstr "Розмір зображення аватара має бути менше ніж 5 МБ."
 
-#: .\account\models.py:13 .\account\models.py:16 .\account\models.py:38
-#: .\templates\account\profile.html:240
+#: .\account\forms.py:126
+msgid "End day cannot be earlier than start day."
+msgstr "Кінцевий день не може бути раніше за початковий день."
+
+#: .\account\models.py:16
+msgid "Alberta"
+msgstr "Альберта"
+
+#: .\account\models.py:17
+msgid "British Columbia"
+msgstr "Британська Колумбія"
+
+#: .\account\models.py:18
+msgid "Manitoba"
+msgstr "Манітоба"
+
+#: .\account\models.py:19
+msgid "New Brunswick"
+msgstr "Нью-Брансвік"
+
+#: .\account\models.py:20
+msgid "Newfoundland and Labrador"
+msgstr "Ньюфаундленд і Лабрадор"
+
+#: .\account\models.py:21
+msgid "Nova Scotia"
+msgstr "Нова Шотландія"
+
+#: .\account\models.py:22
+msgid "Northwest Territories"
+msgstr "Північно-Західні території"
+
+#: .\account\models.py:23
+msgid "Nunavut"
+msgstr "Нунавут"
+
+#: .\account\models.py:24
+msgid "Ontario"
+msgstr "Онтаріо"
+
+#: .\account\models.py:25
+msgid "Prince Edward Island"
+msgstr "Острів Принца Едварда"
+
+#: .\account\models.py:26
+msgid "Quebec"
+msgstr "Квебек"
+
+#: .\account\models.py:27
+msgid "Saskatchewan"
+msgstr "Саскачеван"
+
+#: .\account\models.py:28
+msgid "Yukon"
+msgstr "Юкон"
+
+#: .\account\models.py:32 .\account\models.py:35 .\account\models.py:57
+#: .\templates\account\profile.html:326
 msgid "Job title"
 msgstr "Посада"
 
-#: .\account\models.py:17
+#: .\account\models.py:36
 msgid "Job titles"
 msgstr "Посади"
 
-#: .\account\models.py:28 .\user\models.py:55
+#: .\account\models.py:47 .\user\models.py:55
 msgid "User"
 msgstr "Користувач"
 
-#: .\account\models.py:32 .\templates\main\privacy_policy.html:67
+#: .\account\models.py:51 .\templates\main\privacy_policy.html:67
 msgid "First name"
 msgstr "Ім’я"
 
-#: .\account\models.py:33 .\templates\main\privacy_policy.html:68
+#: .\account\models.py:52 .\templates\main\privacy_policy.html:68
 msgid "Last name"
 msgstr "Прізвище"
 
-#: .\account\models.py:40 .\main\models.py:40
-#: .\templates\account\profile.html:159
-#: .\templates\main\includes\sections\contacts.html:32 .\user\forms.py:158
+#: .\account\models.py:59 .\main\models.py:40
+#: .\templates\account\profile.html:162
+#: .\templates\main\includes\sections\contacts.html:31 .\user\forms.py:158
 msgid "Email"
 msgstr "Електронна пошта"
 
-#: .\account\models.py:41 .\templates\account\profile.html:131
+#: .\account\models.py:60 .\templates\account\profile.html:134
 #: .\templates\main\contact_email.html:40
-#: .\templates\main\includes\sections\contacts.html:24
+#: .\templates\main\includes\sections\contacts.html:23
 msgid "Phone"
 msgstr "Телефон"
 
-#: .\account\models.py:42
+#: .\account\models.py:61 .\templates\account\profile.html:186
+msgid "Street address"
+msgstr "Адреса вулиці"
+
+#: .\account\models.py:62 .\main\models.py:43
+#: .\templates\account\profile.html:207
+msgid "City"
+msgstr "Місто"
+
+#: .\account\models.py:64 .\main\models.py:44
+#: .\templates\account\profile.html:228
+msgid "Province"
+msgstr "Провінція"
+
+#: .\account\models.py:70 .\templates\account\profile.html:244
+msgid "Postal code"
+msgstr "Поштовий індекс"
+
+#: .\account\models.py:75
+msgid "Enter a valid Canadian postal code."
+msgstr "Будь ласка, введіть дійсний канадський поштовий індекс."
+
+#: .\account\models.py:80
 msgid "Currently employed"
 msgstr "Працює зараз"
 
-#: .\account\models.py:45 .\account\models.py:65 .\main\models.py:96
+#: .\account\models.py:83 .\account\models.py:103 .\account\models.py:125
+#: .\main\models.py:96
 msgid "Employee"
 msgstr "Співробітник"
 
-#: .\account\models.py:46
+#: .\account\models.py:84
 msgid "Employees"
 msgstr "Співробітники"
 
-#: .\account\models.py:68
+#: .\account\models.py:106
 msgid "Avatar"
 msgstr "Аватар"
 
-#: .\account\models.py:75 .\templates\main\includes\navbar.html:88
+#: .\account\models.py:113 .\templates\main\includes\navbar.html:88
 msgid "Profile"
 msgstr "Профіль"
 
-#: .\account\models.py:76
+#: .\account\models.py:114
 msgid "Profiles"
 msgstr "Профілі"
+
+#: .\account\models.py:128
+msgid "Invoice number"
+msgstr "Номер інвойсу"
+
+#: .\account\models.py:136
+msgid "Start day"
+msgstr "День початку"
+
+#: .\account\models.py:145
+msgid "End day"
+msgstr "Кінцевий день"
+
+#: .\account\models.py:154
+msgid "Hours"
+msgstr "Години"
+
+#: .\account\models.py:161
+msgid "Rate"
+msgstr "Погодинна ставка"
+
+#: .\account\models.py:168
+msgid "Employee simple invoice"
+msgstr "Інвойс для працівника"
+
+#: .\account\models.py:169
+msgid "Employee simple invoices"
+msgstr "Інвойси для працівників"
 
 #: .\config\settings\base.py:95
 msgid "Ukrainian"
@@ -166,14 +277,6 @@ msgstr "Додатковий номер телефону"
 #: .\main\models.py:42 .\templates\main\includes\sections\contacts.html:16
 msgid "Address"
 msgstr "Адреса"
-
-#: .\main\models.py:43
-msgid "City"
-msgstr "Місто"
-
-#: .\main\models.py:44
-msgid "Province"
-msgstr "Провінція"
 
 #: .\main\models.py:45
 msgid "Postal Code"
@@ -405,143 +508,157 @@ msgstr "Особисті та контактні дані"
 
 #: .\templates\account\profile.html:56
 msgid ""
-"Manage your avatar, phone number, and the email address used to sign in to "
-"your account."
+"Manage your avatar, contact details, and address details. Your email address "
+"is used to log in to your account, and your address details are used to pre-"
+"fill invoice forms."
 msgstr ""
-"Керуйте своїм аватаром, номером телефону та адресою електронної пошти, які "
-"використовуються для входу в обліковий запис."
+"Керуйте своїм аватаром, контактними та адресними даними. Ваша адреса "
+"електронної пошти використовується для входу в обліковий запис, а ваші "
+"адресні дані — для попереднього заповнення форм інвойсів."
 
-#: .\templates\account\profile.html:69
+#: .\templates\account\profile.html:72
 msgid "Could not upload avatar."
 msgstr "Не вдалося завантажити аватар."
 
-#: .\templates\account\profile.html:70
+#: .\templates\account\profile.html:73
 msgid "Upload failed. Please try again."
 msgstr "Не вдалося завантажити. Спробуйте ще раз."
 
-#: .\templates\account\profile.html:71
+#: .\templates\account\profile.html:74
 msgid "Update profile photo"
 msgstr "Оновити фотографію профілю"
 
-#: .\templates\account\profile.html:72
+#: .\templates\account\profile.html:75
 msgid "Choose photo"
 msgstr "Завантажте фото"
 
-#: .\templates\account\profile.html:73
+#: .\templates\account\profile.html:76
 msgid "Save avatar"
 msgstr "Змінити аватар"
 
-#: .\templates\account\profile.html:74
+#: .\templates\account\profile.html:77
 msgid "Drop your photo here or"
 msgstr "Перетягніть своє фото сюди або"
 
-#: .\templates\account\profile.html:75 .\templates\account\profile.html:78
+#: .\templates\account\profile.html:78 .\templates\account\profile.html:81
 msgid "Cancel"
 msgstr "Скасувати"
 
-#: .\templates\account\profile.html:76
+#: .\templates\account\profile.html:79
 msgid "Save"
 msgstr "Зберегти"
 
-#: .\templates\account\profile.html:77
+#: .\templates\account\profile.html:80
 msgid "Save changes"
 msgstr "Зберегти"
 
-#: .\templates\account\profile.html:85 .\templates\main\includes\navbar.html:82
+#: .\templates\account\profile.html:88 .\templates\main\includes\navbar.html:82
 msgid "User avatar"
 msgstr "Аватар користувача"
 
-#: .\templates\account\profile.html:94
+#: .\templates\account\profile.html:97
 msgid "Change avatar"
 msgstr "Змінити аватар"
 
-#: .\templates\account\profile.html:166
+#: .\templates\account\profile.html:169
 msgid "Enter email address"
 msgstr "Підтвердити електронну адресу"
 
-#: .\templates\account\profile.html:191
+#: .\templates\account\profile.html:193
+msgid "Enter street address"
+msgstr "Введіть адресу вулиці"
+
+#: .\templates\account\profile.html:214
+msgid "Enter city"
+msgstr "Введіть назву міста"
+
+#: .\templates\account\profile.html:251
+msgid "A1A 1A1"
+msgstr "A1A 1A1"
+
+#: .\templates\account\profile.html:277
 msgid "Contact details updated successfully."
 msgstr "Контактну інформацію успішно оновлено."
 
-#: .\templates\account\profile.html:199 .\templates\account\profile.html:273
+#: .\templates\account\profile.html:285 .\templates\account\profile.html:359
 msgid "Saving..."
 msgstr "Збереження..."
 
-#: .\templates\account\profile.html:201
+#: .\templates\account\profile.html:287
 msgid "Save contact details"
 msgstr "Зберегти інформацію"
 
-#: .\templates\account\profile.html:217
+#: .\templates\account\profile.html:303
 msgid "Work profile"
 msgstr "Робочий профіль"
 
-#: .\templates\account\profile.html:218
+#: .\templates\account\profile.html:304
 msgid "Employee Information"
 msgstr "Інформація облікового запису працівника"
 
-#: .\templates\account\profile.html:222
+#: .\templates\account\profile.html:308
 msgid "Update your work-related information and current job title."
 msgstr "Оновіть інформацію про свою роботу та поточну посаду."
 
-#: .\templates\account\profile.html:265
+#: .\templates\account\profile.html:351
 msgid "Job title updated successfully."
 msgstr "Посаду успішно оновлено."
 
-#: .\templates\account\profile.html:275
+#: .\templates\account\profile.html:361
 msgid "Save employee info"
 msgstr "Зберегти інформацію"
 
-#: .\templates\account\profile.html:290
+#: .\templates\account\profile.html:376
 msgid "Security"
 msgstr "Безпека"
 
-#: .\templates\account\profile.html:291
+#: .\templates\account\profile.html:377
 msgid "Change Password"
 msgstr "Змінити пароль"
 
-#: .\templates\account\profile.html:295
+#: .\templates\account\profile.html:381
 msgid "Choose a strong password to keep your account protected."
 msgstr "Оберіть надійний пароль, щоб захистити свій обліковий запис."
 
-#: .\templates\account\profile.html:312
+#: .\templates\account\profile.html:398
 msgid "Current password"
 msgstr "Поточний пароль"
 
-#: .\templates\account\profile.html:319
+#: .\templates\account\profile.html:405
 msgid "Enter current password"
 msgstr "Введіть поточний пароль"
 
-#: .\templates\account\profile.html:333
+#: .\templates\account\profile.html:419
 msgid "New password"
 msgstr "Новий пароль"
 
-#: .\templates\account\profile.html:340
+#: .\templates\account\profile.html:426
 msgid "Enter new password"
 msgstr "Введіть новий пароль"
 
-#: .\templates\account\profile.html:354
+#: .\templates\account\profile.html:440
 msgctxt "label"
 msgid "Confirm new password"
 msgstr "Підтвердження нового пароля"
 
-#: .\templates\account\profile.html:361
+#: .\templates\account\profile.html:447
 msgctxt "placeholder"
 msgid "Confirm new password"
 msgstr "Підтвердіть новий пароль"
 
-#: .\templates\account\profile.html:383
+#: .\templates\account\profile.html:469
 msgid "Password updated successfully."
 msgstr "Пароль успішно оновлено."
 
-#: .\templates\account\profile.html:391
+#: .\templates\account\profile.html:477
 msgid "Updating..."
 msgstr "Оновлення..."
 
-#: .\templates\account\profile.html:393
+#: .\templates\account\profile.html:479
 msgid "Update password"
 msgstr "Оновити пароль"
 
-#: .\templates\account\profile.html:405 .\templates\main\home.html:30
+#: .\templates\account\profile.html:491 .\templates\main\home.html:30
 #: .\templates\main\privacy_policy.html:227
 #: .\templates\main\project_detail.html:140
 msgid "Back to top"
@@ -750,7 +867,7 @@ msgid "Reach out to us to discuss your project or join our team"
 msgstr ""
 "Зв’яжіться з нами, щоб обговорити ваш проєкт або приєднатися до нашої команди"
 
-#: .\templates\main\includes\sections\contacts.html:37
+#: .\templates\main\includes\sections\contacts.html:36
 msgid "Working Hours"
 msgstr "Години роботи"
 

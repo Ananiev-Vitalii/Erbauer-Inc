@@ -2,11 +2,30 @@ from django.db import models
 from django.conf import settings
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
+
+DAY_CHOICES = [(day, str(day)) for day in range(1, 32)]
 
 
 def profile_directory_path(instance: "Profile", filename: str) -> str:
     profile_slug = slugify(f"{instance.employee.last_name}_{instance.employee.email}")
     return f"profiles/{profile_slug}/{filename}"
+
+
+class CanadianProvince(models.TextChoices):
+    AB = "AB", _("Alberta")
+    BC = "BC", _("British Columbia")
+    MB = "MB", _("Manitoba")
+    NB = "NB", _("New Brunswick")
+    NL = "NL", _("Newfoundland and Labrador")
+    NS = "NS", _("Nova Scotia")
+    NT = "NT", _("Northwest Territories")
+    NU = "NU", _("Nunavut")
+    ON = "ON", _("Ontario")
+    PE = "PE", _("Prince Edward Island")
+    QC = "QC", _("Quebec")
+    SK = "SK", _("Saskatchewan")
+    YT = "YT", _("Yukon")
 
 
 class Position(models.Model):
@@ -39,6 +58,25 @@ class Employee(models.Model):
     )
     email = models.EmailField(_("Email"), unique=True)
     phone = models.CharField(_("Phone"), max_length=30, blank=True)
+    street_address = models.CharField(_("Street address"), max_length=50, blank=True)
+    city = models.CharField(_("City"), max_length=50, blank=True)
+    province = models.CharField(
+        _("Province"),
+        max_length=2,
+        choices=CanadianProvince.choices,
+        default=CanadianProvince.BC,
+    )
+    postal_code = models.CharField(
+        _("Postal code"),
+        max_length=7,
+        validators=[
+            RegexValidator(
+                regex=r"^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$",
+                message=_("Enter a valid Canadian postal code."),
+            ),
+        ],
+        blank=True,
+    )
     is_active = models.BooleanField(_("Currently employed"), default=True)
 
     class Meta:
@@ -79,8 +117,57 @@ class Profile(models.Model):
         return str(self.employee)
 
 
-class CompanySimpleInvoice(models.Model):
-    pass
-
 class EmployeeSimpleInvoice(models.Model):
-    pass
+    employee = models.ForeignKey(
+        Employee,
+        on_delete=models.CASCADE,
+        related_name="invoices",
+        verbose_name=_("Employee"),
+    )
+    invoice_number = models.PositiveIntegerField(
+        _("Invoice number"),
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(99),
+        ],
+    )
+
+    start_day = models.PositiveSmallIntegerField(
+        _("Start day"),
+        choices=DAY_CHOICES,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(31),
+        ],
+    )
+
+    end_day = models.PositiveSmallIntegerField(
+        _("End day"),
+        choices=DAY_CHOICES,
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(31),
+        ],
+    )
+
+    hours = models.DecimalField(
+        _("Hours"),
+        max_digits=5,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+    )
+
+    rate = models.DecimalField(
+        _("Rate"),
+        max_digits=8,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
+    )
+
+    class Meta:
+        verbose_name = _("Employee simple invoice")
+        verbose_name_plural = _("Employee simple invoices")
+        ordering = ["-id"]
+
+    def __str__(self) -> str:
+        return f"{self.employee.first_name} {self.employee.last_name}"

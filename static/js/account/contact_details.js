@@ -75,3 +75,20 @@ function initContactDetailsPhoneInput() {
 }
 
 initContactDetailsPhoneInput();
+
+const postalCodeInput = document.getElementById("id_postal_code");
+
+if (postalCodeInput) {
+  postalCodeInput.addEventListener("input", () => {
+    let value = postalCodeInput.value
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 6);
+
+    if (value.length > 3) {
+      value = `${value.slice(0, 3)} ${value.slice(3)}`;
+    }
+
+    postalCodeInput.value = value;
+  });
+}
