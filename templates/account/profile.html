@@ -327,7 +327,19 @@
                 </label>
 
                 <div class="profile-select-wrap">
-                  {{ position_form.position }}
+                  <select
+                          name="position"
+                          id="id_position"
+                  >
+                    {% for position in positions %}
+                    <option
+                            value="{{ position.pk }}"
+                            {% if position.pk == employee.position_id %}selected{% endif %}
+                    >
+                      {{ position.name }}
+                    </option>
+                    {% endfor %}
+                  </select>
                 </div>
 
                 <div class="profile-field-error">

@@ -12,7 +12,7 @@ from account.forms import (
     SimpleInvoiceForm,
     EmployeeInvoiceForm,
 )
-from account.models import EmployeeSimpleInvoice
+from account.models import EmployeeSimpleInvoice, Employee, Position, Profile
 
 
 class MyProfileView(LoginRequiredMixin, generic.TemplateView):
@@ -21,14 +21,20 @@ class MyProfileView(LoginRequiredMixin, generic.TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        employee = self.request.user.employee
+        user = self.request.user
 
-        context["profile"] = employee.profile
+        employee = Employee.objects.select_related("profile", "position").get(
+            user_id=user.pk
+        )
+
+        profile = employee.profile
+
+        context["profile"] = profile
         context["employee"] = employee
+        context["positions"] = Position.objects.order_by("name")
         context["contact_form"] = EmployeeContactForm(instance=employee)
         context["position_form"] = EmployeePositionForm(instance=employee)
         context["password_form"] = PasswordChangeForm(user=self.request.user)
-        context["avatar_form"] = ProfileAvatarForm(instance=employee.profile)
 
         return context
 
@@ -68,7 +74,9 @@ class UpdateAvatarView(LoginRequiredMixin, generic.UpdateView):
     http_method_names = ["post"]
 
     def get_object(self, queryset=None):
-        return self.request.user.employee.profile
+        return Profile.objects.select_related("employee", "employee__user").get(
+            employee__user=self.request.user
+        )
 
     def form_valid(self, form):
         self.object = form.save()
@@ -96,7 +104,7 @@ class UpdateContactDetailsView(PartialFormSuccessMixin, generic.UpdateView):
     template_name = "account/profile.html#contact-form"
 
     def get_object(self, queryset=None):
-        return self.request.user.employee
+        return Employee.objects.select_related("user").get(user=self.request.user)
 
 
 class UpdateEmployeePositionView(PartialFormSuccessMixin, generic.UpdateView):
@@ -105,7 +113,13 @@ class UpdateEmployeePositionView(PartialFormSuccessMixin, generic.UpdateView):
     template_name = "account/profile.html#employee-position-form"
 
     def get_object(self, queryset=None):
-        return self.request.user.employee
+        return Employee.objects.select_related("position").get(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["employee"] = self.object
+        context["positions"] = Position.objects.order_by("name")
+        return context
 
 
 class UpdatePasswordView(PartialFormSuccessMixin, generic.FormView):

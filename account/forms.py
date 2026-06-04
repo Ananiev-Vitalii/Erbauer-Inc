@@ -4,7 +4,6 @@ from django.utils.translation import gettext_lazy as _
 
 from account.models import (
     Employee,
-    Position,
     Profile,
     EmployeeSimpleInvoice,
     CanadianProvince,
@@ -75,14 +74,11 @@ class EmployeeContactForm(forms.ModelForm):
 
 
 class EmployeePositionForm(forms.ModelForm):
+    use_required_attribute = False
+
     class Meta:
         model = Employee
         fields = ["position"]
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields["position"].queryset = Position.objects.order_by("name")
-        self.fields["position"].empty_label = None
 
 
 class ProfileAvatarForm(forms.ModelForm):
