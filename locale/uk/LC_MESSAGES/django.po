@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-06 19:36-0700\n"
+"POT-Creation-Date: 2026-06-07 11:40-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -135,22 +135,24 @@ msgid "Phone"
 msgstr "Телефон"
 
 #: .\account\models.py:61 .\templates\account\invoice.html:66
-#: .\templates\account\profile.html:186
+#: .\templates\account\profile.html:186 .\templates\main\privacy_policy.html:72
 msgid "Street address"
 msgstr "Адреса вулиці"
 
 #: .\account\models.py:62 .\main\models.py:43
 #: .\templates\account\invoice.html:88 .\templates\account\profile.html:207
+#: .\templates\main\privacy_policy.html:73
 msgid "City"
 msgstr "Місто"
 
 #: .\account\models.py:64 .\main\models.py:44
 #: .\templates\account\invoice.html:110 .\templates\account\profile.html:228
+#: .\templates\main\privacy_policy.html:74
 msgid "Province"
 msgstr "Провінція"
 
 #: .\account\models.py:70 .\templates\account\invoice.html:126
-#: .\templates\account\profile.html:244
+#: .\templates\account\profile.html:244 .\templates\main\privacy_policy.html:75
 msgid "Postal code"
 msgstr "Поштовий індекс"
 
@@ -175,7 +177,7 @@ msgstr "Співробітники"
 msgid "Avatar"
 msgstr "Аватар"
 
-#: .\account\models.py:113 .\templates\main\includes\navbar.html:88
+#: .\account\models.py:113 .\templates\main\includes\navbar.html:76
 msgid "Profile"
 msgstr "Профіль"
 
@@ -219,7 +221,7 @@ msgstr "Будь ласка, введіть дійсну погодинну ст
 msgid "Simple invoice"
 msgstr "Інвойс"
 
-#| msgid "Employee simple invoices"
+#: .\account\models.py:165
 msgid "Simple invoices"
 msgstr "Інвойси"
 
@@ -256,6 +258,7 @@ msgid "Your Name"
 msgstr "Ваше ім’я"
 
 #: .\main\forms.py:38 .\templates\main\privacy_policy.html:56
+#: .\templates\main\privacy_policy.html:70
 msgid "Phone number"
 msgstr "Номер телефону"
 
@@ -405,7 +408,7 @@ msgid "Service"
 msgstr "Послуга"
 
 #: .\main\models.py:129 .\templates\main\includes\navbar.html:22
-#: .\templates\main\includes\navbar.html:136
+#: .\templates\main\includes\navbar.html:129
 msgid "Services"
 msgstr "Послуги"
 
@@ -436,7 +439,7 @@ msgid "Project"
 msgstr "Проєкт"
 
 #: .\main\models.py:161 .\templates\main\includes\navbar.html:24
-#: .\templates\main\includes\navbar.html:138
+#: .\templates\main\includes\navbar.html:131
 #: .\templates\main\project_list.html:4
 msgid "Projects"
 msgstr "Проєкти"
@@ -496,7 +499,9 @@ msgstr "Привіт"
 
 #: .\templates\account\emails\simple_invoice.html:41
 msgid "Please find the simple invoice attached to this email."
-msgstr "Будь ласка, знайдіть та завантажте інвойс, доданий до цього електронного листа."
+msgstr ""
+"Будь ласка, знайдіть та завантажте інвойс, доданий до цього електронного "
+"листа."
 
 #: .\templates\account\emails\simple_invoice.html:45
 msgid "Employee:"
@@ -517,8 +522,10 @@ msgid ""
 "After you submit the form, a PDF invoice will be generated from the provided "
 "information and sent to your email address and the company email address."
 msgstr ""
-"Після надсилання форми на основі наданої інформації буде згенеровано PDF-файл, "
-"який буде надіслано на вашу адресу електронної пошти та адресу електронної пошти компанії."
+"Після надсилання форми на основі наданої інформації буде згенеровано PDF-"
+"файл, який буде надіслано на вашу адресу електронної пошти та адресу "
+"електронної пошти компанії."
+
 #: .\templates\account\invoice.html:55
 msgid "Billing information"
 msgstr "Платіжна інформація"
@@ -555,19 +562,20 @@ msgstr "Період роботи та оплата"
 msgid "Enter your invoice number, work period, hours, and rate."
 msgstr "Введіть номер інвойсу, період роботи, години та погодинну ставку."
 
-#: .\templates\account\invoice.html:284
+#: .\templates\account\invoice.html:288
 msgid ""
 "Invoice PDF has been created and sent to your email address and the company "
 "email address."
 msgstr ""
-"PDF-файл інвойсу створено та надіслано на вашу адресу електронної пошти та адресу електронної пошти компанії."
+"PDF-файл інвойсу створено та надіслано на вашу адресу електронної пошти та "
+"адресу електронної пошти компанії."
 
-#: .\templates\account\invoice.html:292
+#: .\templates\account\invoice.html:296
 msgid "Sending invoice..."
 msgstr "Надсилання інвойсу..."
 
-#: .\templates\account\invoice.html:294
-#: .\templates\main\includes\navbar.html:90
+#: .\templates\account\invoice.html:298
+#: .\templates\main\includes\navbar.html:78
 msgid "Submit invoice"
 msgstr "Надіслати інвойс"
 
@@ -653,7 +661,7 @@ msgstr "Зберегти"
 msgid "Save changes"
 msgstr "Зберегти"
 
-#: .\templates\account\profile.html:88 .\templates\main\includes\navbar.html:82
+#: .\templates\account\profile.html:88 .\templates\main\includes\navbar.html:70
 msgid "User avatar"
 msgstr "Аватар користувача"
 
@@ -748,7 +756,7 @@ msgid "Update password"
 msgstr "Оновити пароль"
 
 #: .\templates\account\profile.html:503 .\templates\main\home.html:30
-#: .\templates\main\privacy_policy.html:227
+#: .\templates\main\privacy_policy.html:317
 #: .\templates\main\project_detail.html:140
 msgid "Back to top"
 msgstr "На початок сторінки"
@@ -860,32 +868,27 @@ msgid "Main menu"
 msgstr "Головне меню"
 
 #: .\templates\main\includes\navbar.html:21
-#: .\templates\main\includes\navbar.html:135
+#: .\templates\main\includes\navbar.html:128
 msgid "Home"
 msgstr "Головна"
 
 #: .\templates\main\includes\navbar.html:23
-#: .\templates\main\includes\navbar.html:137
+#: .\templates\main\includes\navbar.html:130
 msgid "About"
 msgstr "Про нас"
 
 #: .\templates\main\includes\navbar.html:25
-#: .\templates\main\includes\navbar.html:139
+#: .\templates\main\includes\navbar.html:132
 msgid "Team"
 msgstr "Команда"
 
 #: .\templates\main\includes\navbar.html:26
-#: .\templates\main\includes\navbar.html:140
+#: .\templates\main\includes\navbar.html:133
 msgid "Contacts"
 msgstr "Контакти"
 
-#: .\templates\main\includes\navbar.html:30
-#: .\templates\main\includes\navbar.html:144
-msgid "Admin panel"
-msgstr "Адмін панель"
-
-#: .\templates\main\includes\navbar.html:35
-#: .\templates\main\includes\navbar.html:149
+#: .\templates\main\includes\navbar.html:29
+#: .\templates\main\includes\navbar.html:136
 #: .\templates\registration\login.html:5 .\templates\registration\login.html:19
 #: .\templates\registration\password_reset_confirm.html:32
 #: .\templates\registration\password_reset_form.html:33
@@ -893,25 +896,27 @@ msgstr "Адмін панель"
 msgid "Log in"
 msgstr "Увійти"
 
-#: .\templates\main\includes\navbar.html:41
-#: .\templates\main\includes\navbar.html:93
-#: .\templates\main\includes\navbar.html:155
-msgid "Log out"
-msgstr "Вийти"
-
-#: .\templates\main\includes\navbar.html:48
+#: .\templates\main\includes\navbar.html:36
 msgid "Language switcher"
 msgstr "Перемикач мов"
 
-#: .\templates\main\includes\navbar.html:76
+#: .\templates\main\includes\navbar.html:64
 msgid "Open profile menu"
 msgstr "Відкрити меню профілю"
 
-#: .\templates\main\includes\navbar.html:89
+#: .\templates\main\includes\navbar.html:77
 msgid "Cheat sheet"
 msgstr "Шпаргалка"
 
-#: .\templates\main\includes\navbar.html:102
+#: .\templates\main\includes\navbar.html:81
+msgid "Admin panel"
+msgstr "Адмін панель"
+
+#: .\templates\main\includes\navbar.html:86
+msgid "Log out"
+msgstr "Вийти"
+
+#: .\templates\main\includes\navbar.html:95
 msgid "Open menu"
 msgstr "Відкрити меню"
 
@@ -1059,13 +1064,11 @@ msgid "Legal"
 msgstr "Юридична інформація"
 
 #: .\templates\main\privacy_policy.html:20
-#, python-format
 msgid ""
 "This Privacy Policy explains how %(company_name)s collects, uses, and "
-"protects personal information provided through this website."
-msgstr ""
-"Ця Політика конфіденційності пояснює, як %(company_name)s збирає, "
-"використовує та захищає персональну інформацію, надану через цей вебсайт."
+"protects personal information provided through this website, employee "
+"accounts, and internal invoice-related features."
+msgstr "Ця Політика конфіденційності пояснює, як %(company_name)s збирає, використовує та захищає персональну інформацію, надану через цей вебсайт, облікові записи співробітників і внутрішні функції, пов’язані з інвойсами."
 
 #: .\templates\main\privacy_policy.html:27
 msgid "Last updated:"
@@ -1122,7 +1125,27 @@ msgstr ""
 msgid "Email address"
 msgstr "Електронна адреса"
 
-#: .\templates\main\privacy_policy.html:73
+#: .\templates\main\privacy_policy.html:71
+msgid "Job title or position"
+msgstr "Посада"
+
+#: .\templates\main\privacy_policy.html:76
+msgid "Profile avatar, if provided"
+msgstr "Аватар профілю, якщо надано"
+
+#: .\templates\main\privacy_policy.html:79
+msgid "Simple Invoice information"
+msgstr "Інформація про інвойс"
+
+#: .\templates\main\privacy_policy.html:81
+msgid ""
+"When an employee submits a Simple Invoice through the website, we may "
+"process invoice-related information provided by the employee, including "
+"invoice number, work period, hours, rate, and billing or address details "
+"required to generate the invoice document."
+msgstr "Коли співробітник надсилає Simple Invoice через вебсайт, ми можемо обробляти інформацію, пов’язану з інвойсом, надану співробітником, включно з номером інвойса, робочим періодом, кількістю годин, ставкою, а також платіжними або адресними даними, необхідними для створення документа інвойса."
+
+#: .\templates\main\privacy_policy.html:89
 msgid ""
 "Passwords are not stored in plain text and are processed using secure "
 "authentication methods."
@@ -1130,26 +1153,26 @@ msgstr ""
 "Паролі не зберігаються у відкритому вигляді та обробляються за допомогою "
 "безпечних методів автентифікації."
 
-#: .\templates\main\privacy_policy.html:80
+#: .\templates\main\privacy_policy.html:96
 msgid "3. How we use personal information"
 msgstr "3. Як ми використовуємо персональну інформацію"
 
-#: .\templates\main\privacy_policy.html:82
+#: .\templates\main\privacy_policy.html:98
 msgid ""
 "We use personal information only for legitimate business purposes, including:"
 msgstr ""
 "Ми використовуємо персональну інформацію лише для законних бізнес-цілей, "
 "зокрема:"
 
-#: .\templates\main\privacy_policy.html:87
+#: .\templates\main\privacy_policy.html:103
 msgid "Responding to enquiries and contact requests"
 msgstr "Відповідь на запити та звернення"
 
-#: .\templates\main\privacy_policy.html:88
+#: .\templates\main\privacy_policy.html:104
 msgid "Communicating with customers or prospective customers"
 msgstr "Комунікація з клієнтами або потенційними клієнтами"
 
-#: .\templates\main\privacy_policy.html:90
+#: .\templates\main\privacy_policy.html:106
 msgid ""
 "Creating and managing employee access to internal areas of the website or "
 "related systems"
@@ -1157,12 +1180,34 @@ msgstr ""
 "Створення та керування доступом працівників до внутрішніх розділів вебсайту "
 "або пов’язаних систем"
 
-#: .\templates\main\privacy_policy.html:94
+#: .\templates\main\privacy_policy.html:111
+msgid "Managing employee profile, contact, and address information"
+msgstr "Керування профілем співробітника, контактною інформацією та адресною інформацією"
+
+#: .\templates\main\privacy_policy.html:116
+msgid "Pre-filling employee invoice forms with billing and address information"
+msgstr "Попереднє заповнення форм рахунків-фактур для працівників із зазначенням платіжної та адресної інформації"
+
+#: .\templates\main\privacy_policy.html:121
+msgid ""
+"Generating Simple Invoice documents based on information submitted by "
+"employees"
+msgstr "Генерація простих інвойсів на основі інформації, наданої співробітниками "
+
+#: .\templates\main\privacy_policy.html:126
+msgid ""
+"Sending generated invoice documents to the employee and the company email "
+"address"
+msgstr ""
+"Надсилання згенерованих документів-рахунків співробітнику та на "
+"електронну адресу компанії."
+
+#: .\templates\main\privacy_policy.html:130
 msgid ""
 "Maintaining the security, integrity, and proper operation of our services"
 msgstr "Підтримка безпеки, цілісності та належної роботи наших сервісів"
 
-#: .\templates\main\privacy_policy.html:97
+#: .\templates\main\privacy_policy.html:133
 msgid ""
 "We do not use the information submitted through the contact form for "
 "unrelated marketing purposes unless a person separately requests or agrees "
@@ -1172,11 +1217,11 @@ msgstr ""
 "маркетингових цілей, якщо особа окремо не запросила або не погодилася на "
 "таку комунікацію."
 
-#: .\templates\main\privacy_policy.html:105
+#: .\templates\main\privacy_policy.html:141
 msgid "4. How contact form data is handled"
 msgstr "4. Як обробляються дані з контактної форми"
 
-#: .\templates\main\privacy_policy.html:107
+#: .\templates\main\privacy_policy.html:143
 msgid ""
 "Information submitted through the contact form is not stored in a customer "
 "database on the website. Instead, it is sent directly to our company email "
@@ -1186,27 +1231,72 @@ msgstr ""
 "клієнтів на вебсайті. Замість цього вона надсилається безпосередньо на "
 "електронну адресу компанії для розгляду запиту та відповіді."
 
-#: .\templates\main\privacy_policy.html:115
+#: .\templates\main\privacy_policy.html:151
 msgid "5. How employee account data is handled"
 msgstr "5. Як обробляються дані облікових записів працівників"
 
-#: .\templates\main\privacy_policy.html:117
+#: .\templates\main\privacy_policy.html:153
 msgid ""
-"Employee registration information is used only for internal business "
-"administration, account access, and related operational purposes. Employee "
-"data is accessible only to authorized personnel who need it for legitimate "
-"business reasons."
+"Employee registration and profile information is used only for internal "
+"business administration, account access, invoice preparation, communication, "
+"and related operational purposes. Employee data is accessible only to "
+"authorized personnel who need it for legitimate business reasons."
 msgstr ""
-"Реєстраційна інформація працівників використовується лише для внутрішнього "
-"адміністрування, доступу до облікових записів та пов’язаних операційних "
-"цілей. Дані доступні лише уповноваженому персоналу, який має обґрунтовану "
-"бізнес-потребу."
+"Реєстраційна інформація та інформація профілю співробітників  "
+"використовуються лише для внутрішнього адміністрування бізнесу, "
+"доступу до облікового запису, підготовки інвойсів,  "
+"комунікації та пов’язаних з цим операційних цілей. Дані "
+"співробітників доступні лише уповноваженому персоналу, якому "
+"вони потрібні з законних ділових причин. "
 
-#: .\templates\main\privacy_policy.html:126
+#: .\templates\main\privacy_policy.html:161
+msgid ""
+"Address and billing information provided by employees may be used to pre-"
+"fill Simple Invoice forms and to generate invoice documents required for "
+"payment and internal company processing."
+msgstr ""
+"Адреса та платіжна інформація, надана співробітниками, може бути використана "
+"для попереднього заповнення простих форм інвойсів та створення інвойсів, "
+"необхідних для оплати та внутрішньої обробки компанії."
+
+#: .\templates\main\privacy_policy.html:168
+msgid ""
+"When a Simple Invoice is submitted, a PDF invoice may be generated from the "
+"submitted information and sent to the employee email address and the company "
+"email address. This allows both the employee and the company to receive a "
+"copy of the generated invoice document."
+msgstr ""
+"Після надсилання форми на основі наданої інформації буде згенеровано PDF-"
+"файл, який буде надіслано на вашу адресу електронної пошти та адресу "
+"електронної пошти компанії."
+
+#: .\templates\main\privacy_policy.html:176
+msgid ""
+"Temporary files created during invoice generation, including temporary "
+"spreadsheet and PDF files, are used only for generating and sending the "
+"invoice. These temporary files are not intended to be stored permanently by "
+"the website after the invoice process is completed."
+msgstr ""
+"Під час подання інвойсу, на основі наданої інформації може бути "
+"згенерований інвойс у форматі PDF та надісланий на адресу електронної пошти "
+"працівника та адресу електронної пошти компанії. Це дозволяє як працівнику, "
+"так і компанії отримати копію згенерованого документа інвойсу."
+
+#: .\templates\main\privacy_policy.html:184
+msgid ""
+"The website may keep the latest Simple Invoice record for an employee only "
+"to help pre-fill future invoice forms. Older invoice records are not kept "
+"when they are no longer needed for this purpose."
+msgstr ""
+"Вебсайт може зберігати останній запис простого рахунку-фактури для працівника лише "
+"для допомоги у попередньому заповненні майбутніх форм рахунків-фактур. "
+"Старіші записи рахунків-фактур не зберігаються."
+
+#: .\templates\main\privacy_policy.html:192
 msgid "6. Legal basis and consent"
 msgstr "6. Правові підстави та згода"
 
-#: .\templates\main\privacy_policy.html:128
+#: .\templates\main\privacy_policy.html:194
 msgid ""
 "By submitting a contact request through this website, users acknowledge that "
 "we may process the information they provide in order to review the request "
@@ -1215,7 +1305,7 @@ msgstr ""
 "Надсилаючи запит через цей вебсайт, користувачі підтверджують, що ми можемо "
 "обробляти надану інформацію для розгляду запиту та надання відповіді."
 
-#: .\templates\main\privacy_policy.html:134
+#: .\templates\main\privacy_policy.html:200
 msgid ""
 "Where consent is requested through a checkbox or similar confirmation, that "
 "consent applies only to the specific processing described at the time of "
@@ -1224,11 +1314,20 @@ msgstr ""
 "Якщо згода запитується через прапорець або подібне підтвердження, вона "
 "застосовується лише до конкретної обробки, описаної на момент збору."
 
-#: .\templates\main\privacy_policy.html:142
+#: .\templates\main\privacy_policy.html:206
+msgid ""
+"By submitting a Simple Invoice, employees acknowledge that the submitted "
+"information may be used to generate the invoice document and send it to the "
+"employee and the company for invoice processing."
+msgstr ""
+"Надсилаючи інвойс, працівники визнають, що надана інформація може бути використана "
+"для створення документа інвойса та його надсилання працівнику та компанії для обробки."
+
+#: .\templates\main\privacy_policy.html:214
 msgid "7. Sharing of information"
 msgstr "7. Передача інформації"
 
-#: .\templates\main\privacy_policy.html:144
+#: .\templates\main\privacy_policy.html:216
 msgid ""
 "We do not sell personal information. We do not rent, trade, or otherwise "
 "disclose personal information to third parties except where disclosure is "
@@ -1241,11 +1340,19 @@ msgstr ""
 "діяльності, виконання юридичних зобов’язань, захисту наших прав або "
 "підтримки безпечної технічної роботи."
 
-#: .\templates\main\privacy_policy.html:153
+#: .\templates\main\privacy_policy.html:223
+msgid ""
+"Simple Invoice documents may be sent to the company email address and to the "
+"employee email address for invoice processing and record confirmation."
+msgstr ""
+"Інвойси можна надсилати на електронну адресу компанії та на електронну "
+"адресу співробітника для обробки інвойсів та підтвердження запису."
+
+#: .\templates\main\privacy_policy.html:231
 msgid "8. Data retention"
 msgstr "8. Зберігання даних"
 
-#: .\templates\main\privacy_policy.html:155
+#: .\templates\main\privacy_policy.html:233
 msgid ""
 "We retain personal information only for as long as it is reasonably "
 "necessary for the purpose for which it was collected, including responding "
@@ -1257,11 +1364,21 @@ msgstr ""
 "запити, керування внутрішніми обліковими записами, виконання юридичних "
 "зобов’язань, вирішення спорів та захисту наших законних бізнес-інтересів."
 
-#: .\templates\main\privacy_policy.html:164
+#: .\templates\main\privacy_policy.html:240
+msgid ""
+"Simple Invoice records may be limited to the latest invoice data needed to "
+"pre-fill future invoice forms, unless additional retention is required for "
+"business, accounting, or legal reasons."
+msgstr ""
+"Записи інвойсів можуть обмежуватися останніми даними інвойсів, необхідними для "
+"попереднього заповнення майбутніх форм іновойсів, якщо додаткове зберігання "
+"не потрібне з ділових, бухгалтерських або юридичних причин."
+
+#: .\templates\main\privacy_policy.html:248
 msgid "9. Data security"
 msgstr "9. Безпека даних"
 
-#: .\templates\main\privacy_policy.html:166
+#: .\templates\main\privacy_policy.html:250
 msgid ""
 "We take reasonable administrative, technical, and organizational measures to "
 "protect personal information against unauthorized access, disclosure, "
@@ -1274,11 +1391,11 @@ msgstr ""
 "система чи спосіб передавання даних через Інтернет не може бути гарантовано "
 "повністю безпечним."
 
-#: .\templates\main\privacy_policy.html:175
+#: .\templates\main\privacy_policy.html:259
 msgid "10. Cookies and tracking technologies"
 msgstr "10. Файли cookie та технології відстеження"
 
-#: .\templates\main\privacy_policy.html:177
+#: .\templates\main\privacy_policy.html:261
 msgid ""
 "At this time, we do not use cookies or similar tracking technologies for "
 "analytics, advertising, or behavioral profiling through this website. If "
@@ -1289,11 +1406,11 @@ msgstr ""
 "це зміниться в майбутньому, цю Політику конфіденційності буде відповідно "
 "оновлено."
 
-#: .\templates\main\privacy_policy.html:186
+#: .\templates\main\privacy_policy.html:270
 msgid "11. Your rights"
 msgstr "11. Ваші права"
 
-#: .\templates\main\privacy_policy.html:188
+#: .\templates\main\privacy_policy.html:272
 msgid ""
 "Depending on the laws that apply to you, you may have the right to request "
 "access to personal information we hold about you, request correction of "
@@ -1307,11 +1424,19 @@ msgstr ""
 "відповідних випадках або звертатися до нас із запитаннями щодо обробки вашої "
 "інформації."
 
-#: .\templates\main\privacy_policy.html:197
+#: .\templates\main\privacy_policy.html:279
+msgid ""
+"Employees may also contact the company to update inaccurate profile, "
+"address, or invoice-related information."
+msgstr ""
+"Працівники також можуть звертатися до компанії, щоб оновити неточну "
+"інформацію в профілі, адресі або інформації, пов’язаній з інвойсами."
+
+#: .\templates\main\privacy_policy.html:287
 msgid "12. Contact us"
 msgstr "12. Зв’яжіться з нами"
 
-#: .\templates\main\privacy_policy.html:199
+#: .\templates\main\privacy_policy.html:289
 #, python-format
 msgid ""
 "If you have any questions about this Privacy Policy or about how your "
@@ -1321,15 +1446,15 @@ msgstr ""
 "вашої персональної інформації, будь ласка, зверніться безпосередньо до "
 "%(company_name)s."
 
-#: .\templates\main\privacy_policy.html:206
+#: .\templates\main\privacy_policy.html:296
 msgid "Email:"
 msgstr "Електронна пошта:"
 
-#: .\templates\main\privacy_policy.html:212
+#: .\templates\main\privacy_policy.html:302
 msgid "13. Changes to this Privacy Policy"
 msgstr "13. Зміни до цієї Політики конфіденційності"
 
-#: .\templates\main\privacy_policy.html:214
+#: .\templates\main\privacy_policy.html:304
 msgid ""
 "We may update this Privacy Policy from time to time to reflect changes in "
 "our business practices, technical setup, or legal requirements. The updated "

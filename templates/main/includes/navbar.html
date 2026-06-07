@@ -25,22 +25,10 @@
         <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
         <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
 
-        {% if user.is_staff %}
-        <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
-          {% trans "Admin panel" %}
-        </a>
-        {% endif %}
-
         {% if not user.is_authenticated %}
         <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
         {% endif %}
 
-        {% if user.is_authenticated and user.is_staff %}
-        <form method="post" action="{% url 'user:logout' %}" class="nav-auth-form">
-          {% csrf_token %}
-          <button type="submit" class="nav-auth-button">{% trans "Log out" %}</button>
-        </form>
-        {% endif %}
       </nav>
 
       <div class="nav-actions">
@@ -88,6 +76,11 @@
             <a href="{% url 'account:profile' %}">{% trans "Profile" %}</a>
             <a href="{% url 'main:home' %}">{% trans "Cheat sheet" %}</a>
             <a href="{% url 'account:simple_invoice_create' %}">{% trans "Submit invoice" %}</a>
+            {% if user.is_staff %}
+            <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
+              {% trans "Admin panel" %}
+            </a>
+            {% endif %}
             <form method="post" action="{% url 'user:logout' %}" class="mobile-nav-auth-form">
               {% csrf_token %}
               <button type="submit" class="mobile-nav-auth-button">{% trans "Log out" %}</button>
@@ -139,22 +132,10 @@
           <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
           <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
 
-          {% if user.is_staff %}
-          <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
-            {% trans "Admin panel" %}
-          </a>
-          {% endif %}
-
           {% if not user.is_authenticated %}
           <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
           {% endif %}
 
-          {% if user.is_authenticated and user.is_staff %}
-          <form method="post" action="{% url 'user:logout' %}" class="mobile-nav-auth-form">
-            {% csrf_token %}
-            <button type="submit" class="mobile-nav-auth-button">{% trans "Log out" %}</button>
-          </form>
-          {% endif %}
         </div>
       </div>
     </div>

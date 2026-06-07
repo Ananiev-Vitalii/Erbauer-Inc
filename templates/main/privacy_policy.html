@@ -19,7 +19,7 @@
       <p class="privacy-policy__lead">
         {% blocktrans with company_name=company_base.name|default:"Erbauer" trimmed %}
         This Privacy Policy explains how {{ company_name }} collects, uses, and protects personal information provided
-        through this website.
+        through this website, employee accounts, and internal invoice-related features.
         {% endblocktrans %}
       </p>
 
@@ -67,7 +67,23 @@
             <li>{% trans "First name" %}</li>
             <li>{% trans "Last name" %}</li>
             <li>{% trans "Email address" %}</li>
+            <li>{% trans "Phone number" %}</li>
+            <li>{% trans "Job title or position" %}</li>
+            <li>{% trans "Street address" %}</li>
+            <li>{% trans "City" %}</li>
+            <li>{% trans "Province" %}</li>
+            <li>{% trans "Postal code" %}</li>
+            <li>{% trans "Profile avatar, if provided" %}</li>
           </ul>
+
+          <h3>{% trans "Simple Invoice information" %}</h3>
+          <p>
+            {% blocktrans trimmed %}
+            When an employee submits a Simple Invoice through the website, we may process invoice-related information
+            provided by the employee, including invoice number, work period, hours, rate, and billing or address details
+            required to generate the invoice document.
+            {% endblocktrans %}
+          </p>
 
           <p>
             {% blocktrans trimmed %}
@@ -89,6 +105,26 @@
             <li>
               {% blocktrans trimmed %}
               Creating and managing employee access to internal areas of the website or related systems
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Managing employee profile, contact, and address information
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Pre-filling employee invoice forms with billing and address information
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Generating Simple Invoice documents based on information submitted by employees
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Sending generated invoice documents to the employee and the company email address
               {% endblocktrans %}
             </li>
             <li>{% trans "Maintaining the security, integrity, and proper operation of our services" %}</li>
@@ -115,9 +151,39 @@
           <h2>{% trans "5. How employee account data is handled" %}</h2>
           <p>
             {% blocktrans trimmed %}
-            Employee registration information is used only for internal business administration, account access, and
-            related operational purposes. Employee data is accessible only to authorized personnel who need it for
-            legitimate business reasons.
+            Employee registration and profile information is used only for internal business administration, account
+            access, invoice preparation, communication, and related operational purposes. Employee data is accessible
+            only to authorized personnel who need it for legitimate business reasons.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            Address and billing information provided by employees may be used to pre-fill Simple Invoice forms and to
+            generate invoice documents required for payment and internal company processing.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            When a Simple Invoice is submitted, a PDF invoice may be generated from the submitted information and sent to
+            the employee email address and the company email address. This allows both the employee and the company to
+            receive a copy of the generated invoice document.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            Temporary files created during invoice generation, including temporary spreadsheet and PDF files, are used
+            only for generating and sending the invoice. These temporary files are not intended to be stored permanently
+            by the website after the invoice process is completed.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            The website may keep the latest Simple Invoice record for an employee only to help pre-fill future invoice
+            forms. Older invoice records are not kept when they are no longer needed for this purpose.
             {% endblocktrans %}
           </p>
         </section>
@@ -136,6 +202,12 @@
             specific processing described at the time of collection.
             {% endblocktrans %}
           </p>
+          <p>
+            {% blocktrans trimmed %}
+            By submitting a Simple Invoice, employees acknowledge that the submitted information may be used to generate
+            the invoice document and send it to the employee and the company for invoice processing.
+            {% endblocktrans %}
+          </p>
         </section>
 
         <section class="privacy-policy__section">
@@ -147,6 +219,12 @@
             protect our rights, or support secure technical operations.
             {% endblocktrans %}
           </p>
+          <p>
+            {% blocktrans trimmed %}
+            Simple Invoice documents may be sent to the company email address and to the employee email address for
+            invoice processing and record confirmation.
+            {% endblocktrans %}
+          </p>
         </section>
 
         <section class="privacy-policy__section">
@@ -156,6 +234,12 @@
             We retain personal information only for as long as it is reasonably necessary for the purpose for which it
             was collected, including responding to requests, managing internal accounts, meeting legal obligations,
             resolving disputes, and protecting our legitimate business interests.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans trimmed %}
+            Simple Invoice records may be limited to the latest invoice data needed to pre-fill future invoice forms,
+            unless additional retention is required for business, accounting, or legal reasons.
             {% endblocktrans %}
           </p>
         </section>
@@ -189,6 +273,12 @@
             Depending on the laws that apply to you, you may have the right to request access to personal information we
             hold about you, request correction of inaccurate information, request deletion of your information where
             appropriate, or contact us with questions about how your information is handled.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans trimmed %}
+            Employees may also contact the company to update inaccurate profile, address, or invoice-related
+            information.
             {% endblocktrans %}
           </p>
         </section>
