@@ -41,7 +41,7 @@ CLOUDINARY_STORAGE = {
 }
 
 # LibreOffice path
-LIBREOFFICE_PATH = "soffice"
+LIBREOFFICE_PATH = os.getenv("LIBREOFFICE_PATH", default="soffice")
 
 # Security
 SECURE_SSL_REDIRECT = True
