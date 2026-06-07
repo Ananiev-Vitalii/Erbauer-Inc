@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-03 14:29-0700\n"
+"POT-Creation-Date: 2026-06-06 19:36-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,27 +25,27 @@ msgstr ""
 msgid "Staff"
 msgstr "Персонал"
 
-#: .\account\forms.py:27 .\main\forms.py:127
+#: .\account\forms.py:26 .\main\forms.py:127
 msgid "Please enter a valid 10-digit Canadian phone number."
 msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
 
-#: .\account\forms.py:46
+#: .\account\forms.py:45
 msgid "A user with this email is already registered."
 msgstr "Користувач із цією робочою електронною адресою вже зареєстрований."
 
-#: .\account\forms.py:72
+#: .\account\forms.py:71 .\account\forms.py:152
 msgid "Please enter a valid Canadian postal code."
-msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
+msgstr "Будь ласка, введіть дійсний канадський поштовий індекс."
 
-#: .\account\forms.py:102
+#: .\account\forms.py:98
 msgid "Please upload a JPG, PNG, or WEBP image."
 msgstr "Будь ласка, завантажте зображення JPG, PNG або WEBP."
 
-#: .\account\forms.py:107
+#: .\account\forms.py:103
 msgid "Avatar image must be smaller than 5 MB."
 msgstr "Розмір зображення аватара має бути менше ніж 5 МБ."
 
-#: .\account\forms.py:126
+#: .\account\forms.py:127
 msgid "End day cannot be earlier than start day."
 msgstr "Кінцевий день не може бути раніше за початковий день."
 
@@ -134,21 +134,23 @@ msgstr "Електронна пошта"
 msgid "Phone"
 msgstr "Телефон"
 
-#: .\account\models.py:61 .\templates\account\profile.html:186
+#: .\account\models.py:61 .\templates\account\invoice.html:66
+#: .\templates\account\profile.html:186
 msgid "Street address"
 msgstr "Адреса вулиці"
 
 #: .\account\models.py:62 .\main\models.py:43
-#: .\templates\account\profile.html:207
+#: .\templates\account\invoice.html:88 .\templates\account\profile.html:207
 msgid "City"
 msgstr "Місто"
 
 #: .\account\models.py:64 .\main\models.py:44
-#: .\templates\account\profile.html:228
+#: .\templates\account\invoice.html:110 .\templates\account\profile.html:228
 msgid "Province"
 msgstr "Провінція"
 
-#: .\account\models.py:70 .\templates\account\profile.html:244
+#: .\account\models.py:70 .\templates\account\invoice.html:126
+#: .\templates\account\profile.html:244
 msgid "Postal code"
 msgstr "Поштовий індекс"
 
@@ -181,33 +183,45 @@ msgstr "Профіль"
 msgid "Profiles"
 msgstr "Профілі"
 
-#: .\account\models.py:128
+#: .\account\models.py:128 .\templates\account\invoice.html:171
 msgid "Invoice number"
 msgstr "Номер інвойсу"
 
-#: .\account\models.py:136
+#: .\account\models.py:130 .\account\models.py:131
+msgid "Enter a valid invoice number."
+msgstr "Будь ласка, введіть дійсний номер інвойсу."
+
+#: .\account\models.py:136 .\templates\account\invoice.html:195
 msgid "Start day"
 msgstr "День початку"
 
-#: .\account\models.py:145
+#: .\account\models.py:143 .\templates\account\invoice.html:211
 msgid "End day"
 msgstr "Кінцевий день"
 
-#: .\account\models.py:154
+#: .\account\models.py:150 .\templates\account\invoice.html:227
 msgid "Hours"
 msgstr "Години"
 
-#: .\account\models.py:161
+#: .\account\models.py:153
+msgid "Enter valid hours."
+msgstr "Введіть дійсні години роботи."
+
+#: .\account\models.py:157 .\templates\account\invoice.html:251
 msgid "Rate"
 msgstr "Погодинна ставка"
 
-#: .\account\models.py:168
-msgid "Employee simple invoice"
-msgstr "Інвойс для працівника"
+#: .\account\models.py:160
+msgid "Enter a valid rate."
+msgstr "Будь ласка, введіть дійсну погодинну ставку."
 
-#: .\account\models.py:169
-msgid "Employee simple invoices"
-msgstr "Інвойси для працівників"
+#: .\account\models.py:164
+msgid "Simple invoice"
+msgstr "Інвойс"
+
+#| msgid "Employee simple invoices"
+msgid "Simple invoices"
+msgstr "Інвойси"
 
 #: .\config\settings\base.py:95
 msgid "Ukrainian"
@@ -470,6 +484,93 @@ msgstr[2] "%(count)d секунд"
 msgid "Too many attempts. Please try again in %(time)s."
 msgstr "Забагато спроб. Будь ласка, спробуйте ще раз через %(time)s."
 
+#: .\templates\account\emails\simple_invoice.html:7
+#: .\templates\account\emails\simple_invoice.html:29
+#: .\templates\account\invoice.html:5 .\templates\account\invoice.html:21
+msgid "Simple Invoice"
+msgstr "Інвойс"
+
+#: .\templates\account\emails\simple_invoice.html:37
+msgid "Hello,"
+msgstr "Привіт"
+
+#: .\templates\account\emails\simple_invoice.html:41
+msgid "Please find the simple invoice attached to this email."
+msgstr "Будь ласка, знайдіть та завантажте інвойс, доданий до цього електронного листа."
+
+#: .\templates\account\emails\simple_invoice.html:45
+msgid "Employee:"
+msgstr "Співробітник"
+
+#: .\templates\account\invoice.html:18
+msgid "Employee invoice"
+msgstr "Інвойс для працівника"
+
+#: .\templates\account\invoice.html:25
+msgid ""
+"Review your invoice details, confirm your address information, and submit "
+"your invoice for processing."
+msgstr "Перевірте дані адреси та інвойсу, та надішліть свій інвойс на обробку."
+
+#: .\templates\account\invoice.html:32
+msgid ""
+"After you submit the form, a PDF invoice will be generated from the provided "
+"information and sent to your email address and the company email address."
+msgstr ""
+"Після надсилання форми на основі наданої інформації буде згенеровано PDF-файл, "
+"який буде надіслано на вашу адресу електронної пошти та адресу електронної пошти компанії."
+#: .\templates\account\invoice.html:55
+msgid "Billing information"
+msgstr "Платіжна інформація"
+
+#: .\templates\account\invoice.html:56
+msgid "Employee Details"
+msgstr "Відомості про працівника"
+
+#: .\templates\account\invoice.html:60
+msgid "These details will be used only for generating the invoice document."
+msgstr "Ці дані будуть використані лише для створення інвойсу."
+
+#: .\templates\account\invoice.html:73 .\templates\account\profile.html:193
+msgid "Enter street address"
+msgstr "Введіть адресу вулиці"
+
+#: .\templates\account\invoice.html:95 .\templates\account\profile.html:214
+msgid "Enter city"
+msgstr "Введіть назву міста"
+
+#: .\templates\account\invoice.html:133 .\templates\account\profile.html:251
+msgid "A1A 1A1"
+msgstr "A1A 1A1"
+
+#: .\templates\account\invoice.html:160
+msgid "Invoice details"
+msgstr "Данні інвойсу"
+
+#: .\templates\account\invoice.html:161
+msgid "Work Period & Payment"
+msgstr "Період роботи та оплата"
+
+#: .\templates\account\invoice.html:165
+msgid "Enter your invoice number, work period, hours, and rate."
+msgstr "Введіть номер інвойсу, період роботи, години та погодинну ставку."
+
+#: .\templates\account\invoice.html:284
+msgid ""
+"Invoice PDF has been created and sent to your email address and the company "
+"email address."
+msgstr ""
+"PDF-файл інвойсу створено та надіслано на вашу адресу електронної пошти та адресу електронної пошти компанії."
+
+#: .\templates\account\invoice.html:292
+msgid "Sending invoice..."
+msgstr "Надсилання інвойсу..."
+
+#: .\templates\account\invoice.html:294
+#: .\templates\main\includes\navbar.html:90
+msgid "Submit invoice"
+msgstr "Надіслати інвойс"
+
 #: .\templates\account\profile.html:5 .\templates\account\profile.html:23
 msgid "My profile"
 msgstr "Мій Профіль"
@@ -564,23 +665,11 @@ msgstr "Змінити аватар"
 msgid "Enter email address"
 msgstr "Підтвердити електронну адресу"
 
-#: .\templates\account\profile.html:193
-msgid "Enter street address"
-msgstr "Введіть адресу вулиці"
-
-#: .\templates\account\profile.html:214
-msgid "Enter city"
-msgstr "Введіть назву міста"
-
-#: .\templates\account\profile.html:251
-msgid "A1A 1A1"
-msgstr "A1A 1A1"
-
 #: .\templates\account\profile.html:277
 msgid "Contact details updated successfully."
 msgstr "Контактну інформацію успішно оновлено."
 
-#: .\templates\account\profile.html:285 .\templates\account\profile.html:359
+#: .\templates\account\profile.html:285 .\templates\account\profile.html:371
 msgid "Saving..."
 msgstr "Збереження..."
 
@@ -600,65 +689,65 @@ msgstr "Інформація облікового запису працівни�
 msgid "Update your work-related information and current job title."
 msgstr "Оновіть інформацію про свою роботу та поточну посаду."
 
-#: .\templates\account\profile.html:351
+#: .\templates\account\profile.html:363
 msgid "Job title updated successfully."
 msgstr "Посаду успішно оновлено."
 
-#: .\templates\account\profile.html:361
+#: .\templates\account\profile.html:373
 msgid "Save employee info"
 msgstr "Зберегти інформацію"
 
-#: .\templates\account\profile.html:376
+#: .\templates\account\profile.html:388
 msgid "Security"
 msgstr "Безпека"
 
-#: .\templates\account\profile.html:377
+#: .\templates\account\profile.html:389
 msgid "Change Password"
 msgstr "Змінити пароль"
 
-#: .\templates\account\profile.html:381
+#: .\templates\account\profile.html:393
 msgid "Choose a strong password to keep your account protected."
 msgstr "Оберіть надійний пароль, щоб захистити свій обліковий запис."
 
-#: .\templates\account\profile.html:398
+#: .\templates\account\profile.html:410
 msgid "Current password"
 msgstr "Поточний пароль"
 
-#: .\templates\account\profile.html:405
+#: .\templates\account\profile.html:417
 msgid "Enter current password"
 msgstr "Введіть поточний пароль"
 
-#: .\templates\account\profile.html:419
+#: .\templates\account\profile.html:431
 msgid "New password"
 msgstr "Новий пароль"
 
-#: .\templates\account\profile.html:426
+#: .\templates\account\profile.html:438
 msgid "Enter new password"
 msgstr "Введіть новий пароль"
 
-#: .\templates\account\profile.html:440
+#: .\templates\account\profile.html:452
 msgctxt "label"
 msgid "Confirm new password"
 msgstr "Підтвердження нового пароля"
 
-#: .\templates\account\profile.html:447
+#: .\templates\account\profile.html:459
 msgctxt "placeholder"
 msgid "Confirm new password"
 msgstr "Підтвердіть новий пароль"
 
-#: .\templates\account\profile.html:469
+#: .\templates\account\profile.html:481
 msgid "Password updated successfully."
 msgstr "Пароль успішно оновлено."
 
-#: .\templates\account\profile.html:477
+#: .\templates\account\profile.html:489
 msgid "Updating..."
 msgstr "Оновлення..."
 
-#: .\templates\account\profile.html:479
+#: .\templates\account\profile.html:491
 msgid "Update password"
 msgstr "Оновити пароль"
 
-#: .\templates\account\profile.html:491 .\templates\main\home.html:30
+#: .\templates\account\profile.html:503 .\templates\main\home.html:30
 #: .\templates\main\privacy_policy.html:227
 #: .\templates\main\project_detail.html:140
 msgid "Back to top"
@@ -821,10 +910,6 @@ msgstr "Відкрити меню профілю"
 #: .\templates\main\includes\navbar.html:89
 msgid "Cheat sheet"
 msgstr "Шпаргалка"
-
-#: .\templates\main\includes\navbar.html:90
-msgid "Submit invoice"
-msgstr "Надіслати інвойс"
 
 #: .\templates\main\includes\navbar.html:102
 msgid "Open menu"

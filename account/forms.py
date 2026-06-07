@@ -110,6 +110,11 @@ class SimpleInvoiceForm(forms.ModelForm):
         model = EmployeeSimpleInvoice
         fields = ["invoice_number", "start_day", "end_day", "hours", "rate"]
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["start_day"].required = True
+        self.fields["end_day"].required = True
+
     def clean(self):
         cleaned_data = super().clean()
 
@@ -130,3 +135,20 @@ class EmployeeInvoiceForm(forms.Form):
     city = forms.CharField(max_length=50)
     province = forms.ChoiceField(choices=CanadianProvince.choices)
     postal_code = forms.CharField(max_length=7)
+
+    def clean_street_address(self):
+        street_address = self.cleaned_data.get("street_address", "")
+        return street_address.strip()
+
+    def clean_city(self):
+        city = self.cleaned_data.get("city", "").strip()
+        return city[:1].upper() + city[1:]
+
+    def clean_postal_code(self):
+        postal_code = self.cleaned_data.get("postal_code", "").strip().upper()
+        normalized = postal_code.replace(" ", "")
+
+        if len(normalized) != 6:
+            raise forms.ValidationError(_("Please enter a valid Canadian postal code."))
+
+        return f"{normalized[:3]} {normalized[3:]}"

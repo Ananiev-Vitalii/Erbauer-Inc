@@ -40,6 +40,9 @@ CLOUDINARY_STORAGE = {
     "API_SECRET": os.getenv("CLOUDINARY_API_SECRET"),
 }
 
+# LibreOffice path
+LIBREOFFICE_PATH = "soffice"
+
 # Security
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True

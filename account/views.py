@@ -3,6 +3,8 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from django.utils import timezone
+from django.db import transaction
 from django.views import generic
 
 from account.forms import (
@@ -13,6 +15,7 @@ from account.forms import (
     EmployeeInvoiceForm,
 )
 from account.models import EmployeeSimpleInvoice, Employee, Position, Profile
+from account.services.simple_invoice_service import process_simple_invoice
 
 
 class MyProfileView(LoginRequiredMixin, generic.TemplateView):
@@ -146,4 +149,176 @@ class UpdatePasswordView(PartialFormSuccessMixin, generic.FormView):
 
 
 class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
-    pass
+    template_name = "account/invoice.html"
+    partial_template_name = "account/invoice.html#simple-invoice-form"
+
+    def get_employee_form(self, employee, data=None):
+        if data is not None:
+            return EmployeeInvoiceForm(data)
+
+        return EmployeeInvoiceForm(
+            initial={
+                "street_address": employee.street_address,
+                "city": employee.city,
+                "province": employee.province,
+                "postal_code": employee.postal_code,
+            }
+        )
+
+    def get_invoice_form(self, employee, data=None):
+        if data is not None:
+            return SimpleInvoiceForm(data)
+
+        today = timezone.localdate()
+        invoice_initial = {
+            "end_day": today.day,
+        }
+
+        last_invoice = (
+            EmployeeSimpleInvoice.objects.filter(employee=employee)
+            .order_by("-id")
+            .first()
+        )
+
+        if last_invoice:
+            invoice_initial.update(
+                {
+                    "invoice_number": last_invoice.invoice_number + 1,
+                    "rate": str(last_invoice.rate),
+                }
+            )
+
+        return SimpleInvoiceForm(initial=invoice_initial)
+
+    def get_context(self, employee, employee_form=None, invoice_form=None):
+        return {
+            "employee_form": employee_form or self.get_employee_form(employee),
+            "invoice_form": invoice_form or self.get_invoice_form(employee),
+        }
+
+    def get(self, request, *args, **kwargs):
+        employee = request.user.employee
+        context = self.get_context(employee)
+
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        employee = request.user.employee
+
+        employee_form = self.get_employee_form(employee, data=request.POST)
+        invoice_form = self.get_invoice_form(employee, data=request.POST)
+
+        if employee_form.is_valid() and invoice_form.is_valid():
+            employee_data = employee_form.cleaned_data.copy()
+
+            with transaction.atomic():
+                invoice = invoice_form.save(commit=False)
+                invoice.employee = employee
+                invoice.save()
+
+                EmployeeSimpleInvoice.objects.filter(
+                    employee=employee,
+                ).exclude(
+                    id=invoice.id,
+                ).delete()
+
+                transaction.on_commit(
+                    lambda: process_simple_invoice(
+                        invoice=invoice,
+                        employee_data=employee_data,
+                    )
+                )
+
+            employee_form = self.get_employee_form(employee)
+            invoice_form = self.get_invoice_form(employee)
+            invoice_form.is_success = True
+
+            context = self.get_context(
+                employee,
+                employee_form=employee_form,
+                invoice_form=invoice_form,
+            )
+
+            return render(request, self.partial_template_name, context)
+
+        context = self.get_context(
+            employee,
+            employee_form=employee_form,
+            invoice_form=invoice_form,
+        )
+
+        return render(request, self.partial_template_name, context)
+
+# class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
+#     template_name = "account/invoice.html"
+#
+#     def get(self, request, *args, **kwargs):
+#         employee = request.user.employee
+#         today = timezone.localdate()
+#         invoice_initial = {"end_day": today.day}
+#
+#         employee_form = EmployeeInvoiceForm(
+#             initial={
+#                 "street_address": employee.street_address,
+#                 "city": employee.city,
+#                 "province": employee.province,
+#                 "postal_code": employee.postal_code,
+#             }
+#         )
+#
+#         last_invoice = (
+#             EmployeeSimpleInvoice.objects.filter(employee=employee)
+#             .order_by("-id")
+#             .first()
+#         )
+#
+#         if last_invoice:
+#             invoice_initial.update(
+#                 {
+#                     "invoice_number": last_invoice.invoice_number + 1,
+#                     "rate": str(last_invoice.rate),
+#                 }
+#             )
+#
+#         invoice_form = SimpleInvoiceForm(initial=invoice_initial)
+#
+#         context = {
+#             "employee_form": employee_form,
+#             "invoice_form": invoice_form,
+#         }
+#         return render(request, self.template_name, context)
+#
+#     def post(self, request, *args, **kwargs):
+#         employee = request.user.employee
+#
+#         employee_form = EmployeeInvoiceForm(request.POST)
+#         invoice_form = SimpleInvoiceForm(request.POST)
+#
+#         if employee_form.is_valid() and invoice_form.is_valid():
+#             employee_data = employee_form.cleaned_data.copy()
+#
+#             with transaction.atomic():
+#                 invoice = invoice_form.save(commit=False)
+#                 invoice.employee = employee
+#                 invoice.save()
+#
+#                 EmployeeSimpleInvoice.objects.filter(
+#                     employee=employee,
+#                 ).exclude(
+#                     id=invoice.id,
+#                 ).delete()
+#
+#                 transaction.on_commit(
+#                     lambda: process_simple_invoice(
+#                         invoice=invoice,
+#                         employee_data=employee_data,
+#                     )
+#                 )
+#
+#             return redirect("account:simple_invoice_create")
+#
+#         context = {
+#             "employee_form": employee_form,
+#             "invoice_form": invoice_form,
+#         }
+#         return render(request, self.template_name, context)

@@ -361,11 +361,6 @@ p {
   justify-content: flex-start;
 }
 
-.profile-dropdown .mobile-nav-auth-button:hover {
-  color: var(--orange-500);
-  background: #fff8e7;
-}
-
 .language-switcher {
   display: inline-flex;
   align-items: center;
@@ -567,6 +562,11 @@ p {
   .nav-auth-button:hover,
   .mobile-nav-auth-button:hover {
     color: var(--orange-500);
+  }
+
+  .profile-dropdown .mobile-nav-auth-button:hover {
+    color: var(--orange-500);
+    background: #fff8e7;
   }
 
   .mobile-nav-auth-button:hover {

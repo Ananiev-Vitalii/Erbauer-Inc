@@ -127,46 +127,42 @@ class EmployeeSimpleInvoice(models.Model):
     invoice_number = models.PositiveIntegerField(
         _("Invoice number"),
         validators=[
-            MinValueValidator(1),
-            MaxValueValidator(99),
+            MinValueValidator(1, message=_("Enter a valid invoice number.")),
+            MaxValueValidator(99, message=_("Enter a valid invoice number.")),
         ],
     )
 
     start_day = models.PositiveSmallIntegerField(
         _("Start day"),
         choices=DAY_CHOICES,
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(31),
-        ],
+        validators=[MinValueValidator(1), MaxValueValidator(31)],
+        default=1,
     )
 
     end_day = models.PositiveSmallIntegerField(
         _("End day"),
         choices=DAY_CHOICES,
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(31),
-        ],
+        validators=[MinValueValidator(1), MaxValueValidator(31)],
+        default=1,
     )
 
     hours = models.DecimalField(
         _("Hours"),
         max_digits=5,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0, message=_("Enter valid hours."))],
     )
 
     rate = models.DecimalField(
         _("Rate"),
         max_digits=8,
         decimal_places=2,
-        validators=[MinValueValidator(0)],
+        validators=[MinValueValidator(0, message=_("Enter a valid rate."))],
     )
 
     class Meta:
-        verbose_name = _("Employee simple invoice")
-        verbose_name_plural = _("Employee simple invoices")
+        verbose_name = _("Simple invoice")
+        verbose_name_plural = _("Simple invoices")
         ordering = ["-id"]
 
     def __str__(self) -> str:

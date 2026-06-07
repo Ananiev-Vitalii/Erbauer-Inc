@@ -87,7 +87,7 @@
           <div class="profile-dropdown" id="profileDropdown">
             <a href="{% url 'account:profile' %}">{% trans "Profile" %}</a>
             <a href="{% url 'main:home' %}">{% trans "Cheat sheet" %}</a>
-            <a href="{% url 'main:home' %}">{% trans "Submit invoice" %}</a>
+            <a href="{% url 'account:simple_invoice_create' %}">{% trans "Submit invoice" %}</a>
             <form method="post" action="{% url 'user:logout' %}" class="mobile-nav-auth-form">
               {% csrf_token %}
               <button type="submit" class="mobile-nav-auth-button">{% trans "Log out" %}</button>

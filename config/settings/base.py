@@ -95,7 +95,7 @@ LANGUAGES = [
     ("uk", _("Ukrainian")),
     ("en", _("English")),
 ]
-TIME_ZONE = "UTC"
+TIME_ZONE = "America/Vancouver"
 
 LOCALE_PATHS = [
     BASE_DIR / "locale",
@@ -139,6 +139,7 @@ ANYMAIL = {
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
 COMPANY_CONTACT_EMAIL = os.getenv("COMPANY_CONTACT_EMAIL")
+SIMPLE_INVOICE_RECIPIENT_EMAIL = os.getenv("SIMPLE_INVOICE_RECIPIENT_EMAIL")
 
 # Contact form rate limit
 CONTACT_FORM_ATTEMPTS = int(os.getenv("CONTACT_FORM_ATTEMPTS", 10))
@@ -171,3 +172,6 @@ CF_TURNSTILE_SECRET_KEY = os.getenv("CF_TURNSTILE_SECRET_KEY", "")
 
 # Cache
 CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", 900))
+
+# LibreOffice path (need install LibreOffice)
+LIBREOFFICE_PATH = r"C:\Program Files\LibreOffice\program\soffice.exe"

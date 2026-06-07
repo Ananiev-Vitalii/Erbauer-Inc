@@ -1,7 +1,15 @@
 from typing import List, Optional
 from dataclasses import dataclass, field
+
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+
+
+@dataclass
+class EmailAttachment:
+    filename: str
+    content: bytes
+    mimetype: str
 
 
 @dataclass
@@ -11,10 +19,10 @@ class EmailPayload:
     context: dict
     to: List[str]
 
-    # Optional
     cc: Optional[List[str]] = field(default=None)
     bcc: Optional[List[str]] = field(default=None)
     reply_to: Optional[List[str]] = field(default=None)
+    attachments: Optional[List[EmailAttachment]] = field(default=None)
 
 
 def send_html_email(payload: EmailPayload) -> None:
@@ -38,4 +46,13 @@ def send_html_email(payload: EmailPayload) -> None:
     )
 
     email.content_subtype = "html"
+
+    if payload.attachments:
+        for attachment in payload.attachments:
+            email.attach(
+                attachment.filename,
+                attachment.content,
+                attachment.mimetype,
+            )
+
     email.send()
