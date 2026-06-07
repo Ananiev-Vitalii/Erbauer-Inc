@@ -43,7 +43,7 @@ def generate_simple_invoice_xlsx(
 
     sheet["C4"] = invoice.invoice_number
 
-    sheet["C6"] = f"{employee.last_name} {employee.first_name}".strip()
+    sheet["C6"] = f"{employee.last_name_en} {employee.first_name_en}".strip()
     sheet["C7"] = employee_data["street_address"]
     sheet["C8"] = f'{employee_data["city"]}, {employee_data["province"]}'
     sheet["C9"] = employee_data["postal_code"]
