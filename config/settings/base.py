@@ -175,7 +175,3 @@ CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", 900))
 
 # LibreOffice path (need install LibreOffice)
 LIBREOFFICE_PATH = os.getenv("LIBREOFFICE_PATH", "soffice")
-LIBREOFFICE_PROFILE_DIR = os.getenv(
-    "LIBREOFFICE_PROFILE_DIR",
-    "C:/tmp/libreoffice-profile" if os.name == "nt" else "/tmp/libreoffice-profile",
-)
