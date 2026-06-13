@@ -3,7 +3,11 @@ FROM python:3.12-slim
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV DJANGO_SETTINGS_MODULE=config.settings.prod
+
 ENV LIBREOFFICE_PATH=soffice
+ENV LIBREOFFICE_PROFILE_DIR=/tmp/libreoffice-profile
+ENV LIBREOFFICE_HOST=127.0.0.1
+ENV LIBREOFFICE_PORT=2002
 
 WORKDIR /app
 
@@ -23,4 +27,7 @@ COPY . /app/
 
 RUN python manage.py collectstatic --no-input --settings=config.settings.prod
 
-CMD python manage.py migrate --settings=config.settings.prod && gunicorn config.wsgi:application --workers 1 --threads 6 --bind 0.0.0.0:$PORT
+RUN sed -i 's/\r$//' /app/start.sh \
+    && chmod +x /app/start.sh
+
+CMD ["/app/start.sh"]

@@ -2,10 +2,11 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import JsonResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render
 from django.utils import timezone
 from django.db import transaction
 from django.views import generic
+from threading import Thread
 
 from account.forms import (
     EmployeeContactForm,
@@ -15,7 +16,7 @@ from account.forms import (
     EmployeeInvoiceForm,
 )
 from account.models import EmployeeSimpleInvoice, Employee, Position, Profile
-from account.services.simple_invoice_service import process_simple_invoice
+from account.services.simple_invoice_service import process_simple_invoice_in_background
 
 
 class MyProfileView(LoginRequiredMixin, generic.TemplateView):
@@ -223,10 +224,15 @@ class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
                 ).delete()
 
                 transaction.on_commit(
-                    lambda: process_simple_invoice(
-                        invoice=invoice,
-                        employee_data=employee_data,
-                    )
+                    lambda: Thread(
+                        target=process_simple_invoice_in_background,
+                        kwargs={
+                            "invoice_id": invoice.id,
+                            "employee_data": employee_data,
+                        },
+                        daemon=True,
+                        name=f"simple-invoice-{invoice.id}",
+                    ).start()
                 )
 
             employee_form = self.get_employee_form(employee)
