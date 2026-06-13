@@ -1,5 +1,5 @@
 from typing import Any
-
+from threading import Thread
 from django.views import generic
 
 from main.services.rate_limit import (
@@ -7,7 +7,7 @@ from main.services.rate_limit import (
     register_contact_form_attempt,
     get_contact_form_cooldown_message,
 )
-from main.services.email import send_contact_email
+from main.services.email import send_contact_email_in_background
 from main.forms import ContactForm
 from main.services.cache import (
     get_homepage_company_profile_cached,
@@ -71,9 +71,18 @@ class ContactFormView(generic.FormView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        send_contact_email(form.cleaned_data)
+        data = form.cleaned_data.copy()
+
+        Thread(
+            target=send_contact_email_in_background,
+            args=(data,),
+            daemon=True,
+            name="contact-form-email",
+        ).start()
+
         new_form = self.get_form_class()()
         new_form.is_success = True
+
         return self.render_to_response(self.get_context_data(form=new_form))
 
     def form_invalid(self, form):
