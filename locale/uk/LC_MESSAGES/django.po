@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-20 14:46-0700\n"
+"POT-Creation-Date: 2026-06-20 16:19-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -224,6 +224,19 @@ msgstr "Інвойс"
 #: .\account\models.py:165
 msgid "Simple invoices"
 msgstr "Інвойси"
+
+#: .\account\models.py:173 .\templates\main\contact_email.html:36
+#: .\templates\main\privacy_policy.html:55
+msgid "Name"
+msgstr "Ім’я"
+
+#: .\account\models.py:177 .\templates\main\includes\navbar.html:77
+msgid "Cheat sheet"
+msgstr "Шпаргалка"
+
+#: .\account\models.py:178
+msgid "Cheat sheets"
+msgstr "Шпаргалки"
 
 #: .\config\settings\base.py:95
 msgid "Ukrainian"
@@ -840,11 +853,6 @@ msgstr ""
 msgid "Contact Message"
 msgstr "Повідомлення з форми зв’язку"
 
-#: .\templates\main\contact_email.html:36
-#: .\templates\main\privacy_policy.html:55
-msgid "Name"
-msgstr "Ім’я"
-
 #: .\templates\main\includes\footer.html:31
 msgid "Follow us"
 msgstr "Слідкуйте за нами"
@@ -903,10 +911,6 @@ msgstr "Перемикач мов"
 #: .\templates\main\includes\navbar.html:64
 msgid "Open profile menu"
 msgstr "Відкрити меню профілю"
-
-#: .\templates\main\includes\navbar.html:77
-msgid "Cheat sheet"
-msgstr "Шпаргалка"
 
 #: .\templates\main\includes\navbar.html:81
 msgid "Admin panel"
@@ -1061,11 +1065,10 @@ msgstr ""
 
 #: .\templates\main\includes\sections\team.html:52
 msgid "See less"
-msgstr "Побачити більше"
-
+msgstr "Побачити менше"
 #: .\templates\main\includes\sections\team.html:60
 msgid "See more"
-msgstr "Побачити менше"
+msgstr "Побачити більше"
 
 #: .\templates\main\privacy_policy.html:16
 msgid "Legal"

@@ -167,3 +167,21 @@ class EmployeeSimpleInvoice(models.Model):
 
     def __str__(self) -> str:
         return f"{self.employee.first_name} {self.employee.last_name}"
+
+
+class CheatSheet(models.Model):
+    name = models.CharField(_("Name"), max_length=100, unique=True)
+    slug = models.SlugField(_("Slug"), max_length=120, unique=True, blank=True)
+
+    class Meta:
+        verbose_name = _("Cheat sheet")
+        verbose_name_plural = _("Cheat sheets")
+        ordering = ["name"]
+
+    def save(self, *args, **kwargs) -> None:
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
+
+    def __str__(self) -> str:
+        return self.name
