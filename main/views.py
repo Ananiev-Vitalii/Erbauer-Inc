@@ -36,13 +36,15 @@ class HomePageView(generic.TemplateView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         services = get_homepage_services_cached()
+        team_members = get_homepage_team_members_cached()
 
         context.update(
             {
                 "company_profile": get_homepage_company_profile_cached(),
                 "service_pages": self.get_service_pages(services),
                 "projects": get_homepage_projects_cached(),
-                "team_members": get_homepage_team_members_cached(),
+                "team_members": team_members,
+                "has_more_team_members": len(team_members) > 4,
                 "form": ContactForm(),
             }
         )

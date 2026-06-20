@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-07 11:40-0700\n"
+"POT-Creation-Date: 2026-06-20 14:46-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -456,7 +456,7 @@ msgstr "Зображення проєкту"
 msgid "Project images"
 msgstr "Галерея зображень проєкту"
 
-#: .\main\services\email.py:17 .\templates\main\contact_email.html:32
+#: .\main\services\email.py:23 .\templates\main\contact_email.html:32
 msgid "New Contact Request"
 msgstr "Новий запит через форму зв’язку"
 
@@ -1059,16 +1059,28 @@ msgstr ""
 "Команда досвідчених будівельників, яка забезпечує надійну та якісну роботу в "
 "кожному проєкті."
 
+#: .\templates\main\includes\sections\team.html:52
+msgid "See less"
+msgstr "Побачити більше"
+
+#: .\templates\main\includes\sections\team.html:60
+msgid "See more"
+msgstr "Побачити менше"
+
 #: .\templates\main\privacy_policy.html:16
 msgid "Legal"
 msgstr "Юридична інформація"
 
 #: .\templates\main\privacy_policy.html:20
+#, python-format
 msgid ""
 "This Privacy Policy explains how %(company_name)s collects, uses, and "
 "protects personal information provided through this website, employee "
 "accounts, and internal invoice-related features."
-msgstr "Ця Політика конфіденційності пояснює, як %(company_name)s збирає, використовує та захищає персональну інформацію, надану через цей вебсайт, облікові записи співробітників і внутрішні функції, пов’язані з інвойсами."
+msgstr ""
+"Ця Політика конфіденційності пояснює, як %(company_name)s збирає, "
+"використовує та захищає персональну інформацію, надану через цей вебсайт, "
+"облікові записи співробітників і внутрішні функції, пов’язані з інвойсами."
 
 #: .\templates\main\privacy_policy.html:27
 msgid "Last updated:"
@@ -1143,7 +1155,11 @@ msgid ""
 "process invoice-related information provided by the employee, including "
 "invoice number, work period, hours, rate, and billing or address details "
 "required to generate the invoice document."
-msgstr "Коли співробітник надсилає Simple Invoice через вебсайт, ми можемо обробляти інформацію, пов’язану з інвойсом, надану співробітником, включно з номером інвойса, робочим періодом, кількістю годин, ставкою, а також платіжними або адресними даними, необхідними для створення документа інвойса."
+msgstr ""
+"Коли співробітник надсилає Simple Invoice через вебсайт, ми можемо обробляти "
+"інформацію, пов’язану з інвойсом, надану співробітником, включно з номером "
+"інвойса, робочим періодом, кількістю годин, ставкою, а також платіжними або "
+"адресними даними, необхідними для створення документа інвойса."
 
 #: .\templates\main\privacy_policy.html:89
 msgid ""
@@ -1182,25 +1198,30 @@ msgstr ""
 
 #: .\templates\main\privacy_policy.html:111
 msgid "Managing employee profile, contact, and address information"
-msgstr "Керування профілем співробітника, контактною інформацією та адресною інформацією"
+msgstr ""
+"Керування профілем співробітника, контактною інформацією та адресною "
+"інформацією"
 
 #: .\templates\main\privacy_policy.html:116
 msgid "Pre-filling employee invoice forms with billing and address information"
-msgstr "Попереднє заповнення форм рахунків-фактур для працівників із зазначенням платіжної та адресної інформації"
+msgstr ""
+"Попереднє заповнення форм рахунків-фактур для працівників із зазначенням "
+"платіжної та адресної інформації"
 
 #: .\templates\main\privacy_policy.html:121
 msgid ""
 "Generating Simple Invoice documents based on information submitted by "
 "employees"
-msgstr "Генерація простих інвойсів на основі інформації, наданої співробітниками "
+msgstr ""
+"Генерація простих інвойсів на основі інформації, наданої співробітниками "
 
 #: .\templates\main\privacy_policy.html:126
 msgid ""
 "Sending generated invoice documents to the employee and the company email "
 "address"
 msgstr ""
-"Надсилання згенерованих документів-рахунків співробітнику та на "
-"електронну адресу компанії."
+"Надсилання згенерованих документів-рахунків співробітнику та на електронну "
+"адресу компанії."
 
 #: .\templates\main\privacy_policy.html:130
 msgid ""
@@ -1243,11 +1264,10 @@ msgid ""
 "authorized personnel who need it for legitimate business reasons."
 msgstr ""
 "Реєстраційна інформація та інформація профілю співробітників  "
-"використовуються лише для внутрішнього адміністрування бізнесу, "
-"доступу до облікового запису, підготовки інвойсів,  "
-"комунікації та пов’язаних з цим операційних цілей. Дані "
-"співробітників доступні лише уповноваженому персоналу, якому "
-"вони потрібні з законних ділових причин. "
+"використовуються лише для внутрішнього адміністрування бізнесу, доступу до "
+"облікового запису, підготовки інвойсів,  комунікації та пов’язаних з цим "
+"операційних цілей. Дані співробітників доступні лише уповноваженому "
+"персоналу, якому вони потрібні з законних ділових причин. "
 
 #: .\templates\main\privacy_policy.html:161
 msgid ""
@@ -1277,10 +1297,10 @@ msgid ""
 "invoice. These temporary files are not intended to be stored permanently by "
 "the website after the invoice process is completed."
 msgstr ""
-"Під час подання інвойсу, на основі наданої інформації може бути "
-"згенерований інвойс у форматі PDF та надісланий на адресу електронної пошти "
-"працівника та адресу електронної пошти компанії. Це дозволяє як працівнику, "
-"так і компанії отримати копію згенерованого документа інвойсу."
+"Під час подання інвойсу, на основі наданої інформації може бути згенерований "
+"інвойс у форматі PDF та надісланий на адресу електронної пошти працівника та "
+"адресу електронної пошти компанії. Це дозволяє як працівнику, так і компанії "
+"отримати копію згенерованого документа інвойсу."
 
 #: .\templates\main\privacy_policy.html:184
 msgid ""
@@ -1288,9 +1308,9 @@ msgid ""
 "to help pre-fill future invoice forms. Older invoice records are not kept "
 "when they are no longer needed for this purpose."
 msgstr ""
-"Вебсайт може зберігати останній запис простого рахунку-фактури для працівника лише "
-"для допомоги у попередньому заповненні майбутніх форм рахунків-фактур. "
-"Старіші записи рахунків-фактур не зберігаються."
+"Вебсайт може зберігати останній запис простого рахунку-фактури для "
+"працівника лише для допомоги у попередньому заповненні майбутніх форм "
+"рахунків-фактур. Старіші записи рахунків-фактур не зберігаються."
 
 #: .\templates\main\privacy_policy.html:192
 msgid "6. Legal basis and consent"
@@ -1320,8 +1340,9 @@ msgid ""
 "information may be used to generate the invoice document and send it to the "
 "employee and the company for invoice processing."
 msgstr ""
-"Надсилаючи інвойс, працівники визнають, що надана інформація може бути використана "
-"для створення документа інвойса та його надсилання працівнику та компанії для обробки."
+"Надсилаючи інвойс, працівники визнають, що надана інформація може бути "
+"використана для створення документа інвойса та його надсилання працівнику та "
+"компанії для обробки."
 
 #: .\templates\main\privacy_policy.html:214
 msgid "7. Sharing of information"
@@ -1370,9 +1391,9 @@ msgid ""
 "pre-fill future invoice forms, unless additional retention is required for "
 "business, accounting, or legal reasons."
 msgstr ""
-"Записи інвойсів можуть обмежуватися останніми даними інвойсів, необхідними для "
-"попереднього заповнення майбутніх форм іновойсів, якщо додаткове зберігання "
-"не потрібне з ділових, бухгалтерських або юридичних причин."
+"Записи інвойсів можуть обмежуватися останніми даними інвойсів, необхідними "
+"для попереднього заповнення майбутніх форм іновойсів, якщо додаткове "
+"зберігання не потрібне з ділових, бухгалтерських або юридичних причин."
 
 #: .\templates\main\privacy_policy.html:248
 msgid "9. Data security"

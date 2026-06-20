@@ -76,7 +76,7 @@ def get_homepage_team_members_cached():
             TeamMember.objects.filter(is_visible=True).select_related(
                 "employee",
                 "employee__position",
-            )[:8]
+            )
         ),
         CACHE_TIMEOUT,
     )
