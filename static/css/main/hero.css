@@ -181,9 +181,7 @@
       #f97316 72%,
       #fdba74 100%
     ) !important;
-  box-shadow:
-    0 16px 34px rgba(249, 115, 22, 0.20),
-    inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  box-shadow: none !important;
 }
 
 /* RIGHT HERO BUTTON */
@@ -217,9 +215,7 @@
         #f97316 72%,
         #fdba74 100%
       ) !important;
-    box-shadow:
-      0 22px 42px rgba(249, 115, 22, 0.24),
-      inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+    box-shadow: none !important;
   }
 
   .hero-btn-secondary:hover,

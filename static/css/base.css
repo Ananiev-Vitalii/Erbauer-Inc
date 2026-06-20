@@ -493,6 +493,10 @@ p {
   max-width: 520px;
 }
 
+.footer-brand .brand-logo {
+  opacity: 0.90;
+}
+
 .socials {
   display: flex;
   flex-direction: row;
@@ -565,10 +569,6 @@ p {
     filter: brightness(1.1);
   }
 
-  .brand:hover .brand-logo {
-    opacity: 1;
-  }
-
   .main-nav a:hover,
   .mobile-nav a:hover {
     color: var(--orange-500);
@@ -634,7 +634,6 @@ p {
   }
 }
 
-/* Медиа-запросы */
 @media (max-width: 1300px) {
   .nav-wrap {
     gap: 16px;
