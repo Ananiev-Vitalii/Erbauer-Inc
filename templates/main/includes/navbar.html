@@ -74,7 +74,7 @@
 
           <div class="profile-dropdown" id="profileDropdown">
             <a href="{% url 'account:profile' %}">{% trans "Profile" %}</a>
-            <a href="{% url 'main:home' %}">{% trans "Cheat sheet" %}</a>
+            <a href="{% url 'account:cheat_sheets' %}">{% trans "Cheat sheet" %}</a>
             <a href="{% url 'account:simple_invoice_create' %}">{% trans "Submit invoice" %}</a>
             {% if user.is_staff %}
             <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">

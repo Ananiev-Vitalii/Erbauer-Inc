@@ -1,0 +1,187 @@
+{% extends "base.html" %}
+{% load i18n static cache %}
+
+{% block title %}
+{{ company_profile.name|default:"Erbauer" }} / {% trans "Cheat sheets" %}
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/account/cheat_sheet.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/back_to_top.css' %}">
+{% endblock extra_css %}
+
+{% block content_wrapper %}
+<section class="cheat-sheet-page">
+  <div class="container cheat-sheet-container">
+
+    <header class="cheat-sheet-header">
+      {% cache 86400 account_cheat_sheet_intro LANGUAGE_CODE %}
+        <p class="cheat-sheet-kicker">
+          {% trans "Quick reference" %}
+        </p>
+
+        <h1 class="cheat-sheet-title">
+          {% trans "Cheat sheets" %}
+        </h1>
+
+        <p class="cheat-sheet-description">
+          {% trans "Choose a guide to view step-by-step instructions." %}
+        </p>
+      {% endcache %}
+
+      <div
+        class="cheat-sheet-dropdown"
+        data-cheat-sheet-dropdown
+        data-url="{% url 'account:cheat_sheets' %}"
+        data-target="#cheat-sheet-detail-container"
+      >
+        <button
+          type="button"
+          class="cheat-sheet-dropdown-toggle"
+          data-cheat-sheet-dropdown-toggle
+          aria-expanded="false"
+        >
+          <span class="cheat-sheet-dropdown-label" data-cheat-sheet-dropdown-label>
+            {% trans "Select cheat sheet" %}
+          </span>
+
+          <span class="cheat-sheet-dropdown-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <path d="M5.25 7.5 10 12.25 14.75 7.5"/>
+            </svg>
+          </span>
+        </button>
+
+        <div class="cheat-sheet-dropdown-menu" data-cheat-sheet-dropdown-menu>
+          {% for cheat_sheet in cheat_sheets %}
+            <button
+              type="button"
+              class="cheat-sheet-dropdown-option"
+              data-cheat-sheet-option
+              data-cheat-sheet-id="{{ cheat_sheet.id }}"
+            >
+              {{ cheat_sheet.name }}
+            </button>
+          {% empty %}
+            <div class="cheat-sheet-dropdown-empty">
+              {% trans "No cheat sheets available" %}
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </header>
+
+    <div
+      id="cheat-sheet-detail-container"
+      class="cheat-sheet-detail-container"
+      data-cheat-sheet-detail-container
+    >
+      {% partialdef cheat-sheet-detail inline %}
+        {% if cheat_sheet_steps %}
+          <div class="cheat-sheet-steps">
+            {% for step in cheat_sheet_steps %}
+              <article class="cheat-sheet-step-card">
+                {% if step.image %}
+                  <button
+                    type="button"
+                    class="cheat-sheet-step-image-button"
+                    data-lightbox-image
+                    data-image-url="{{ step.image.url }}"
+                    data-image-alt="{% trans 'Step' %} {{ step.step_number }}"
+                    aria-label="{% trans 'Open image' %}"
+                  >
+                    <img
+                      src="{{ step.image.url }}"
+                      alt="{% trans 'Step' %} {{ step.step_number }}"
+                      class="cheat-sheet-step-image"
+                      loading="lazy"
+                    >
+
+                    <span class="cheat-sheet-step-image-overlay" aria-hidden="true">
+                      <span class="cheat-sheet-step-image-icon">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M9 3H5a2 2 0 0 0-2 2v4"/>
+                          <path d="M15 3h4a2 2 0 0 1 2 2v4"/>
+                          <path d="M21 15v4a2 2 0 0 1-2 2h-4"/>
+                          <path d="M9 21H5a2 2 0 0 1-2-2v-4"/>
+                          <path d="M9 9h6v6H9z"/>
+                        </svg>
+                      </span>
+                    </span>
+                  </button>
+                {% else %}
+                  <div class="cheat-sheet-step-no-image" aria-label="{% trans 'No image available' %}">
+                    <div class="cheat-sheet-step-no-image-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24">
+                        <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6z"/>
+                        <path d="m4 16 4.5-4.5a2 2 0 0 1 2.8 0L20 20"/>
+                        <path d="M14 10h.01"/>
+                      </svg>
+                    </div>
+
+                    <span class="cheat-sheet-step-no-image-text">
+                      {% trans "No image" %}
+                    </span>
+                  </div>
+                {% endif %}
+
+                <div class="cheat-sheet-step-body">
+                  <div class="cheat-sheet-step-number">
+                    {% trans "Step" %} {{ step.step_number }}
+                  </div>
+
+                  {% if step.description %}
+                    <p class="cheat-sheet-step-description">
+                      {{ step.description|linebreaksbr }}
+                    </p>
+                  {% endif %}
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          {% if request.GET.partial %}
+            {% cache 86400 account_cheat_sheet_no_steps LANGUAGE_CODE %}
+              <div class="cheat-sheet-empty">
+                <h3>{% trans "No steps yet" %}</h3>
+                <p>{% trans "This cheat sheet does not have any steps added yet." %}</p>
+              </div>
+            {% endcache %}
+          {% endif %}
+        {% endif %}
+      {% endpartialdef %}
+    </div>
+
+  </div>
+
+  <div class="cheat-sheet-lightbox" data-lightbox aria-hidden="true">
+    <button
+      type="button"
+      class="cheat-sheet-lightbox-close"
+      data-lightbox-close
+      aria-label="{% trans 'Close image' %}"
+    >
+      <svg viewBox="0 0 24 24">
+        <path d="M18 6 6 18"/>
+        <path d="m6 6 12 12"/>
+      </svg>
+    </button>
+
+    <img
+      src=""
+      alt=""
+      class="cheat-sheet-lightbox-image"
+      data-lightbox-img
+    >
+  </div>
+</section>
+
+<button class="back-to-top" id="backToTop" aria-label="{% trans 'Back to top' %}">
+  <span>↑</span>
+</button>
+{% endblock content_wrapper %}
+
+{% block extra_js %}
+<script src="{% static 'js/main/back_to_top.js' %}"></script>
+<script src="{% static 'js/account/cheat_sheet.js' %}"></script>
+{% endblock extra_js %}

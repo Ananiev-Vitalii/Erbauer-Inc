@@ -7,6 +7,11 @@ from django.core.validators import MinValueValidator, MaxValueValidator, RegexVa
 DAY_CHOICES = [(day, str(day)) for day in range(1, 32)]
 
 
+def cheatsheet_step_image_path(instance: "CheatSheetStep", filename: str) -> str:
+    cheatsheet_slug = slugify(instance.cheatsheet.name)
+    return f"cheatsheets/{cheatsheet_slug}/step-{instance.step_number}/{filename}"
+
+
 def profile_directory_path(instance: "Profile", filename: str) -> str:
     profile_slug = slugify(f"{instance.employee.last_name}_{instance.employee.email}")
     return f"profiles/{profile_slug}/{filename}"
@@ -171,17 +176,43 @@ class EmployeeSimpleInvoice(models.Model):
 
 class CheatSheet(models.Model):
     name = models.CharField(_("Name"), max_length=100, unique=True)
-    slug = models.SlugField(_("Slug"), max_length=120, unique=True, blank=True)
 
     class Meta:
         verbose_name = _("Cheat sheet")
         verbose_name_plural = _("Cheat sheets")
         ordering = ["name"]
 
-    def save(self, *args, **kwargs) -> None:
-        if not self.slug:
-            self.slug = slugify(self.name)
-        super().save(*args, **kwargs)
-
     def __str__(self) -> str:
         return self.name
+
+
+class CheatSheetStep(models.Model):
+    cheatsheet = models.ForeignKey(
+        CheatSheet,
+        on_delete=models.CASCADE,
+        related_name="steps",
+        verbose_name=_("Cheat sheet"),
+    )
+    step_number = models.PositiveSmallIntegerField(
+        _("Step number"),
+        validators=[MinValueValidator(1)],
+    )
+    image = models.ImageField(
+        _("Image"),
+        upload_to=cheatsheet_step_image_path,
+    )
+    description = models.TextField(_("Description"), blank=True)
+
+    class Meta:
+        verbose_name = _("Cheat sheet step")
+        verbose_name_plural = _("Cheat sheet steps")
+        ordering = ["cheatsheet", "step_number"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["cheatsheet", "step_number"],
+                name="unique_step_number_per_cheatsheet",
+            )
+        ]
+
+    def __str__(self) -> str:
+        return f"{self.cheatsheet.name} - Step {self.step_number}"

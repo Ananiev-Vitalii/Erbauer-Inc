@@ -1,7 +1,15 @@
 from django.contrib import admin
-from modeltranslation.admin import TranslationAdmin
+from django.db.models import Max
+from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
-from account.models import Position, Employee, Profile, EmployeeSimpleInvoice
+from account.models import (
+    Position,
+    Employee,
+    Profile,
+    EmployeeSimpleInvoice,
+    CheatSheet,
+    CheatSheetStep,
+)
 from user.admin import custom_admin_site
 
 
@@ -88,7 +96,43 @@ class EmployeeSimpleInvoiceAdmin(admin.ModelAdmin):
         return obj.employee.last_name
 
 
+class CheatSheetStepInline(TranslationTabularInline):
+    model = CheatSheetStep
+    extra = 1
+    fields = (
+        "step_number",
+        "image",
+        "description",
+    )
+
+
+class CheatSheetAdmin(TranslationAdmin):
+    list_display = ("name",)
+    fields = ("name",)
+    inlines = [CheatSheetStepInline]
+
+    def get_formset_kwargs(self, request, obj, inline, prefix):
+        kwargs = super().get_formset_kwargs(request, obj, inline, prefix)
+
+        if obj and obj.pk and inline.model is CheatSheetStep:
+            max_step_number = (
+                obj.steps.aggregate(max_step_number=Max("step_number"))[
+                    "max_step_number"
+                ]
+                or 0
+            )
+
+            kwargs["initial"] = [
+                {
+                    "step_number": max_step_number + 1,
+                }
+            ]
+
+        return kwargs
+
+
 custom_admin_site.register(Position, PositionAdmin)
 custom_admin_site.register(Employee, EmployeeAdmin)
 custom_admin_site.register(Profile, ProfileAdmin)
 custom_admin_site.register(EmployeeSimpleInvoice, EmployeeSimpleInvoiceAdmin)
+custom_admin_site.register(CheatSheet, CheatSheetAdmin)

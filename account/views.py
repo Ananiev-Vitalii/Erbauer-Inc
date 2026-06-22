@@ -15,8 +15,18 @@ from account.forms import (
     SimpleInvoiceForm,
     EmployeeInvoiceForm,
 )
-from account.models import EmployeeSimpleInvoice, Employee, Position, Profile
+from account.models import (
+    EmployeeSimpleInvoice,
+    Employee,
+    Position,
+    Profile,
+)
 from account.services.simple_invoice_service import process_simple_invoice_in_background
+
+from account.services.cache import (
+    get_cheat_sheets_cached,
+    get_cheat_sheet_steps_cached,
+)
 
 
 class MyProfileView(LoginRequiredMixin, generic.TemplateView):
@@ -254,3 +264,47 @@ class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
         )
 
         return render(request, self.partial_template_name, context)
+
+
+class CheatSheetView(LoginRequiredMixin, generic.TemplateView):
+    template_name = "account/cheat_sheet.html"
+    partial_template_name = "account/cheat_sheet.html#cheat-sheet-detail"
+
+    def is_partial_request(self):
+        return self.request.GET.get("partial") == "1"
+
+    def get_cheat_sheet_id(self):
+        cheat_sheet_id = self.request.GET.get("cheat_sheet_id")
+
+        if not cheat_sheet_id:
+            return None
+
+        try:
+            return int(cheat_sheet_id)
+        except (TypeError, ValueError):
+            return None
+
+    def get_template_names(self):
+        if self.is_partial_request():
+            return [self.partial_template_name]
+
+        return [self.template_name]
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        cheat_sheet_id = self.get_cheat_sheet_id()
+
+        if self.is_partial_request():
+            context["cheat_sheet_steps"] = []
+
+            if cheat_sheet_id:
+                context["cheat_sheet_steps"] = get_cheat_sheet_steps_cached(
+                    cheat_sheet_id=cheat_sheet_id,
+                )
+
+            return context
+
+        context["cheat_sheets"] = get_cheat_sheets_cached()
+
+        return context

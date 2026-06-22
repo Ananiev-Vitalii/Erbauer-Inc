@@ -1,0 +1,588 @@
+.cheat-sheet-page {
+  position: relative;
+  min-height: calc(100vh - var(--header-h));
+  padding: 58px 0 92px;
+  background: url("/static/img/cheat-sheet-bg.webp") center center / cover no-repeat fixed;
+}
+
+.cheat-sheet-page::before,
+.cheat-sheet-page::after {
+  display: none;
+  content: none;
+}
+
+.cheat-sheet-container {
+  display: grid;
+  gap: 38px;
+}
+
+.cheat-sheet-header {
+  max-width: 760px;
+}
+
+.cheat-sheet-kicker {
+  margin-bottom: 10px;
+  color: var(--orange-500);
+  font-size: 0.74rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cheat-sheet-title {
+  margin: 0;
+  color: var(--slate-950);
+  font-size: clamp(38px, 5vw, 68px);
+  line-height: 0.98;
+}
+
+.cheat-sheet-description {
+  max-width: 620px;
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 1.03rem;
+  line-height: 1.65;
+}
+
+/* Dropdown */
+
+.cheat-sheet-dropdown {
+  position: relative;
+  width: min(100%, 430px);
+  margin-top: 30px;
+  z-index: 30;
+}
+
+.cheat-sheet-dropdown-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  min-height: 58px;
+  padding: 14px 14px 14px 18px;
+  border: 1px solid rgba(148, 163, 184, 0.42);
+  border-radius: 16px;
+  background: #fff;
+  color: var(--slate-950);
+  font: inherit;
+  font-size: 0.98rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: left;
+  box-shadow:
+    0 14px 34px rgba(15, 23, 42, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  cursor: pointer;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+.cheat-sheet-dropdown-toggle:focus-visible {
+  outline: none;
+  border-color: var(--orange-500);
+  box-shadow:
+    0 17px 38px rgba(15, 23, 42, 0.2),
+    0 0 0 4px rgba(251, 146, 60, 0.18);
+}
+
+.cheat-sheet-dropdown-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cheat-sheet-dropdown-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+  background:
+    linear-gradient(
+      135deg,
+      #fb923c 0%,
+      #f97316 46%,
+      #c2410c 100%
+    );
+  color: #fff;
+  transition: transform 0.18s ease;
+}
+
+.cheat-sheet-dropdown-icon svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cheat-sheet-dropdown.is-open .cheat-sheet-dropdown-icon {
+  transform: rotate(180deg);
+}
+
+.cheat-sheet-dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  display: grid;
+  width: 100%;
+  max-height: 330px;
+  padding: 6px 0;
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 24px 56px rgba(15, 23, 42, 0.24);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-8px) scale(0.98);
+  transform-origin: top;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: none;
+  z-index: 40;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease,
+    transform 0.18s ease;
+}
+
+.cheat-sheet-dropdown-menu::-webkit-scrollbar {
+  display: none;
+}
+
+.cheat-sheet-dropdown.is-open .cheat-sheet-dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0) scale(1);
+}
+
+.cheat-sheet-dropdown-option {
+  width: 100%;
+  padding: 13px 17px;
+  border: 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 0;
+  background: transparent;
+  color: var(--slate-950);
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 750;
+  line-height: 1.25;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.cheat-sheet-dropdown-option:last-of-type {
+  border-bottom: 0;
+}
+
+.cheat-sheet-dropdown-option:hover,
+.cheat-sheet-dropdown-option.is-selected {
+  background: transparent;
+  color: var(--orange-500);
+}
+
+.cheat-sheet-dropdown-empty {
+  padding: 13px 17px;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+/* Dynamic content */
+
+.cheat-sheet-detail-container {
+  position: relative;
+  min-height: 0;
+}
+
+.cheat-sheet-detail-container.is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.cheat-sheet-detail-container.is-loading::after {
+  content: "";
+  position: absolute;
+  top: 22px;
+  right: 22px;
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(251, 146, 60, 0.22);
+  border-top-color: var(--orange-500);
+  border-radius: 999px;
+  animation: cheat-sheet-spin 0.75s linear infinite;
+}
+
+@keyframes cheat-sheet-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Step cards */
+
+.cheat-sheet-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(292px, 1fr));
+  gap: 26px;
+  align-items: start;
+}
+
+.cheat-sheet-step-card {
+  overflow: hidden;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.18);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.cheat-sheet-step-image-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: #e2e8f0;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.cheat-sheet-step-image-button:focus-visible {
+  outline: 4px solid rgba(251, 146, 60, 0.45);
+  outline-offset: -4px;
+}
+
+.cheat-sheet-step-image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.cheat-sheet-step-no-image {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 12px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background:
+    radial-gradient(circle at top left, rgba(251, 146, 60, 0.18), transparent 34%),
+    linear-gradient(135deg, #0f172a 0%, #1e293b 52%, #020617 100%);
+  color: rgba(255, 255, 255, 0.86);
+}
+
+.cheat-sheet-step-no-image-icon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--orange-500);
+}
+
+.cheat-sheet-step-no-image-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cheat-sheet-step-no-image-text {
+  color: rgba(255, 255, 255, 0.82);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.cheat-sheet-step-image-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(15, 23, 42, 0.38);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.cheat-sheet-step-image-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: var(--orange-500);
+  transform: scale(0.92);
+  transition: transform 0.18s ease;
+}
+
+.cheat-sheet-step-image-icon svg {
+  width: 25px;
+  height: 25px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cheat-sheet-step-body {
+  padding: 18px 20px 20px;
+  background: #fff;
+}
+
+.cheat-sheet-step-number {
+  margin-bottom: 10px;
+  color: var(--orange-500);
+  font-size: 0.75rem;
+  font-weight: 950;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.cheat-sheet-step-description {
+  margin: 0;
+  color: var(--slate-950);
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+/* Lightbox */
+
+body.cheat-sheet-lightbox-open {
+  overflow: hidden;
+}
+
+.cheat-sheet-lightbox {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgba(2, 6, 23, 0.94);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 9999;
+  transition:
+    opacity 0.18s ease,
+    visibility 0.18s ease;
+}
+
+.cheat-sheet-lightbox.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.cheat-sheet-lightbox-image {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: calc(100vw - 48px);
+  max-height: calc(100vh - 48px);
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.45);
+  transform-origin: center center;
+  will-change: transform;
+  transition: transform 0.08s ease-out;
+  cursor: zoom-in;
+  touch-action: pinch-zoom;
+  user-select: none;
+}
+
+.cheat-sheet-lightbox.is-zoomed .cheat-sheet-lightbox-image {
+  cursor: grab;
+}
+
+.cheat-sheet-lightbox.is-dragging .cheat-sheet-lightbox-image {
+  cursor: grabbing;
+  transition: none;
+}
+
+.cheat-sheet-lightbox-close {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--orange-500);
+  cursor: pointer;
+  z-index: 10000;
+  transition: color 0.18s ease;
+}
+
+.cheat-sheet-lightbox-close svg {
+  width: 32px;
+  height: 32px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.cheat-sheet-lightbox-close:focus-visible {
+  outline: 3px solid rgba(251, 146, 60, 0.45);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
+/* Empty state */
+
+.cheat-sheet-empty {
+  width: min(100%, 520px);
+  padding: 26px 28px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 18px 42px rgba(15, 23, 42, 0.16);
+}
+
+.cheat-sheet-empty h3 {
+  margin: 0 0 8px;
+  color: var(--slate-950);
+  font-family: "Inter", sans-serif;
+  font-size: 1.18rem;
+}
+
+.cheat-sheet-empty p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+/* Hover effects only for mouse/trackpad devices */
+
+@media (hover: hover) and (pointer: fine) {
+  .cheat-sheet-dropdown-toggle:hover {
+    border-color: rgba(251, 146, 60, 0.72);
+    box-shadow:
+      0 17px 38px rgba(15, 23, 42, 0.2),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    transform: translateY(-1px);
+  }
+
+  .cheat-sheet-dropdown-option:hover {
+    transform: translateX(2px);
+  }
+
+  .cheat-sheet-step-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 52px rgba(15, 23, 42, 0.22);
+  }
+
+  .cheat-sheet-step-image-button:hover .cheat-sheet-step-image-overlay {
+    opacity: 1;
+  }
+
+  .cheat-sheet-step-image-button:hover .cheat-sheet-step-image-icon {
+    transform: scale(1);
+  }
+
+  .cheat-sheet-lightbox-close {
+    color: #fff;
+  }
+
+  .cheat-sheet-lightbox-close:hover {
+    color: var(--orange-500);
+  }
+}
+
+/* Responsive */
+
+@media (max-width: 900px) {
+  .cheat-sheet-page {
+    padding: 44px 0 76px;
+  }
+
+  .cheat-sheet-container {
+    gap: 32px;
+  }
+
+  .cheat-sheet-steps {
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 22px;
+  }
+}
+
+@media (max-width: 640px) {
+  .cheat-sheet-page {
+    padding: 34px 0 64px;
+  }
+
+  .cheat-sheet-container {
+    gap: 28px;
+  }
+
+  .cheat-sheet-description {
+    font-size: 0.98rem;
+  }
+
+  .cheat-sheet-dropdown {
+    width: 100%;
+  }
+
+  .cheat-sheet-steps {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cheat-sheet-step-card {
+    border-radius: 18px;
+  }
+
+  .cheat-sheet-step-body {
+    padding: 16px 18px 18px;
+  }
+
+  .cheat-sheet-lightbox {
+    padding: 12px;
+  }
+
+  .cheat-sheet-lightbox-image {
+    max-width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    border-radius: 6px;
+  }
+
+  .cheat-sheet-lightbox-close {
+    top: 12px;
+    right: 12px;
+    width: 42px;
+    height: 42px;
+  }
+
+  .cheat-sheet-lightbox-close svg {
+    width: 30px;
+    height: 30px;
+  }
+}

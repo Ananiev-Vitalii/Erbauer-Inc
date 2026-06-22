@@ -7,6 +7,7 @@ from account.views import (
     UpdatePasswordView,
     UpdateAvatarView,
     SimpleInvoiceCreateView,
+    CheatSheetView,
 )
 
 app_name = "account"
@@ -37,5 +38,10 @@ urlpatterns = [
         "invoice/create/",
         SimpleInvoiceCreateView.as_view(),
         name="simple_invoice_create",
+    ),
+    path(
+        "cheat-sheets/",
+        CheatSheetView.as_view(),
+        name="cheat_sheets",
     ),
 ]

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-20 16:19-0700\n"
+"POT-Creation-Date: 2026-06-21 17:01-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,194 +49,216 @@ msgstr "Розмір зображення аватара має бути мен�
 msgid "End day cannot be earlier than start day."
 msgstr "Кінцевий день не може бути раніше за початковий день."
 
-#: .\account\models.py:16
+#: .\account\models.py:21
 msgid "Alberta"
 msgstr "Альберта"
 
-#: .\account\models.py:17
+#: .\account\models.py:22
 msgid "British Columbia"
 msgstr "Британська Колумбія"
 
-#: .\account\models.py:18
+#: .\account\models.py:23
 msgid "Manitoba"
 msgstr "Манітоба"
 
-#: .\account\models.py:19
+#: .\account\models.py:24
 msgid "New Brunswick"
 msgstr "Нью-Брансвік"
 
-#: .\account\models.py:20
+#: .\account\models.py:25
 msgid "Newfoundland and Labrador"
 msgstr "Ньюфаундленд і Лабрадор"
 
-#: .\account\models.py:21
+#: .\account\models.py:26
 msgid "Nova Scotia"
 msgstr "Нова Шотландія"
 
-#: .\account\models.py:22
+#: .\account\models.py:27
 msgid "Northwest Territories"
 msgstr "Північно-Західні території"
 
-#: .\account\models.py:23
+#: .\account\models.py:28
 msgid "Nunavut"
 msgstr "Нунавут"
 
-#: .\account\models.py:24
+#: .\account\models.py:29
 msgid "Ontario"
 msgstr "Онтаріо"
 
-#: .\account\models.py:25
+#: .\account\models.py:30
 msgid "Prince Edward Island"
 msgstr "Острів Принца Едварда"
 
-#: .\account\models.py:26
+#: .\account\models.py:31
 msgid "Quebec"
 msgstr "Квебек"
 
-#: .\account\models.py:27
+#: .\account\models.py:32
 msgid "Saskatchewan"
 msgstr "Саскачеван"
 
-#: .\account\models.py:28
+#: .\account\models.py:33
 msgid "Yukon"
 msgstr "Юкон"
 
-#: .\account\models.py:32 .\account\models.py:35 .\account\models.py:57
+#: .\account\models.py:37 .\account\models.py:40 .\account\models.py:62
 #: .\templates\account\profile.html:326
 msgid "Job title"
 msgstr "Посада"
 
-#: .\account\models.py:36
+#: .\account\models.py:41
 msgid "Job titles"
 msgstr "Посади"
 
-#: .\account\models.py:47 .\user\models.py:55
+#: .\account\models.py:52 .\user\models.py:55
 msgid "User"
 msgstr "Користувач"
 
-#: .\account\models.py:51 .\templates\main\privacy_policy.html:67
+#: .\account\models.py:56 .\templates\main\privacy_policy.html:67
 msgid "First name"
 msgstr "Ім’я"
 
-#: .\account\models.py:52 .\templates\main\privacy_policy.html:68
+#: .\account\models.py:57 .\templates\main\privacy_policy.html:68
 msgid "Last name"
 msgstr "Прізвище"
 
-#: .\account\models.py:59 .\main\models.py:40
+#: .\account\models.py:64 .\main\models.py:40
 #: .\templates\account\profile.html:162
 #: .\templates\main\includes\sections\contacts.html:31 .\user\forms.py:158
 msgid "Email"
 msgstr "Електронна пошта"
 
-#: .\account\models.py:60 .\templates\account\profile.html:134
+#: .\account\models.py:65 .\templates\account\profile.html:134
 #: .\templates\main\contact_email.html:40
 #: .\templates\main\includes\sections\contacts.html:23
 msgid "Phone"
 msgstr "Телефон"
 
-#: .\account\models.py:61 .\templates\account\invoice.html:66
+#: .\account\models.py:66 .\templates\account\invoice.html:66
 #: .\templates\account\profile.html:186 .\templates\main\privacy_policy.html:72
 msgid "Street address"
 msgstr "Адреса вулиці"
 
-#: .\account\models.py:62 .\main\models.py:43
+#: .\account\models.py:67 .\main\models.py:43
 #: .\templates\account\invoice.html:88 .\templates\account\profile.html:207
 #: .\templates\main\privacy_policy.html:73
 msgid "City"
 msgstr "Місто"
 
-#: .\account\models.py:64 .\main\models.py:44
+#: .\account\models.py:69 .\main\models.py:44
 #: .\templates\account\invoice.html:110 .\templates\account\profile.html:228
 #: .\templates\main\privacy_policy.html:74
 msgid "Province"
 msgstr "Провінція"
 
-#: .\account\models.py:70 .\templates\account\invoice.html:126
+#: .\account\models.py:75 .\templates\account\invoice.html:126
 #: .\templates\account\profile.html:244 .\templates\main\privacy_policy.html:75
 msgid "Postal code"
 msgstr "Поштовий індекс"
 
-#: .\account\models.py:75
+#: .\account\models.py:80
 msgid "Enter a valid Canadian postal code."
 msgstr "Будь ласка, введіть дійсний канадський поштовий індекс."
 
-#: .\account\models.py:80
+#: .\account\models.py:85
 msgid "Currently employed"
 msgstr "Працює зараз"
 
-#: .\account\models.py:83 .\account\models.py:103 .\account\models.py:125
+#: .\account\models.py:88 .\account\models.py:108 .\account\models.py:130
 #: .\main\models.py:96
 msgid "Employee"
 msgstr "Співробітник"
 
-#: .\account\models.py:84
+#: .\account\models.py:89
 msgid "Employees"
 msgstr "Співробітники"
 
-#: .\account\models.py:106
+#: .\account\models.py:111
 msgid "Avatar"
 msgstr "Аватар"
 
-#: .\account\models.py:113 .\templates\main\includes\navbar.html:76
+#: .\account\models.py:118 .\templates\main\includes\navbar.html:76
 msgid "Profile"
 msgstr "Профіль"
 
-#: .\account\models.py:114
+#: .\account\models.py:119
 msgid "Profiles"
 msgstr "Профілі"
 
-#: .\account\models.py:128 .\templates\account\invoice.html:171
+#: .\account\models.py:133 .\templates\account\invoice.html:171
 msgid "Invoice number"
 msgstr "Номер інвойсу"
 
-#: .\account\models.py:130 .\account\models.py:131
+#: .\account\models.py:135 .\account\models.py:136
 msgid "Enter a valid invoice number."
 msgstr "Будь ласка, введіть дійсний номер інвойсу."
 
-#: .\account\models.py:136 .\templates\account\invoice.html:195
+#: .\account\models.py:141 .\templates\account\invoice.html:195
 msgid "Start day"
 msgstr "День початку"
 
-#: .\account\models.py:143 .\templates\account\invoice.html:211
+#: .\account\models.py:148 .\templates\account\invoice.html:211
 msgid "End day"
 msgstr "Кінцевий день"
 
-#: .\account\models.py:150 .\templates\account\invoice.html:227
+#: .\account\models.py:155 .\templates\account\invoice.html:227
 msgid "Hours"
 msgstr "Години"
 
-#: .\account\models.py:153
+#: .\account\models.py:158
 msgid "Enter valid hours."
 msgstr "Введіть дійсні години роботи."
 
-#: .\account\models.py:157 .\templates\account\invoice.html:251
+#: .\account\models.py:162 .\templates\account\invoice.html:251
 msgid "Rate"
 msgstr "Погодинна ставка"
 
-#: .\account\models.py:160
+#: .\account\models.py:165
 msgid "Enter a valid rate."
 msgstr "Будь ласка, введіть дійсну погодинну ставку."
 
-#: .\account\models.py:164
+#: .\account\models.py:169
 msgid "Simple invoice"
 msgstr "Інвойс"
 
-#: .\account\models.py:165
+#: .\account\models.py:170
 msgid "Simple invoices"
 msgstr "Інвойси"
 
-#: .\account\models.py:173 .\templates\main\contact_email.html:36
+#: .\account\models.py:178 .\templates\main\contact_email.html:36
 #: .\templates\main\privacy_policy.html:55
 msgid "Name"
 msgstr "Ім’я"
 
-#: .\account\models.py:177 .\templates\main\includes\navbar.html:77
+#: .\account\models.py:181 .\account\models.py:194
+#: .\templates\main\includes\navbar.html:77
 msgid "Cheat sheet"
 msgstr "Шпаргалка"
 
-#: .\account\models.py:178
+#: .\account\models.py:182 .\templates\account\cheat_sheet.html:5
+#: .\templates\account\cheat_sheet.html:24
 msgid "Cheat sheets"
 msgstr "Шпаргалки"
+
+#: .\account\models.py:197
+msgid "Step number"
+msgstr "Номер кроку"
+
+#: .\account\models.py:201 .\main\models.py:176
+msgid "Image"
+msgstr "Зображення"
+
+#: .\account\models.py:204 .\main\models.py:98 .\main\models.py:120
+msgid "Description"
+msgstr "Опис"
+
+#: .\account\models.py:207
+msgid "Cheat sheet step"
+msgstr "Крок шпаргалки"
+
+#: .\account\models.py:208
+msgid "Cheat sheet steps"
+msgstr "Кроки шпаргалки"
 
 #: .\config\settings\base.py:95
 msgid "Ukrainian"
@@ -388,10 +410,6 @@ msgstr "Профіль компанії"
 msgid "Company Profiles"
 msgstr "Профілі компаній"
 
-#: .\main\models.py:98 .\main\models.py:120
-msgid "Description"
-msgstr "Опис"
-
 #: .\main\models.py:100
 msgid "Photo"
 msgstr "Фото"
@@ -457,10 +475,6 @@ msgstr "Проєкт"
 msgid "Projects"
 msgstr "Проєкти"
 
-#: .\main\models.py:176
-msgid "Image"
-msgstr "Зображення"
-
 #: .\main\models.py:181
 msgid "Project image"
 msgstr "Зображення проєкту"
@@ -499,6 +513,59 @@ msgstr[2] "%(count)d секунд"
 #, python-format
 msgid "Too many attempts. Please try again in %(time)s."
 msgstr "Забагато спроб. Будь ласка, спробуйте ще раз через %(time)s."
+
+#: .\templates\account\cheat_sheet.html:20
+msgid "Quick reference"
+msgstr "Короткий довідник"
+
+#: .\templates\account\cheat_sheet.html:28
+msgid "Choose a guide to view step-by-step instructions."
+msgstr "Виберіть посібник, щоб переглянути покрокові інструкції."
+
+#: .\templates\account\cheat_sheet.html:45
+msgid "Select cheat sheet"
+msgstr "Виберіть шпаргалку"
+
+#: .\templates\account\cheat_sheet.html:67
+msgid "No cheat sheets available"
+msgstr "Шпаргалок немає"
+
+#: .\templates\account\cheat_sheet.html:90
+#: .\templates\account\cheat_sheet.html:95
+#: .\templates\account\cheat_sheet.html:130
+msgid "Step"
+msgstr "Крок"
+
+#: .\templates\account\cheat_sheet.html:91
+msgid "Open image"
+msgstr "Відкрити повне зображення"
+
+#: .\templates\account\cheat_sheet.html:113
+msgid "No image available"
+msgstr "Немає зображення"
+
+#: .\templates\account\cheat_sheet.html:123
+msgid "No image"
+msgstr "Без зображення"
+
+#: .\templates\account\cheat_sheet.html:146
+msgid "No steps yet"
+msgstr "Поки що немає кроків"
+
+#: .\templates\account\cheat_sheet.html:147
+msgid "This cheat sheet does not have any steps added yet."
+msgstr "У цій шпаргалці ще не додано жодних кроків."
+
+#: .\templates\account\cheat_sheet.html:162
+msgid "Close image"
+msgstr "Закрити зображення"
+
+#: .\templates\account\cheat_sheet.html:179
+#: .\templates\account\profile.html:503 .\templates\main\home.html:30
+#: .\templates\main\privacy_policy.html:317
+#: .\templates\main\project_detail.html:140
+msgid "Back to top"
+msgstr "На початок сторінки"
 
 #: .\templates\account\emails\simple_invoice.html:7
 #: .\templates\account\emails\simple_invoice.html:29
@@ -767,12 +834,6 @@ msgstr "Оновлення..."
 #: .\templates\account\profile.html:491
 msgid "Update password"
 msgstr "Оновити пароль"
-
-#: .\templates\account\profile.html:503 .\templates\main\home.html:30
-#: .\templates\main\privacy_policy.html:317
-#: .\templates\main\project_detail.html:140
-msgid "Back to top"
-msgstr "На початок сторінки"
 
 #: .\templates\admin\base_site.html:30
 msgid "Administration"
@@ -1066,6 +1127,7 @@ msgstr ""
 #: .\templates\main\includes\sections\team.html:52
 msgid "See less"
 msgstr "Побачити менше"
+
 #: .\templates\main\includes\sections\team.html:60
 msgid "See more"
 msgstr "Побачити більше"
