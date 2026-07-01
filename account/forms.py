@@ -32,7 +32,7 @@ class EmployeeContactForm(forms.ModelForm):
         return f"({normalized[:3]}) {normalized[3:6]}-{normalized[6:]}"
 
     def clean_email(self):
-        email = self.cleaned_data["email"].casefold()
+        email = self.cleaned_data["email"]
 
         current_user = self.instance.user
 
