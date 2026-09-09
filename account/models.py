@@ -165,6 +165,35 @@ class EmployeeSimpleInvoice(models.Model):
         validators=[MinValueValidator(0, message=_("Enter a valid rate."))],
     )
 
+    gst_account_number = models.CharField(
+        _("GST/HST Account Number"),
+        max_length=17,
+        blank=True,
+        default="",
+    )
+
+    gst = models.DecimalField(
+        _("GST"),
+        max_digits=5,
+        decimal_places=2,
+        validators=[
+            MinValueValidator(0, message=_("Enter a valid GST percentage.")),
+            MaxValueValidator(100, message=_("GST percentage cannot exceed 100.")),
+        ],
+        default=5,
+    )
+
+    wsbc = models.DecimalField(
+        _("WCB"),
+        max_digits=5,
+        decimal_places=2,
+        validators=[
+            MinValueValidator(0, message=_("Enter a valid WSBC percentage.")),
+            MaxValueValidator(100, message=_("WSBC percentage cannot exceed 100.")),
+        ],
+        default=0,
+    )
+
     class Meta:
         verbose_name = _("Simple invoice")
         verbose_name_plural = _("Simple invoices")

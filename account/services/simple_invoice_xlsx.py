@@ -7,12 +7,8 @@ from openpyxl.styles import Alignment
 
 from account.models import EmployeeSimpleInvoice
 
-
 TEMPLATE_PATH = (
-    Path(settings.BASE_DIR)
-    / "account"
-    / "invoice_templates"
-    / "simple-invoice.xlsx"
+    Path(settings.BASE_DIR) / "account" / "invoice_templates" / "simple-invoice.xlsx"
 )
 
 SHEET_NAME = "Invoice"
@@ -47,6 +43,7 @@ def generate_simple_invoice_xlsx(
     sheet["C7"] = employee_data["street_address"]
     sheet["C8"] = f'{employee_data["city"]}, {employee_data["province"]}'
     sheet["C9"] = employee_data["postal_code"]
+    sheet["C10"] = invoice.gst_account_number or ""
 
     sheet["C14"] = invoice.start_day
     sheet["C14"].alignment = Alignment(
@@ -62,8 +59,12 @@ def generate_simple_invoice_xlsx(
 
     sheet["E14"] = format_decimal(invoice.hours)
     sheet["F14"] = format_decimal(invoice.rate)
-    sheet["E14"] = format_decimal(invoice.hours)
-    sheet["F14"] = format_decimal(invoice.rate)
+
+    gst = format_decimal(invoice.gst)
+    wsbc = format_decimal(invoice.wsbc)
+
+    sheet["G27"] = f"=G26*{gst}%"
+    sheet["G28"] = f"=G26*{wsbc}%"
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     workbook.save(output_path)

@@ -196,6 +196,9 @@ class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
                 {
                     "invoice_number": last_invoice.invoice_number + 1,
                     "rate": str(last_invoice.rate),
+                    "gst_account_number": last_invoice.gst_account_number,
+                    "gst": str(last_invoice.gst),
+                    "wsbc": str(last_invoice.wsbc),
                 }
             )
 

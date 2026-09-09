@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-21 17:01-0700\n"
+"POT-Creation-Date: 2026-09-08 17:08-0700\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -25,29 +25,33 @@ msgstr ""
 msgid "Staff"
 msgstr "Персонал"
 
-#: .\account\forms.py:26 .\main\forms.py:127
+#: .\account\forms.py:27 .\main\forms.py:127
 msgid "Please enter a valid 10-digit Canadian phone number."
 msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
 
-#: .\account\forms.py:45
+#: .\account\forms.py:46
 msgid "A user with this email is already registered."
 msgstr "Користувач із цією робочою електронною адресою вже зареєстрований."
 
-#: .\account\forms.py:71 .\account\forms.py:152
+#: .\account\forms.py:72 .\account\forms.py:180
 msgid "Please enter a valid Canadian postal code."
 msgstr "Будь ласка, введіть дійсний канадський поштовий індекс."
 
-#: .\account\forms.py:98
+#: .\account\forms.py:99
 msgid "Please upload a JPG, PNG, or WEBP image."
 msgstr "Будь ласка, завантажте зображення JPG, PNG або WEBP."
 
-#: .\account\forms.py:103
+#: .\account\forms.py:104
 msgid "Avatar image must be smaller than 5 MB."
 msgstr "Розмір зображення аватара має бути менше ніж 5 МБ."
 
-#: .\account\forms.py:127
+#: .\account\forms.py:140
 msgid "End day cannot be earlier than start day."
 msgstr "Кінцевий день не може бути раніше за початковий день."
+
+#: .\account\forms.py:155
+msgid "Enter a valid GST/HST account number, for example 123456789 RT0001."
+msgstr "Введіть дійсний номер рахунку GST/HST, наприклад 123456789 RT0001."
 
 #: .\account\models.py:21
 msgid "Alberta"
@@ -140,18 +144,18 @@ msgid "Street address"
 msgstr "Адреса вулиці"
 
 #: .\account\models.py:67 .\main\models.py:43
-#: .\templates\account\invoice.html:88 .\templates\account\profile.html:207
+#: .\templates\account\invoice.html:86 .\templates\account\profile.html:207
 #: .\templates\main\privacy_policy.html:73
 msgid "City"
 msgstr "Місто"
 
 #: .\account\models.py:69 .\main\models.py:44
-#: .\templates\account\invoice.html:110 .\templates\account\profile.html:228
+#: .\templates\account\invoice.html:106 .\templates\account\profile.html:228
 #: .\templates\main\privacy_policy.html:74
 msgid "Province"
 msgstr "Провінція"
 
-#: .\account\models.py:75 .\templates\account\invoice.html:126
+#: .\account\models.py:75 .\templates\account\invoice.html:120
 #: .\templates\account\profile.html:244 .\templates\main\privacy_policy.html:75
 msgid "Postal code"
 msgstr "Поштовий індекс"
@@ -185,7 +189,7 @@ msgstr "Профіль"
 msgid "Profiles"
 msgstr "Профілі"
 
-#: .\account\models.py:133 .\templates\account\invoice.html:171
+#: .\account\models.py:133 .\templates\account\invoice.html:163
 msgid "Invoice number"
 msgstr "Номер інвойсу"
 
@@ -193,15 +197,15 @@ msgstr "Номер інвойсу"
 msgid "Enter a valid invoice number."
 msgstr "Будь ласка, введіть дійсний номер інвойсу."
 
-#: .\account\models.py:141 .\templates\account\invoice.html:195
+#: .\account\models.py:141 .\templates\account\invoice.html:185
 msgid "Start day"
 msgstr "День початку"
 
-#: .\account\models.py:148 .\templates\account\invoice.html:211
+#: .\account\models.py:148 .\templates\account\invoice.html:199
 msgid "End day"
 msgstr "Кінцевий день"
 
-#: .\account\models.py:155 .\templates\account\invoice.html:227
+#: .\account\models.py:155 .\templates\account\invoice.html:213
 msgid "Hours"
 msgstr "Години"
 
@@ -209,7 +213,7 @@ msgstr "Години"
 msgid "Enter valid hours."
 msgstr "Введіть дійсні години роботи."
 
-#: .\account\models.py:162 .\templates\account\invoice.html:251
+#: .\account\models.py:162 .\templates\account\invoice.html:235
 msgid "Rate"
 msgstr "Погодинна ставка"
 
@@ -217,46 +221,74 @@ msgstr "Погодинна ставка"
 msgid "Enter a valid rate."
 msgstr "Будь ласка, введіть дійсну погодинну ставку."
 
-#: .\account\models.py:169
+#: .\account\models.py:169 .\templates\account\invoice.html:330
+msgid "GST/HST Account Number"
+msgstr "Номер рахунку GST/HST"
+
+#: .\account\models.py:176
+msgid "GST"
+msgstr "GST"
+
+#: .\account\models.py:180
+msgid "Enter a valid GST percentage."
+msgstr "Введіть дійсний відсоток GST."
+
+#: .\account\models.py:181
+msgid "GST percentage cannot exceed 100."
+msgstr "Відсоток GST не може перевищувати 100."
+
+#: .\account\models.py:187
+msgid "WCB"
+msgstr "WCB"
+
+#: .\account\models.py:191
+msgid "Enter a valid WSBC percentage."
+msgstr "Введіть дійсний відсоток WSBC."
+
+#: .\account\models.py:192
+msgid "WSBC percentage cannot exceed 100."
+msgstr "Відсоток WSBC не може перевищувати 100."
+
+#: .\account\models.py:198
 msgid "Simple invoice"
 msgstr "Інвойс"
 
-#: .\account\models.py:170
+#: .\account\models.py:199
 msgid "Simple invoices"
 msgstr "Інвойси"
 
-#: .\account\models.py:178 .\templates\main\contact_email.html:36
+#: .\account\models.py:207 .\templates\main\contact_email.html:36
 #: .\templates\main\privacy_policy.html:55
 msgid "Name"
 msgstr "Ім’я"
 
-#: .\account\models.py:181 .\account\models.py:194
+#: .\account\models.py:210 .\account\models.py:223
 #: .\templates\main\includes\navbar.html:77
 msgid "Cheat sheet"
 msgstr "Шпаргалка"
 
-#: .\account\models.py:182 .\templates\account\cheat_sheet.html:5
+#: .\account\models.py:211 .\templates\account\cheat_sheet.html:5
 #: .\templates\account\cheat_sheet.html:24
 msgid "Cheat sheets"
 msgstr "Шпаргалки"
 
-#: .\account\models.py:197
+#: .\account\models.py:226
 msgid "Step number"
 msgstr "Номер кроку"
 
-#: .\account\models.py:201 .\main\models.py:176
+#: .\account\models.py:230 .\main\models.py:176
 msgid "Image"
 msgstr "Зображення"
 
-#: .\account\models.py:204 .\main\models.py:98 .\main\models.py:120
+#: .\account\models.py:233 .\main\models.py:98 .\main\models.py:120
 msgid "Description"
 msgstr "Опис"
 
-#: .\account\models.py:207
+#: .\account\models.py:236
 msgid "Cheat sheet step"
 msgstr "Крок шпаргалки"
 
-#: .\account\models.py:208
+#: .\account\models.py:237
 msgid "Cheat sheet steps"
 msgstr "Кроки шпаргалки"
 
@@ -268,19 +300,19 @@ msgstr "Українська"
 msgid "English"
 msgstr "Англійська"
 
-#: .\main\admin.py:78 .\main\models.py:122
+#: .\main\admin.py:84 .\main\models.py:122
 msgid "Icon"
 msgstr "Іконка"
 
-#: .\main\admin.py:95 .\main\admin.py:154
+#: .\main\admin.py:101 .\main\admin.py:160
 msgid "Preview"
 msgstr "Попередній перегляд"
 
-#: .\main\admin.py:126
+#: .\main\admin.py:132
 msgid "Cover preview"
 msgstr "Попередній перегляд обкладинки"
 
-#: .\main\admin.py:131
+#: .\main\admin.py:137
 msgid "Gallery images"
 msgstr "Зображення галереї"
 
@@ -618,31 +650,44 @@ msgstr "Відомості про працівника"
 msgid "These details will be used only for generating the invoice document."
 msgstr "Ці дані будуть використані лише для створення інвойсу."
 
-#: .\templates\account\invoice.html:73 .\templates\account\profile.html:193
+#: .\templates\account\invoice.html:72 .\templates\account\profile.html:193
 msgid "Enter street address"
 msgstr "Введіть адресу вулиці"
 
-#: .\templates\account\invoice.html:95 .\templates\account\profile.html:214
+#: .\templates\account\invoice.html:92 .\templates\account\profile.html:214
 msgid "Enter city"
 msgstr "Введіть назву міста"
 
-#: .\templates\account\invoice.html:133 .\templates\account\profile.html:251
+#: .\templates\account\invoice.html:126 .\templates\account\profile.html:251
 msgid "A1A 1A1"
 msgstr "A1A 1A1"
 
-#: .\templates\account\invoice.html:160
+#: .\templates\account\invoice.html:152
 msgid "Invoice details"
 msgstr "Данні інвойсу"
 
-#: .\templates\account\invoice.html:161
+#: .\templates\account\invoice.html:153
 msgid "Work Period & Payment"
 msgstr "Період роботи та оплата"
 
-#: .\templates\account\invoice.html:165
+#: .\templates\account\invoice.html:157
 msgid "Enter your invoice number, work period, hours, and rate."
 msgstr "Введіть номер інвойсу, період роботи, години та погодинну ставку."
 
-#: .\templates\account\invoice.html:288
+#: .\templates\account\invoice.html:266
+msgid "Tax & deductions"
+msgstr "Податки та відрахування"
+
+#: .\templates\account\invoice.html:267
+msgid "GST & WSBC"
+msgstr "Дані стосовно GST та WSBC"
+
+#: .\templates\account\invoice.html:271
+msgid ""
+"Enter the GST and WSBC percentage rates and your GST/HST account number."
+msgstr "Введіть відсоткові ставки GST та WSBC, а також номер вашого облікового запису GST/HST."
+
+#: .\templates\account\invoice.html:362
 msgid ""
 "Invoice PDF has been created and sent to your email address and the company "
 "email address."
@@ -650,11 +695,11 @@ msgstr ""
 "PDF-файл інвойсу створено та надіслано на вашу адресу електронної пошти та "
 "адресу електронної пошти компанії."
 
-#: .\templates\account\invoice.html:296
+#: .\templates\account\invoice.html:370
 msgid "Sending invoice..."
 msgstr "Надсилання інвойсу..."
 
-#: .\templates\account\invoice.html:298
+#: .\templates\account\invoice.html:372
 #: .\templates\main\includes\navbar.html:78
 msgid "Submit invoice"
 msgstr "Надіслати інвойс"

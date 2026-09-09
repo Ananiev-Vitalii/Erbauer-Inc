@@ -61,10 +61,9 @@
               </p>
             </div>
 
-            <div class="invoice-form-grid">
+            <div class="invoice-form-grid invoice-form-grid--employee">
               <div class="invoice-field">
                 <label for="id_street_address">{% trans "Street address" %}</label>
-
                 <input
                         type="text"
                         name="street_address"
@@ -74,7 +73,6 @@
                         autocomplete="street-address"
                         required
                 >
-
                 <div class="invoice-field-error">
                   {% if employee_form.street_address.errors %}
                   {% for error in employee_form.street_address.errors %}
@@ -86,7 +84,6 @@
 
               <div class="invoice-field">
                 <label for="id_city">{% trans "City" %}</label>
-
                 <input
                         type="text"
                         name="city"
@@ -96,7 +93,6 @@
                         autocomplete="address-level2"
                         required
                 >
-
                 <div class="invoice-field-error">
                   {% if employee_form.city.errors %}
                   {% for error in employee_form.city.errors %}
@@ -108,11 +104,9 @@
 
               <div class="invoice-field">
                 <label for="id_province">{% trans "Province" %}</label>
-
                 <div class="invoice-select-wrap">
                   {{ employee_form.province }}
                 </div>
-
                 <div class="invoice-field-error">
                   {% if employee_form.province.errors %}
                   {% for error in employee_form.province.errors %}
@@ -124,7 +118,6 @@
 
               <div class="invoice-field">
                 <label for="id_postal_code">{% trans "Postal code" %}</label>
-
                 <input
                         type="text"
                         name="postal_code"
@@ -138,7 +131,6 @@
                         class="invoice-postal-code-input"
                         required
                 >
-
                 <div class="invoice-field-error">
                   {% if employee_form.postal_code.errors %}
                   {% for error in employee_form.postal_code.errors %}
@@ -166,10 +158,9 @@
               </p>
             </div>
 
-            <div class="invoice-form-grid">
+            <div class="invoice-form-grid invoice-form-grid--invoice">
               <div class="invoice-field">
                 <label for="id_invoice_number">{% trans "Invoice number" %}</label>
-
                 <input
                         type="number"
                         name="invoice_number"
@@ -181,7 +172,6 @@
                         placeholder="1"
                         required
                 >
-
                 <div class="invoice-field-error">
                   {% if invoice_form.invoice_number.errors %}
                   {% for error in invoice_form.invoice_number.errors %}
@@ -193,11 +183,9 @@
 
               <div class="invoice-field">
                 <label for="id_start_day">{% trans "Start day" %}</label>
-
                 <div class="invoice-select-wrap">
                   {{ invoice_form.start_day }}
                 </div>
-
                 <div class="invoice-field-error">
                   {% if invoice_form.start_day.errors %}
                   {% for error in invoice_form.start_day.errors %}
@@ -209,11 +197,9 @@
 
               <div class="invoice-field">
                 <label for="id_end_day">{% trans "End day" %}</label>
-
                 <div class="invoice-select-wrap">
                   {{ invoice_form.end_day }}
                 </div>
-
                 <div class="invoice-field-error">
                   {% if invoice_form.end_day.errors %}
                   {% for error in invoice_form.end_day.errors %}
@@ -225,7 +211,6 @@
 
               <div class="invoice-field">
                 <label for="id_hours">{% trans "Hours" %}</label>
-
                 <input
                         type="number"
                         name="hours"
@@ -237,7 +222,6 @@
                         placeholder="0.00"
                         required
                 >
-
                 <div class="invoice-field-error">
                   {% if invoice_form.hours.errors %}
                   {% for error in invoice_form.hours.errors %}
@@ -249,10 +233,8 @@
 
               <div class="invoice-field">
                 <label for="id_rate">{% trans "Rate" %}</label>
-
                 <div class="invoice-money-field">
                   <span class="invoice-money-prefix">$</span>
-
                   <input
                           type="number"
                           name="rate"
@@ -265,10 +247,102 @@
                           required
                   >
                 </div>
-
                 <div class="invoice-field-error">
                   {% if invoice_form.rate.errors %}
                   {% for error in invoice_form.rate.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="invoice-subsection-divider" aria-hidden="true">
+              <span></span>
+            </div>
+
+            <div class="invoice-subsection-header">
+              <div>
+                <span class="invoice-section-kicker">{% trans "Tax & deductions" %}</span>
+                <h3>{% trans "GST & WSBC" %}</h3>
+              </div>
+
+              <p>
+                {% trans "Enter the GST and WSBC percentage rates and your GST/HST account number." %}
+              </p>
+            </div>
+
+            <div class="invoice-tax-grid">
+              <div class="invoice-field">
+                <label for="id_gst">GST</label>
+                <div class="invoice-percent-field">
+                  <input
+                          type="number"
+                          name="gst"
+                          id="id_gst"
+                          value="{{ invoice_form.gst.value|default_if_none:'' }}"
+                          min="0"
+                          max="100"
+                          step="0.01"
+                          inputmode="decimal"
+                          placeholder="5.00"
+                          required
+                  >
+                  <span class="invoice-percent-suffix">%</span>
+                </div>
+                <div class="invoice-field-error">
+                  {% if invoice_form.gst.errors %}
+                  {% for error in invoice_form.gst.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="invoice-field">
+                <label for="id_wsbc">WSBC</label>
+                <div class="invoice-percent-field">
+                  <input
+                          type="number"
+                          name="wsbc"
+                          id="id_wsbc"
+                          value="{{ invoice_form.wsbc.value|default_if_none:'' }}"
+                          min="0"
+                          max="100"
+                          step="0.01"
+                          inputmode="decimal"
+                          placeholder="2.87"
+                          required
+                  >
+                  <span class="invoice-percent-suffix">%</span>
+                </div>
+                <div class="invoice-field-error">
+                  {% if invoice_form.wsbc.errors %}
+                  {% for error in invoice_form.wsbc.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="invoice-field invoice-field--gst-account">
+                <label for="id_gst_account_number">
+                  {% trans "GST/HST Account Number" %}
+                </label>
+                <input
+                        type="text"
+                        name="gst_account_number"
+                        id="id_gst_account_number"
+                        value="{{ invoice_form.gst_account_number.value|default_if_none:'' }}"
+                        inputmode="text"
+                        autocomplete="off"
+                        maxlength="16"
+                        placeholder="123456789 RT0001"
+                        pattern="[0-9]{9} RT[0-9]{4}"
+                >
+                <div class="invoice-field-error">
+                  {% if invoice_form.gst_account_number.errors %}
+                  {% for error in invoice_form.gst_account_number.errors %}
                   <span>{{ error }}</span>
                   {% endfor %}
                   {% endif %}
@@ -303,7 +377,6 @@
       </div>
     </div>
     {% endpartialdef %}
-
   </div>
 </section>
 {% endblock content_wrapper %}

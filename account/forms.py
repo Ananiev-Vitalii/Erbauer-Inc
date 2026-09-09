@@ -1,3 +1,4 @@
+import re
 from django import forms
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
@@ -108,12 +109,24 @@ class ProfileAvatarForm(forms.ModelForm):
 class SimpleInvoiceForm(forms.ModelForm):
     class Meta:
         model = EmployeeSimpleInvoice
-        fields = ["invoice_number", "start_day", "end_day", "hours", "rate"]
+        fields = [
+            "invoice_number",
+            "start_day",
+            "end_day",
+            "hours",
+            "rate",
+            "gst_account_number",
+            "gst",
+            "wsbc",
+        ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["start_day"].required = True
         self.fields["end_day"].required = True
+        self.fields["gst_account_number"].required = False
+        self.fields["gst"].required = True
+        self.fields["wsbc"].required = True
 
     def clean(self):
         cleaned_data = super().clean()
@@ -128,6 +141,21 @@ class SimpleInvoiceForm(forms.ModelForm):
             )
 
         return cleaned_data
+
+    def clean_gst_account_number(self):
+        value = self.cleaned_data.get("gst_account_number", "")
+
+        if not value:
+            return ""
+
+        normalized = "".join(value.upper().split())
+
+        if not re.fullmatch(r"\d{9}RT\d{4}", normalized):
+            raise forms.ValidationError(
+                _("Enter a valid GST/HST account number, for example 123456789 RT0001.")
+            )
+
+        return f"{normalized[:9]} {normalized[9:]}"
 
 
 class EmployeeInvoiceForm(forms.Form):

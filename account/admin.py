@@ -84,6 +84,9 @@ class EmployeeSimpleInvoiceAdmin(admin.ModelAdmin):
         "end_day",
         "hours",
         "rate",
+        "gst_account_number",
+        "gst",
+        "wsbc",
     )
     readonly_fields = ("get_first_name", "get_last_name")
 

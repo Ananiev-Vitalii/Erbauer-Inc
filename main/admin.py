@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import Max
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
@@ -56,6 +57,11 @@ class TeamMemberAdmin(TranslationAdmin):
         "display_order",
         "is_visible",
     )
+
+    def get_changeform_initial_data(self, request):
+        max_order = TeamMember.objects.aggregate(max_order=Max("display_order"))["max_order"]
+        next_order = (max_order or 0) + 1
+        return {"display_order": next_order}
 
 
 @admin.register(Service, site=custom_admin_site)

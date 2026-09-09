@@ -25,6 +25,37 @@ function initSimpleInvoicePostalCodeInput(root = document) {
   });
 }
 
+function initSimpleInvoiceGstAccountNumberInput(root = document) {
+  const gstAccountNumberInput = root.querySelector("#id_gst_account_number");
+
+  if (!gstAccountNumberInput) {
+    return;
+  }
+
+  const formatGstAccountNumber = (value) => {
+    const formattedValue = value
+      .toUpperCase()
+      .replace(/[^A-Z0-9]/g, "")
+      .slice(0, 15);
+
+    if (formattedValue.length <= 9) {
+      return formattedValue;
+    }
+
+    return `${formattedValue.slice(0, 9)} ${formattedValue.slice(9)}`;
+  };
+
+  gstAccountNumberInput.value = formatGstAccountNumber(
+    gstAccountNumberInput.value
+  );
+
+  gstAccountNumberInput.addEventListener("input", () => {
+    gstAccountNumberInput.value = formatGstAccountNumber(
+      gstAccountNumberInput.value
+    );
+  });
+}
+
 function initSimpleInvoiceForm(root = document) {
   const form = root.querySelector("[data-simple-invoice-form]");
 
@@ -44,7 +75,8 @@ function initSimpleInvoiceForm(root = document) {
 
     const submitButton = form.querySelector('button[type="submit"]');
     const originalButtonText = submitButton ? submitButton.textContent : null;
-    const loadingButtonText = submitButton?.dataset.loadingText || "Sending invoice...";
+    const loadingButtonText =
+      submitButton?.dataset.loadingText || "Sending invoice...";
 
     if (submitButton) {
       submitButton.disabled = true;
@@ -67,6 +99,7 @@ function initSimpleInvoiceForm(root = document) {
 
       if (updatedTarget) {
         initSimpleInvoicePostalCodeInput(updatedTarget);
+        initSimpleInvoiceGstAccountNumberInput(updatedTarget);
         initSimpleInvoiceForm(updatedTarget);
       }
     } catch (error) {
@@ -81,4 +114,5 @@ function initSimpleInvoiceForm(root = document) {
 }
 
 initSimpleInvoicePostalCodeInput();
+initSimpleInvoiceGstAccountNumberInput();
 initSimpleInvoiceForm();
