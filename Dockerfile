@@ -23,4 +23,4 @@ COPY . /app/
 
 RUN python manage.py collectstatic --no-input --settings=config.settings.prod
 
-CMD python manage.py migrate --settings=config.settings.prod && gunicorn config.wsgi:application --workers 1 --threads 6 --bind 0.0.0.0:$PORT
+CMD python manage.py migrate --settings=config.settings.prod && gunicorn config.wsgi:application --workers 1 --threads 6 --bind 0.0.0.0:$PORT --access-logfile - --error-logfile - --capture-output
