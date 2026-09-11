@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% trans "Confirm email" %}</title>
+</head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
+  <tr>
+    <td align="center">
+
+      <table
+        width="600"
+        cellpadding="0"
+        cellspacing="0"
+        style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,0.08);"
+      >
+        <tr>
+          <td
+            style="background:linear-gradient(135deg,#fb923c 0%,#f97316 100%);padding:24px;text-align:center;"
+          >
+            <div
+              style="color:#ffffff;font-size:24px;line-height:1.2;font-weight:700;margin-bottom:14px;"
+            >
+              {{ company_base.name }}
+            </div>
+
+            <div
+              style="color:rgba(255,255,255,0.9);font-size:12px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:10px;"
+            >
+              {% trans "Account verification" %}
+            </div>
+
+            <h1
+              style="margin:0;color:#ffffff;font-size:30px;line-height:1.15;font-weight:600;"
+            >
+              {% trans "Confirm your account" %}
+            </h1>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:32px;">
+            <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111827;">
+              {% if user.first_name or user.last_name %}
+                {% blocktrans with first_name=user.first_name last_name=user.last_name %}
+                  Hello {{ first_name }} {{ last_name }},
+                {% endblocktrans %}
+              {% else %}
+                {% blocktrans with email=user.email %}
+                  Hello {{ email }},
+                {% endblocktrans %}
+              {% endif %}
+            </p>
+
+            <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#374151;">
+              {% blocktrans with company_name=company_base.name %}
+                Thank you for registering with {{ company_name }}. Please confirm your email address to complete your registration.
+              {% endblocktrans %}
+            </p>
+
+            <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 24px;">
+              <tr>
+                <td
+                  align="center"
+                  style="border-radius:14px;background:linear-gradient(135deg,#fb923c 0%,#f97316 100%);"
+                >
+                  <a
+                    href="{{ protocol }}://{{ domain }}{% url 'user:verify_user' uidb64=uid token=token %}"
+                    style="display:inline-block;padding:15px 24px;font-size:15px;font-weight:700;line-height:1;text-decoration:none;color:#ffffff;border-radius:14px;"
+                  >
+                    {% trans "Verify email address" %}
+                  </a>
+                </td>
+              </tr>
+            </table>
+
+            <p style="margin:0 0 12px;font-size:14px;line-height:1.7;color:#6b7280;">
+              {% trans "If the button does not work, use this link:" %}
+            </p>
+
+            <p style="margin:0 0 24px;word-break:break-word;">
+              <a
+                href="{{ protocol }}://{{ domain }}{% url 'user:verify_user' uidb64=uid token=token %}"
+                style="font-size:14px;line-height:1.7;color:#f97316;text-decoration:none;"
+              >
+                {{ protocol }}://{{ domain }}{% url 'user:verify_user' uidb64=uid token=token %}
+              </a>
+            </p>
+
+            <div style="margin:24px 0;border-top:1px solid #e5e7eb;"></div>
+
+            <p style="margin:0 0 8px;font-size:14px;line-height:1.7;color:#6b7280;">
+              {% trans "If you did not create this account, you can safely ignore this email." %}
+            </p>
+
+            <p style="margin:0;font-size:14px;line-height:1.7;color:#6b7280;">
+              © {% now "Y" %} {{ company_base.name }}
+            </p>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

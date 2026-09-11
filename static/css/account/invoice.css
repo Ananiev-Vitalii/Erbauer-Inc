@@ -1,0 +1,658 @@
+.invoice-page {
+  min-height: calc(100vh - var(--header-h));
+  padding: 56px 0 90px;
+  background:
+    radial-gradient(circle at 8% 8%, rgba(30, 58, 138, 0.20), transparent 28%),
+    radial-gradient(circle at 92% 12%, rgba(51, 65, 85, 0.20), transparent 30%),
+    radial-gradient(circle at 50% 100%, rgba(2, 6, 23, 0.10), transparent 38%),
+    linear-gradient(135deg, #f8fafc 0%, #eef2f7 38%, #dbe3ee 100%);
+}
+
+.invoice-container {
+  display: grid;
+  gap: 28px;
+}
+
+.invoice-hero {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.invoice-hero__content {
+  max-width: 780px;
+}
+
+.invoice-eyebrow,
+.invoice-section-kicker {
+  display: inline-flex;
+  margin-bottom: 10px;
+  color: var(--orange-500);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.invoice-title {
+  font-size: clamp(38px, 5vw, 68px);
+  color: var(--slate-950);
+}
+
+.invoice-subtitle {
+  max-width: 760px;
+  margin-top: 16px;
+  color: #334155;
+  font-size: 1.02rem;
+}
+
+.invoice-subtitle__note {
+  display: inline-block;
+  margin-top: 8px;
+  color: #475569;
+}
+
+.invoice-panel {
+  overflow: hidden;
+  border: 1px solid rgba(226, 232, 240, 0.95);
+  border-radius: 32px;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(16px);
+}
+
+.invoice-form {
+  display: grid;
+}
+
+.invoice-panel-section {
+  padding: 32px;
+}
+
+.invoice-section-divider {
+  display: flex;
+  justify-content: center;
+  padding: 4px 32px;
+}
+
+.invoice-section-divider span {
+  display: block;
+  width: min(980px, 92%);
+  height: 1px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(148, 163, 184, 0.18) 6%,
+      rgba(100, 116, 139, 0.42) 50%,
+      rgba(148, 163, 184, 0.18) 94%,
+      transparent 100%
+    );
+}
+
+.invoice-section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 26px;
+}
+
+.invoice-section-header h2 {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 1.45rem;
+  line-height: 1.2;
+  color: var(--slate-950);
+}
+
+.invoice-section-header p {
+  max-width: 430px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.invoice-form-grid {
+  display: grid;
+  gap: 18px;
+}
+
+.invoice-form-grid--employee {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.invoice-form-grid--invoice {
+  grid-template-columns:
+    minmax(80px, 100px)
+    minmax(80px, 100px)
+    minmax(80px, 100px)
+    minmax(110px, 130px)
+    minmax(110px, 130px);
+  align-items: start;
+}
+
+.invoice-field {
+  display: grid;
+  grid-template-rows: minmax(36px, auto) 50px 22px;
+  gap: 8px;
+  align-items: start;
+}
+
+.invoice-field label {
+  display: flex;
+  align-items: flex-start;
+  min-height: 36px;
+  color: var(--slate-700);
+  font-size: 0.88rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.invoice-field input,
+.invoice-field select,
+.invoice-field textarea {
+  width: 100%;
+  height: 50px;
+  min-height: 50px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: #ffffff;
+  padding: 12px 14px;
+  color: var(--slate-950);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.invoice-field select {
+  cursor: pointer;
+}
+
+.invoice-field input::placeholder,
+.invoice-field textarea::placeholder {
+  color: var(--muted-2);
+}
+
+.invoice-field input:focus,
+.invoice-field select:focus,
+.invoice-field textarea:focus {
+  border-color: #1e3a8a;
+  box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.16);
+}
+
+.invoice-money-field {
+  position: relative;
+  width: 100%;
+  max-width: 130px;
+  height: 50px;
+}
+
+.invoice-money-prefix {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  z-index: 2;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 800;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.invoice-money-field input {
+  padding-left: 42px;
+  text-align: right;
+}
+
+.invoice-money-field:focus-within .invoice-money-prefix {
+  color: #1e3a8a;
+}
+
+.invoice-percent-field {
+  position: relative;
+  width: 100%;
+  max-width: 130px;
+  height: 50px;
+}
+
+.invoice-percent-field input {
+  width: 100%;
+  max-width: 130px;
+  padding-right: 38px;
+  text-align: right;
+}
+
+.invoice-percent-suffix {
+  position: absolute;
+  top: 50%;
+  right: 14px;
+  z-index: 2;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 800;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.invoice-percent-field:focus-within .invoice-percent-suffix {
+  color: #1e3a8a;
+}
+
+#id_invoice_number,
+#id_start_day,
+#id_end_day {
+  width: 100%;
+  max-width: 100px;
+  text-align: center;
+}
+
+#id_hours,
+#id_rate,
+#id_gst,
+#id_wsbc {
+  width: 100%;
+  max-width: 130px;
+  text-align: right;
+}
+
+.invoice-postal-code-input {
+  width: 100%;
+  max-width: 120px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.invoice-select-wrap {
+  position: relative;
+  width: 100%;
+  max-width: 100px;
+  height: 50px;
+}
+
+.invoice-form-grid--employee .invoice-select-wrap {
+  max-width: none;
+}
+
+.invoice-select-wrap select {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 100%;
+  padding-right: 36px;
+  font-weight: 700;
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(248, 250, 252, 0.96)
+    );
+}
+
+.invoice-select-wrap::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 15px;
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid var(--slate-700);
+  border-bottom: 2px solid var(--slate-700);
+  pointer-events: none;
+  transform: translateY(-65%) rotate(45deg);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.invoice-select-wrap:focus-within select {
+  border-color: #1e3a8a;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(30, 58, 138, 0.16);
+}
+
+.invoice-select-wrap:focus-within::after {
+  border-color: #1e3a8a;
+  transform: translateY(-35%) rotate(225deg);
+}
+
+.invoice-subsection-divider {
+  display: flex;
+  justify-content: center;
+  margin: 32px 0 28px;
+}
+
+.invoice-subsection-divider span {
+  display: block;
+  width: min(980px, 92%);
+  height: 1px;
+  border-radius: 999px;
+  background:
+    linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(148, 163, 184, 0.18) 6%,
+      rgba(100, 116, 139, 0.42) 50%,
+      rgba(148, 163, 184, 0.18) 94%,
+      transparent 100%
+    );
+}
+
+.invoice-subsection-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+
+.invoice-subsection-header h3 {
+  margin: 0;
+  font-family: "Inter", sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.2;
+  color: var(--slate-950);
+}
+
+.invoice-subsection-header p {
+  max-width: 430px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.95rem;
+}
+
+.invoice-tax-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(110px, 130px)
+    minmax(110px, 130px)
+    minmax(185px, 205px);
+  gap: 18px;
+  align-items: start;
+  justify-content: start;
+}
+
+.invoice-field--gst-account {
+  width: 100%;
+  max-width: 205px;
+}
+
+#id_gst_account_number {
+  width: 100%;
+  max-width: 205px;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.025em;
+}
+
+.invoice-field-error,
+.invoice-form-error {
+  min-height: 20px;
+  margin-top: 2px;
+  color: var(--red-500);
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.invoice-field-error span,
+.invoice-form-error span {
+  display: block;
+}
+
+.invoice-field-error ul,
+.invoice-field-error li,
+.invoice-form-error ul,
+.invoice-form-error li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.invoice-form-error {
+  margin-top: 18px;
+}
+
+.invoice-form-success {
+  min-height: 20px;
+  margin-top: 22px;
+  margin-bottom: 18px;
+  color: #15803d;
+  font-size: 0.9rem;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.invoice-form-success::before {
+  content: "✓";
+  margin-right: 6px;
+}
+
+.invoice-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 4px;
+}
+
+.invoice-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 48px;
+  min-height: 48px;
+  border: 0;
+  border-radius: 999px;
+  padding: 0 24px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.invoice-button--primary {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 44%),
+    linear-gradient(135deg, #334155 0%, #1e3a8a 52%, #0f172a 100%);
+  color: #ffffff;
+  box-shadow: 0 14px 30px rgba(30, 58, 138, 0.28);
+}
+
+.invoice-button:disabled {
+  cursor: wait;
+  opacity: 0.72;
+  transform: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .invoice-button:hover {
+    transform: translateY(-1px);
+  }
+
+  .invoice-button--primary:hover {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 44%),
+      linear-gradient(135deg, #475569 0%, #1e40af 52%, #020617 100%);
+    box-shadow: 0 18px 38px rgba(30, 58, 138, 0.38);
+  }
+}
+
+@media (max-width: 980px) {
+  .invoice-form-grid--invoice {
+    grid-template-columns:
+      minmax(80px, 100px)
+      minmax(80px, 100px)
+      minmax(80px, 100px);
+  }
+}
+
+@media (max-width: 720px) {
+  .invoice-page {
+    padding: 34px 0 64px;
+  }
+
+  .invoice-panel {
+    border-radius: 26px;
+  }
+
+  .invoice-panel-section {
+    padding: 24px;
+  }
+
+  .invoice-section-divider {
+    padding: 2px 24px;
+  }
+
+  .invoice-section-header,
+  .invoice-subsection-header {
+    display: grid;
+  }
+
+  .invoice-section-header p,
+  .invoice-subsection-header p {
+    max-width: none;
+  }
+
+  .invoice-form-grid--employee {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .invoice-form-grid--invoice {
+    grid-template-columns:
+      minmax(80px, 100px)
+      minmax(80px, 100px)
+      minmax(80px, 100px);
+  }
+
+  .invoice-subsection-divider {
+    margin-top: 24px;
+  }
+
+  .invoice-tax-grid {
+    grid-template-columns:
+      minmax(110px, 130px)
+      minmax(110px, 130px);
+  }
+
+  .invoice-field--gst-account {
+    grid-column: 1 / -1;
+    width: min(205px, 100%);
+    max-width: 205px;
+  }
+
+  #id_gst_account_number {
+    width: 100%;
+    max-width: 205px;
+  }
+
+  .invoice-form-actions {
+    justify-content: stretch;
+  }
+
+  .invoice-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .invoice-panel {
+    border-radius: 22px;
+  }
+
+  .invoice-panel-section {
+    padding: 20px;
+  }
+
+  .invoice-section-divider {
+    padding: 2px 20px;
+  }
+
+  .invoice-form-grid--employee {
+    grid-template-columns: 1fr;
+  }
+
+  .invoice-form-grid--invoice {
+    grid-template-columns:
+      minmax(80px, 100px)
+      minmax(80px, 100px);
+    justify-content: start;
+  }
+
+  .invoice-form-grid--invoice .invoice-field:nth-child(1) {
+    grid-column: 1 / -1;
+  }
+
+  .invoice-form-grid--invoice .invoice-field:nth-child(2) {
+    grid-column: 1;
+  }
+
+  .invoice-form-grid--invoice .invoice-field:nth-child(3) {
+    grid-column: 2;
+  }
+
+  .invoice-form-grid--invoice .invoice-field:nth-child(4) {
+    grid-column: 1;
+  }
+
+  .invoice-form-grid--invoice .invoice-field:nth-child(5) {
+    grid-column: 2;
+  }
+
+  .invoice-tax-grid {
+    grid-template-columns:
+      minmax(110px, 130px)
+      minmax(110px, 130px);
+    justify-content: start;
+  }
+
+  .invoice-field--gst-account {
+    grid-column: 1 / -1;
+    width: min(205px, 100%);
+    max-width: 205px;
+  }
+
+  #id_gst_account_number {
+    width: 100%;
+    max-width: 205px;
+  }
+
+  .invoice-subsection-divider {
+    margin-top: 20px;
+  }
+
+  .invoice-postal-code-input {
+    max-width: 120px;
+  }
+
+  #id_invoice_number,
+  #id_start_day,
+  #id_end_day {
+    max-width: 100px;
+  }
+
+  #id_hours,
+  #id_rate,
+  #id_gst,
+  #id_wsbc {
+    max-width: 130px;
+  }
+
+  .invoice-money-field,
+  .invoice-percent-field {
+    max-width: 130px;
+  }
+
+  .invoice-select-wrap {
+    max-width: 100px;
+  }
+
+  .invoice-form-grid--employee .invoice-select-wrap {
+    max-width: none;
+  }
+}

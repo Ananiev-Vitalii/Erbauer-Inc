@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load i18n static cache %}
+
+{% block title %}{{ company_profile.name|default:"Erbauer" }}{% endblock title %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main/hero.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/services.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/about.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/projects.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/team.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/contacts.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/back_to_top.css' %}">
+{% endblock extra_css %}
+{% block content_wrapper %}
+<div class="page-noise"></div>
+
+
+
+{% include "main/includes/sections/hero.html" %}
+
+{% cache 3600 homepage_static_v2 LANGUAGE_CODE %}
+{% include "main/includes/sections/services.html" %}
+{% include "main/includes/sections/about.html" %}
+{% include "main/includes/sections/projects.html" %}
+{% include "main/includes/sections/team.html" %}
+{% endcache %}
+
+{% include "main/includes/sections/contacts.html" %}
+
+<button class="back-to-top" id="backToTop" aria-label="{% trans 'Back to top' %}">
+  <span>↑</span>
+</button>
+{% endblock content_wrapper %}
+
+{% block extra_js %}
+<script src="{% static 'js/main/reveal.js' %}"></script>
+<script src="{% static 'js/main/hero.js' %}"></script>
+<script src="{% static 'js/main/services.js' %}"></script>
+<script src="{% static 'js/main/projects.js' %}"></script>
+<script src="{% static 'js/main/team.js' %}"></script>
+<script src="{% static 'js/main/contacts.js' %}"></script>
+<script src="{% static 'js/main/back_to_top.js' %}"></script>
+{% endblock extra_js %}

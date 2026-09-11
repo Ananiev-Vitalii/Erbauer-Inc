@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Privacy Policy" %} | {{ company_base.name|default:"Erbauer" }}{% endblock title %}
+
+{% block extra_css %}
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'css/main/privacy_policy.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/back_to_top.css' %}">
+{% endblock extra_css %}
+
+{% block content_wrapper %}
+<section class="privacy-policy-page">
+  <div class="container">
+    <div class="privacy-policy__hero centered reveal">
+      <p class="privacy-policy__kicker">{% trans "Legal" %}</p>
+      <h1 class="privacy-policy__title">{% trans "Privacy Policy" %}</h1>
+
+      <p class="privacy-policy__lead">
+        {% blocktrans with company_name=company_base.name|default:"Erbauer" trimmed %}
+        This Privacy Policy explains how {{ company_name }} collects, uses, and protects personal information provided
+        through this website, employee accounts, and internal invoice-related features.
+        {% endblocktrans %}
+      </p>
+
+      <p class="privacy-policy__updated">
+        {% trans "Last updated:" %} {% now "F j, Y" %}
+      </p>
+    </div>
+
+    <div class="privacy-policy__card reveal">
+      <div class="privacy-policy__content">
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "1. Who we are" %}</h2>
+          <p>
+            {% blocktrans with company_name=company_base.name|default:"Erbauer" trimmed %}
+            This website is operated by {{ company_name }}. We are committed to handling personal information
+            responsibly, transparently, and in accordance with applicable privacy requirements.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "2. Information we collect" %}</h2>
+
+          <h3>{% trans "Contact form information" %}</h3>
+          <p>
+            {% blocktrans trimmed %}
+            When a visitor submits a request through the contact form on this website, we may collect the following
+            information:
+            {% endblocktrans %}
+          </p>
+          <ul class="privacy-policy__list">
+            <li>{% trans "Name" %}</li>
+            <li>{% trans "Phone number" %}</li>
+            <li>{% trans "Message content" %}</li>
+          </ul>
+
+          <h3>{% trans "Employee account information" %}</h3>
+          <p>
+            {% blocktrans trimmed %}
+            When employee accounts are created for internal business use, we may collect the following information:
+            {% endblocktrans %}
+          </p>
+          <ul class="privacy-policy__list">
+            <li>{% trans "First name" %}</li>
+            <li>{% trans "Last name" %}</li>
+            <li>{% trans "Email address" %}</li>
+            <li>{% trans "Phone number" %}</li>
+            <li>{% trans "Job title or position" %}</li>
+            <li>{% trans "Street address" %}</li>
+            <li>{% trans "City" %}</li>
+            <li>{% trans "Province" %}</li>
+            <li>{% trans "Postal code" %}</li>
+            <li>{% trans "Profile avatar, if provided" %}</li>
+          </ul>
+
+          <h3>{% trans "Simple Invoice information" %}</h3>
+          <p>
+            {% blocktrans trimmed %}
+            When an employee submits a Simple Invoice through the website, we may process invoice-related information
+            provided by the employee, including invoice number, work period, hours, rate, and billing or address details
+            required to generate the invoice document.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            Passwords are not stored in plain text and are processed using secure authentication methods.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "3. How we use personal information" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            We use personal information only for legitimate business purposes, including:
+            {% endblocktrans %}
+          </p>
+          <ul class="privacy-policy__list">
+            <li>{% trans "Responding to enquiries and contact requests" %}</li>
+            <li>{% trans "Communicating with customers or prospective customers" %}</li>
+            <li>
+              {% blocktrans trimmed %}
+              Creating and managing employee access to internal areas of the website or related systems
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Managing employee profile, contact, and address information
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Pre-filling employee invoice forms with billing and address information
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Generating Simple Invoice documents based on information submitted by employees
+              {% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans trimmed %}
+              Sending generated invoice documents to the employee and the company email address
+              {% endblocktrans %}
+            </li>
+            <li>{% trans "Maintaining the security, integrity, and proper operation of our services" %}</li>
+          </ul>
+          <p>
+            {% blocktrans trimmed %}
+            We do not use the information submitted through the contact form for unrelated marketing purposes unless a
+            person separately requests or agrees to such communication.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "4. How contact form data is handled" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            Information submitted through the contact form is not stored in a customer database on the website. Instead,
+            it is sent directly to our company email address so that we can review the request and respond.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "5. How employee account data is handled" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            Employee registration and profile information is used only for internal business administration, account
+            access, invoice preparation, communication, and related operational purposes. Employee data is accessible
+            only to authorized personnel who need it for legitimate business reasons.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            Address and billing information provided by employees may be used to pre-fill Simple Invoice forms and to
+            generate invoice documents required for payment and internal company processing.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            When a Simple Invoice is submitted, a PDF invoice may be generated from the submitted information and sent to
+            the employee email address and the company email address. This allows both the employee and the company to
+            receive a copy of the generated invoice document.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            Temporary files created during invoice generation, including temporary spreadsheet and PDF files, are used
+            only for generating and sending the invoice. These temporary files are not intended to be stored permanently
+            by the website after the invoice process is completed.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% blocktrans trimmed %}
+            The website may keep the latest Simple Invoice record for an employee only to help pre-fill future invoice
+            forms. Older invoice records are not kept when they are no longer needed for this purpose.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "6. Legal basis and consent" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            By submitting a contact request through this website, users acknowledge that we may process the information
+            they provide in order to review the request and respond.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans trimmed %}
+            Where consent is requested through a checkbox or similar confirmation, that consent applies only to the
+            specific processing described at the time of collection.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans trimmed %}
+            By submitting a Simple Invoice, employees acknowledge that the submitted information may be used to generate
+            the invoice document and send it to the employee and the company for invoice processing.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "7. Sharing of information" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            We do not sell personal information. We do not rent, trade, or otherwise disclose personal information to
+            third parties except where disclosure is necessary to operate our business, comply with legal obligations,
+            protect our rights, or support secure technical operations.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans trimmed %}
+            Simple Invoice documents may be sent to the company email address and to the employee email address for
+            invoice processing and record confirmation.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "8. Data retention" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            We retain personal information only for as long as it is reasonably necessary for the purpose for which it
+            was collected, including responding to requests, managing internal accounts, meeting legal obligations,
+            resolving disputes, and protecting our legitimate business interests.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans trimmed %}
+            Simple Invoice records may be limited to the latest invoice data needed to pre-fill future invoice forms,
+            unless additional retention is required for business, accounting, or legal reasons.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "9. Data security" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            We take reasonable administrative, technical, and organizational measures to protect personal information
+            against unauthorized access, disclosure, misuse, loss, or alteration. However, no system or method of
+            transmission over the internet can be guaranteed to be completely secure.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "10. Cookies and tracking technologies" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            At this time, we do not use cookies or similar tracking technologies for analytics, advertising, or
+            behavioral profiling through this website. If this changes in the future, this Privacy Policy will be
+            updated accordingly.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "11. Your rights" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            Depending on the laws that apply to you, you may have the right to request access to personal information we
+            hold about you, request correction of inaccurate information, request deletion of your information where
+            appropriate, or contact us with questions about how your information is handled.
+            {% endblocktrans %}
+          </p>
+          <p>
+            {% blocktrans trimmed %}
+            Employees may also contact the company to update inaccurate profile, address, or invoice-related
+            information.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "12. Contact us" %}</h2>
+          <p>
+            {% blocktrans with company_name=company_base.name|default:"Erbauer" trimmed %}
+            If you have any questions about this Privacy Policy or about how your personal information is handled,
+            please contact {{ company_name }} directly.
+            {% endblocktrans %}
+          </p>
+
+          <p>
+            {% trans "Email:" %}
+            <a href="mailto:{{ company_base.email }}" class="privacy-policy__link">{{ company_base.email }}</a>
+          </p>
+        </section>
+
+        <section class="privacy-policy__section">
+          <h2>{% trans "13. Changes to this Privacy Policy" %}</h2>
+          <p>
+            {% blocktrans trimmed %}
+            We may update this Privacy Policy from time to time to reflect changes in our business practices, technical
+            setup, or legal requirements. The updated version will be published on this page with a revised effective
+            date.
+            {% endblocktrans %}
+          </p>
+        </section>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<button class="back-to-top" id="backToTop" aria-label="{% trans 'Back to top' %}">
+  <span>↑</span>
+</button>
+{% endblock content_wrapper %}
+
+{% block extra_js %}
+<script src="{% static 'js/main/reveal.js' %}"></script>
+<script src="{% static 'js/main/back_to_top.js' %}"></script>
+{% endblock extra_js %}

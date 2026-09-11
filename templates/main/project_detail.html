@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{{ project.title }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/main/project_detail.css' %}">
+<link rel="stylesheet" href="{% static 'css/main/back_to_top.css' %}">
+{% endblock %}
+
+{% block content_wrapper %}
+<section class="project-detail">
+  <div class="container">
+
+    <div class="project-detail__intro">
+      <div class="project-detail__head">
+        <p class="project-detail__category">
+          {{ project.get_category_display }}
+        </p>
+
+        <h1 class="project-detail__title">
+          {{ project.title }}
+        </h1>
+
+        <div class="project-detail__meta">
+          <p class="project-detail__date">
+            {{ project.created_at|date:"F j, Y" }}
+          </p>
+        </div>
+
+        <p class="project-detail__description">
+          {{ project.short_description }}
+        </p>
+      </div>
+    </div>
+
+    <div class="project-detail__cover-shell">
+      <div class="project-detail__cover-panel">
+        <div class="project-detail__cover-topline">
+          <span class="project-detail__cover-chip">{% trans "Project cover" %}</span>
+        </div>
+
+        <button
+                type="button"
+                class="project-detail__cover project-lightbox-trigger"
+                data-image="{{ project.cover_image.url }}"
+                data-alt="{{ project.title }}"
+                aria-label="{% trans 'Open full image' %}"
+        >
+      <span class="project-detail__media-frame project-detail__media-frame--hero">
+        <img src="{{ project.cover_image.url }}" alt="{{ project.title }}">
+
+        <span class="project-detail__media-overlay">
+          <span class="project-detail__media-icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M14.5 3H21v6.5h-2V6.41l-6.29 6.3-1.42-1.42L17.59 5H14.5V3ZM3 14.5h2V17.59l6.29-6.3 1.42 1.42L6.41 19H9.5v2H3v-6.5Zm8.29-3.21-6.3-6.29H8V3H3v5h2V4.41l6.29 6.3 1.42-1.42Zm1.42 1.42 6.29 6.3H16V21h5v-5h-2v3.09l-6.29-6.3-1.42 1.42Z"/>
+            </svg>
+          </span>
+          <span class="project-detail__media-label">
+            {% trans "View full size" %}
+          </span>
+        </span>
+      </span>
+        </button>
+      </div>
+    </div>
+
+    {% if project.images.all %}
+    <div class="project-detail__gallery-section">
+      <div class="project-detail__gallery-head">
+        <p class="project-detail__gallery-kicker">
+          {% trans "Project gallery" %}
+        </p>
+        <h2 class="project-detail__gallery-title">
+          {% trans "Detailed project photos" %}
+        </h2>
+      </div>
+
+      <div class="project-detail__gallery">
+        {% for image in project.images.all %}
+        <button
+                type="button"
+                class="project-detail__gallery-item project-lightbox-trigger"
+                data-image="{{ image.image.url }}"
+                data-alt="{{ project.title }}"
+                aria-label="{% trans 'Open full image' %}"
+        >
+          <span class="project-detail__media-frame">
+            <img src="{{ image.image.url }}" alt="{{ project.title }}">
+
+            <span class="project-detail__media-overlay">
+              <span class="project-detail__media-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M14.5 3H21v6.5h-2V6.41l-6.29 6.3-1.42-1.42L17.59 5H14.5V3ZM3 14.5h2V17.59l6.29-6.3 1.42 1.42L6.41 19H9.5v2H3v-6.5Zm8.29-3.21-6.3-6.29H8V3H3v5h2V4.41l6.29 6.3 1.42-1.42Zm1.42 1.42 6.29 6.3H16V21h5v-5h-2v3.09l-6.29-6.3-1.42 1.42Z"/>
+                </svg>
+              </span>
+              <span class="project-detail__media-label">
+                {% trans "View full size" %}
+              </span>
+            </span>
+          </span>
+        </button>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
+  </div>
+</section>
+
+<div class="project-lightbox" id="projectLightbox" aria-hidden="true">
+  <div class="project-lightbox__backdrop" data-lightbox-close></div>
+
+  <div
+          class="project-lightbox__dialog"
+          role="dialog"
+          aria-modal="true"
+          aria-label="{% trans 'Project image preview' %}"
+  >
+    <button
+            class="project-lightbox__close"
+            type="button"
+            id="projectLightboxClose"
+            aria-label="{% trans 'Close image preview' %}"
+    >
+      ×
+    </button>
+
+    <div class="project-lightbox__stage">
+      <img
+              class="project-lightbox__image"
+              id="projectLightboxImage"
+              src=""
+              alt=""
+      >
+    </div>
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" aria-label="{% trans 'Back to top' %}">
+  <span>↑</span>
+</button>
+{% endblock %}
+
+
+{% block extra_js %}
+<script src="{% static 'js/main/project_detail.js' %}"></script>
+<script src="{% static 'js/main/back_to_top.js' %}"></script>
+{% endblock extra_js %}

@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block title %}
+{{ company_base.name|default:"Erbauer" }} | {% trans "Verification failed" %}
+{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/user/user_base.css' %}">
+{% endblock extra_css %}
+
+{% block content_wrapper %}
+<section class="auth-page">
+  <div class="container">
+    <div class="auth-shell">
+      <div class="auth-shell__head">
+        <p class="auth-shell__kicker">{% trans "User verification" %}</p>
+
+        <h1 class="auth-shell__title">{% trans "Verification failed" %}</h1>
+
+        <p class="auth-shell__lead">
+          {% trans "This verification link is invalid or has expired." %}
+        </p>
+
+        <p class="auth-shell__lead">
+          {% trans "Please request a new verification email to activate your account." %}
+        </p>
+        <br>
+        <p class="auth-shell__lead">
+          {% trans "If you are currently signed in, please log out first before requesting a new verification email." %}
+        </p>
+      </div>
+
+      <div class="auth-links">
+        <p>
+          <a href="{% url 'user:confirm_user' %}">
+            {% trans "Request a new verification email" %}
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock content_wrapper %}

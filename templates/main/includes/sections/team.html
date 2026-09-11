@@ -1,0 +1,65 @@
+{% load i18n static %}
+
+<section class="team" id="team">
+  <div class="container">
+    <div class="team__head centered">
+      <p class="team__kicker team__anim team__anim--down">
+        {% trans 'Who We Are' %}
+      </p>
+
+      <h2 class="team__title team__anim team__anim--down">
+        {% trans 'Meet Our Team' %}
+      </h2>
+
+      <p class="team__lead team__anim team__anim--down">
+        {% trans 'A team of experienced builders delivering reliable, high-quality work on every project.' %}
+      </p>
+    </div>
+
+    <div class="team__grid" data-team-grid>
+      {% for employee in team_members %}
+      <article
+        class="team__card team__anim team__anim--up {% if forloop.counter > 4 %}team__card--collapsed{% endif %}"
+        data-team-card
+      >
+        <div class="team__image-wrap">
+          <img
+            class="team__image"
+            src="{{ employee.photo.url }}"
+            alt="{{ employee }}"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+
+        <div class="team__body">
+          <h3 class="team__name">{{ employee }}</h3>
+          <p class="team__role">{{ employee.employee.position }}</p>
+          <p class="team__text">{{ employee.description }}</p>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+
+    {% if has_more_team_members %}
+    <div class="team__actions" data-team-actions>
+      <button
+        class="team__toggle"
+        type="button"
+        data-team-show-less
+        hidden
+      >
+        {% trans 'See less' %}
+      </button>
+
+      <button
+        class="team__toggle"
+        type="button"
+        data-team-show-more
+      >
+        {% trans 'See more' %}
+      </button>
+    </div>
+    {% endif %}
+  </div>
+</section>

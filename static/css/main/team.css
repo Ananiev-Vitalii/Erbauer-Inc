@@ -1,0 +1,428 @@
+.team {
+  padding: 110px 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+.team__head {
+  max-width: 820px;
+  margin: 0 auto 50px;
+  text-align: center;
+}
+
+.team__kicker {
+  display: inline-block;
+  margin: 0 0 14px;
+  color: var(--orange-500);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.team__title {
+  margin: 0 0 16px;
+  font-family: "Playfair Display", serif;
+  font-size: clamp(34px, 5vw, 64px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  text-align: center;
+}
+
+.team__lead {
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.team__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 22px;
+  align-items: stretch;
+  perspective: 1400px;
+}
+
+.team__grid > * {
+  min-width: 0;
+}
+
+.team__card {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  background: var(--white);
+  border: 1px solid var(--slate-200);
+  border-radius: 22px;
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.team__card.team__card--collapsed {
+  display: none;
+}
+
+.team__image-wrap {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  background: linear-gradient(180deg, #f3f4f6, #e5e7eb);
+  flex-shrink: 0;
+}
+
+.team__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center top;
+}
+
+.team__body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  padding: 20px;
+}
+
+.team__name {
+  margin: 0 0 8px;
+  font-family: "Playfair Display", serif;
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.team__role {
+  margin: 0 0 12px;
+  color: var(--orange-500);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.team__text {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* team actions */
+.team__actions {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 14px;
+  margin-top: 36px;
+}
+
+.team__toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: auto;
+  min-height: 56px;
+  padding: 14px 28px;
+  border: none !important;
+  border-radius: 14px;
+  outline: none !important;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.2;
+  cursor: pointer;
+  box-shadow:
+    0 16px 34px rgba(234, 88, 12, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.team__toggle[data-team-show-more] {
+  background:
+    linear-gradient(
+      120deg,
+      #fbbf24 0%,
+      #f59e0b 24%,
+      #f97316 54%,
+      #ea580c 78%,
+      #c2410c 100%
+    ) !important;
+}
+
+.team__toggle[data-team-show-less] {
+  background:
+    linear-gradient(
+      120deg,
+      #fb923c 0%,
+      #f97316 24%,
+      #ea580c 54%,
+      #c2410c 78%,
+      #9a3412 100%
+    ) !important;
+}
+
+.team__toggle::after {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+  transform: translateY(1px) scaleY(0.82);
+  transform-origin: center;
+  transition: none;
+}
+
+.team__toggle[data-team-show-more]::after {
+  content: "↓";
+}
+
+.team__toggle[data-team-show-less]::after {
+  content: "↑";
+}
+
+.team__toggle:focus,
+.team__toggle:focus-visible,
+.team__toggle:active {
+  color: #ffffff !important;
+  outline: none !important;
+  border: none !important;
+}
+
+.team__toggle[data-team-show-more]:focus,
+.team__toggle[data-team-show-more]:focus-visible,
+.team__toggle[data-team-show-more]:active {
+  background:
+    linear-gradient(
+      120deg,
+      #fbbf24 0%,
+      #f59e0b 24%,
+      #f97316 54%,
+      #ea580c 78%,
+      #c2410c 100%
+    ) !important;
+}
+
+.team__toggle[data-team-show-less]:focus,
+.team__toggle[data-team-show-less]:focus-visible,
+.team__toggle[data-team-show-less]:active {
+  background:
+    linear-gradient(
+      120deg,
+      #fb923c 0%,
+      #f97316 24%,
+      #ea580c 54%,
+      #c2410c 78%,
+      #9a3412 100%
+    ) !important;
+}
+
+.team__toggle[hidden] {
+  display: none;
+}
+
+/* hover effects only for devices with mouse / precise pointer */
+@media (hover: hover) and (pointer: fine) {
+  .team__card {
+    transition:
+      transform 0.32s ease,
+      box-shadow 0.32s ease,
+      border-color 0.32s ease;
+  }
+
+  .team__card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: rgba(250, 204, 21, 0.45);
+  }
+
+  .team__toggle {
+    transition:
+      transform 0.25s ease,
+      box-shadow 0.25s ease,
+      filter 0.25s ease;
+  }
+
+  .team__toggle::after {
+    transition: transform 0.25s ease;
+  }
+
+  .team__toggle:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.04);
+    box-shadow:
+      0 20px 42px rgba(234, 88, 12, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  }
+
+  .team__toggle[data-team-show-more]:hover::after {
+    transform: translateY(4px) scaleY(0.82);
+  }
+
+  .team__toggle[data-team-show-less]:hover::after {
+    transform: translateY(-3px) scaleY(0.82);
+  }
+
+  .team__toggle[data-team-show-less]:hover {
+    box-shadow:
+      0 20px 42px rgba(194, 65, 12, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  }
+}
+
+/* isolated team animation base */
+.team__anim {
+  opacity: 0;
+  will-change: transform, opacity, filter;
+}
+
+/* text: gentle drop from top */
+.team__anim--down {
+  transform: translate3d(0, -36px, 0);
+  transition:
+    opacity 0.95s ease,
+    transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* cards: cinematic roll-in */
+.team__anim--up {
+  transform:
+    translate3d(0, 72px, 0)
+    scale3d(0.9, 0.9, 1)
+    rotateX(-18deg)
+    rotateY(0deg);
+  transform-origin: center bottom;
+  filter: blur(8px);
+  transition:
+    opacity 1.05s ease,
+    transform 1.05s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 1.05s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* slight overshoot phase */
+.team__anim--up.team__anim--settle {
+  opacity: 1;
+  transform:
+    translate3d(0, -6px, 0)
+    scale3d(1.015, 1.015, 1)
+    rotateX(4deg)
+    rotateY(0deg);
+  filter: blur(0);
+  transition:
+    opacity 0.78s ease,
+    transform 0.78s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.78s ease;
+}
+
+/* final visible state */
+.team__anim.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale3d(1, 1, 1) rotateX(0deg) rotateY(0deg);
+  filter: blur(0);
+}
+
+/* text visible state stays calm */
+.team__anim--down.is-visible {
+  transform: translate3d(0, 0, 0);
+}
+
+/* card visible state gets its own timing */
+.team__anim--up.is-visible {
+  transition:
+    opacity 0.62s ease,
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.62s ease;
+}
+
+@media (max-width: 1199px) {
+  .team__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    perspective: 1200px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .team {
+    padding: 90px 0;
+  }
+}
+
+@media (max-width: 640px) {
+  .team__grid {
+    grid-template-columns: 1fr;
+    perspective: 1000px;
+  }
+
+  .team__body {
+    padding: 20px;
+  }
+
+  .team__title {
+    margin-bottom: 14px;
+  }
+
+  .team__lead {
+    font-size: 18px;
+  }
+
+  .team__actions {
+    flex-direction: column;
+    align-items: flex-start;
+    margin-top: 30px;
+  }
+
+  .team__toggle {
+    min-height: 44px;
+    min-width: 150px;
+    padding: 10px 18px;
+    font-size: 13px;
+    border-radius: 12px;
+  }
+
+  .team__anim--up {
+    transform:
+      translate3d(0, 56px, 0)
+      scale3d(0.94, 0.94, 1)
+      rotateX(-12deg)
+      rotateY(0deg);
+    filter: blur(6px);
+  }
+
+  .team__anim--up.team__anim--settle {
+    transform:
+      translate3d(0, -4px, 0)
+      scale3d(1.01, 1.01, 1)
+      rotateX(2deg)
+      rotateY(0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .team__anim,
+  .team__anim--down,
+  .team__anim--up,
+  .team__anim--up.team__anim--settle,
+  .team__anim.is-visible {
+    opacity: 1;
+    transform: none;
+    filter: none;
+    transition: none;
+  }
+
+  .team__toggle,
+  .team__toggle::after {
+    transition: none;
+  }
+}

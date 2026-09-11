@@ -1,0 +1,49 @@
+{% load crispy_forms_tags i18n cache %}
+
+<section class="contacts" id="contacts">
+  <div class="container contacts__layout">
+    {% cache 3600 contacts_info LANGUAGE_CODE %}
+    <div class="contacts__info reveal">
+      <p class="contacts__kicker">{% trans "Get in Touch" %}</p>
+      <h2 class="contacts__title">{% trans "Contact Us" %}</h2>
+      <p class="contacts__lead">
+        {% trans "Reach out to us to discuss your project or join our team" %}
+      </p>
+
+      <div class="contacts__list">
+        {% if company_profile.address %}
+        <article class="contacts__item">
+          <h3 class="contacts__item-title">{% trans "Address" %}</h3>
+          <p class="contacts__item-text">{{ company_profile.address }}</p>
+          <p class="contacts__item-text">{{ company_profile.city }}, {{ company_profile.province }} {{ company_profile.postal_code }}</p>
+        </article>
+        {% endif %}
+
+        <article class="contacts__item">
+          <h3 class="contacts__item-title">{% trans "Phone" %}</h3>
+          <p class="contacts__item-text">{{ company_profile.primary_phone }}</p>
+          {% if company_profile.secondary_phone %}
+          <p class="contacts__item-text">{{ company_profile.secondary_phone }}</p>
+          {% endif %}
+        </article>
+
+        <article class="contacts__item">
+          <h3 class="contacts__item-title">{% trans "Email" %}</h3>
+          <p class="contacts__item-text">{{ company_profile.email }}</p>
+        </article>
+
+        <article class="contacts__item">
+          <h3 class="contacts__item-title">{% trans "Working Hours" %}</h3>
+          <p class="contacts__item-text">{{ company_profile.working_hours|linebreaksbr }}</p>
+        </article>
+      </div>
+    </div>
+    {% endcache %}
+
+    <div class="contacts__form-wrap reveal" data-delay="120" id="contactFormWrapper">
+      {% partialdef contact-form inline %}
+      {% crispy form %}
+      {% endpartialdef contact-form %}
+    </div>
+  </div>
+</section>

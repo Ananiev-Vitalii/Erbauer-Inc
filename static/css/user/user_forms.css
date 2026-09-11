@@ -1,0 +1,378 @@
+.auth-form-wrap {
+    margin-top: 34px;
+    padding: clamp(24px, 4vw, 36px);
+    border-radius: 28px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(255, 255, 255, 0.94) 100%);
+    border: 1px solid rgba(17, 24, 39, 0.08);
+    box-shadow:
+        0 20px 60px rgba(17, 24, 39, 0.08),
+        0 6px 20px rgba(17, 24, 39, 0.04);
+}
+
+.base-form .mb-3 {
+    margin-bottom: 18px !important;
+}
+
+.base-form .form-control {
+    width: 100%;
+    min-height: 56px;
+    padding: 0.95rem 1rem;
+    border-radius: 16px;
+    border: 1px solid rgba(17, 24, 39, 0.12);
+    background: #fff;
+    color: #111827;
+    font-size: 0.98rem;
+    line-height: 1.4;
+    box-shadow: none;
+    transition:
+        border-color 0.24s ease,
+        box-shadow 0.24s ease,
+        transform 0.18s ease,
+        background-color 0.24s ease;
+}
+
+.base-form .form-control::placeholder {
+    color: #9ca3af;
+}
+
+.base-form .form-control:hover {
+    border-color: rgba(234, 88, 12, 0.35);
+}
+
+.base-form .form-control:focus {
+    outline: none;
+    border-color: rgba(234, 88, 12, 0.72);
+    box-shadow: 0 0 0 4px rgba(234, 88, 12, 0.14);
+    background: #fff;
+}
+
+.base-form .form-control.pe-5,
+.base-form .auth-form__control--password {
+    padding-right: 4rem !important;
+}
+
+.base_submit_btn {
+    width: 100%;
+    min-height: 56px;
+    margin-top: 6px;
+    border: 0;
+    border-radius: 16px;
+    padding: 0.95rem 1.25rem;
+    font-size: 0.98rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    color: #fff;
+    background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+    box-shadow:
+        0 16px 34px rgba(234, 88, 12, 0.26),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.22s ease,
+        filter 0.22s ease,
+        opacity 0.22s ease;
+}
+
+.base_submit_btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.03);
+    box-shadow:
+        0 20px 40px rgba(234, 88, 12, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.base_submit_btn:active {
+    transform: translateY(0);
+}
+
+.base_submit_btn:focus-visible {
+    outline: none;
+    box-shadow:
+        0 0 0 4px rgba(245, 158, 11, 0.18),
+        0 16px 34px rgba(234, 88, 12, 0.26);
+}
+
+.base_submit_btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.65;
+    transform: none;
+    box-shadow:
+        0 10px 24px rgba(17, 24, 39, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    filter: grayscale(0.08);
+}
+
+
+/* submit-loading */
+.base_submit_btn.is-loading {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  pointer-events: none;
+  opacity: 0.85;
+  cursor: wait;
+}
+
+.base_submit_btn.is-loading::before {
+  content: "";
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: submit-spinner-rotate 0.7s linear infinite;
+}
+
+@keyframes submit-spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+
+/* form-errors and form-success */
+.form-errors {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(220, 38, 38, 0.16);
+    background: linear-gradient(180deg, rgba(254, 242, 242, 0.96) 0%, rgba(254, 226, 226, 0.96) 100%);
+}
+
+.form-errors .error-message,
+.error-message {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: #b91c1c;
+    font-size: 0.94rem;
+    line-height: 1.55;
+}
+
+.form-errors .error-message + .error-message {
+    margin-top: 6px;
+}
+
+.form-success {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    border: 1px solid rgba(34, 197, 94, 0.18);
+    background: linear-gradient(180deg, rgba(240, 253, 244, 0.96) 0%, rgba(220, 252, 231, 0.96) 100%);
+}
+
+.form-success .success-message {
+    margin: 0;
+    padding: 0;
+    color: #15803d;
+    font-size: 0.94rem;
+    line-height: 1.55;
+}
+
+/* Checkbox */
+.user-checkbox-field {
+   margin: 18px 0 22px;
+}
+
+.user-checkbox-label {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.user-checkbox-input {
+  appearance: none;
+  -webkit-appearance: none;
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--slate-300);
+  border-radius: 5px;
+  background: #fff;
+  flex-shrink: 0;
+  cursor: pointer;
+  position: relative;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.user-checkbox-input:hover {
+  border-color: var(--orange-400);
+}
+
+.user-checkbox-input:focus,
+.user-checkbox-input:focus-visible {
+  outline: none;
+  border-color: var(--orange-500);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.12);
+}
+
+.user-checkbox-input:checked {
+  background: var(--orange-500);
+  border-color: var(--orange-500);
+}
+
+.user-checkbox-input:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.user-checkbox-label a {
+  color: var(--orange-500);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.user-checkbox-label a:hover {
+  text-decoration: underline;
+}
+
+
+/* Password toggle */
+.password-field-wrap {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 42px;
+    height: 42px;
+    border: 0;
+    border-radius: 14px;
+    padding: 0;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.98) 0%, rgba(248, 250, 252, 0.98) 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(17, 24, 39, 0.08),
+        0 8px 18px rgba(17, 24, 39, 0.08);
+    color: #6b7280;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 3;
+    transition:
+        transform 0.18s ease,
+        box-shadow 0.22s ease,
+        color 0.22s ease,
+        background 0.22s ease;
+}
+
+.password-toggle:hover {
+    color: #ea580c;
+    transform: translateY(-50%) scale(1.02);
+    box-shadow:
+        inset 0 0 0 1px rgba(234, 88, 12, 0.16),
+        0 12px 24px rgba(234, 88, 12, 0.14);
+}
+
+.password-toggle:focus-visible {
+    outline: none;
+    color: #ea580c;
+    box-shadow:
+        0 0 0 4px rgba(245, 158, 11, 0.16),
+        inset 0 0 0 1px rgba(234, 88, 12, 0.18),
+        0 10px 22px rgba(234, 88, 12, 0.12);
+}
+
+.password-toggle.is-active {
+    color: #ea580c;
+    background: linear-gradient(180deg, rgba(255, 247, 237, 1) 0%, rgba(255, 237, 213, 1) 100%);
+    box-shadow:
+        inset 0 0 0 1px rgba(234, 88, 12, 0.12),
+        0 12px 24px rgba(234, 88, 12, 0.16);
+}
+
+.password-toggle__icon {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.password-toggle__icon svg {
+    width: 20px;
+    height: 20px;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.password-toggle__icon--hide {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.password-toggle.is-active .password-toggle__icon--show {
+    opacity: 0;
+    transform: scale(0.8);
+}
+
+.password-toggle.is-active .password-toggle__icon--hide {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Password strength */
+
+.password-strength {
+    width: 100%;
+    margin-top: 8px;
+}
+
+.password-strength-hidden {
+    display: none;
+}
+
+.password-strength .progress {
+    height: 8px;
+    background: #eceff3;
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+.password-strength .progress-bar {
+    width: 0;
+    border-radius: 999px;
+    transition:
+        width 0.35s ease,
+        background-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.password-strength .progress-bar.bg-danger {
+    background: linear-gradient(90deg, #ef4444 0%, #f87171 100%) !important;
+    box-shadow: 0 0 8px rgba(239, 68, 68, 0.28);
+}
+
+.password-strength .progress-bar.bg-warning {
+    background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%) !important;
+    box-shadow: 0 0 8px rgba(245, 158, 11, 0.28);
+}
+
+.password-strength .progress-bar.bg-success {
+    background: linear-gradient(90deg, #22c55e 0%, #4ade80 100%) !important;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.28);
+}

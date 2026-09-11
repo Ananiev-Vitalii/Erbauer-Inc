@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load i18n %}
+<html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% trans "Simple Invoice" %}</title>
+</head>
+<body style="margin:0;padding:0;background:#f3f4f6;font-family:Arial,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 0;">
+  <tr>
+    <td align="center">
+
+      <table
+              width="600"
+              cellpadding="0"
+              cellspacing="0"
+              style="background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 25px rgba(0,0,0,0.08);"
+      >
+        <tr>
+          <td
+                  style="background:linear-gradient(135deg,#fb923c 0%,#f97316 100%);padding:24px;text-align:center;"
+          >
+
+            <h1
+                    style="margin:0;color:#ffffff;font-size:30px;line-height:1.15;font-weight:600;"
+            >
+              {% trans "Simple Invoice" %}
+            </h1>
+          </td>
+        </tr>
+
+        <tr>
+          <td style="padding:32px;">
+            <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#111827;">
+              {% trans "Hello," %}
+            </p>
+
+            <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#374151;">
+              {% trans "Please find the simple invoice attached to this email." %}
+            </p>
+
+            <p style="margin:0 0 24px;font-size:16px;line-height:1.7;color:#111827;">
+              <strong>{% trans "Employee:" %}</strong>
+              {{ employee.first_name }} {{ employee.last_name }}
+            </p>
+
+            <div style="margin:24px 0;border-top:1px solid #e5e7eb;"></div>
+
+            <p style="margin:0;font-size:14px;line-height:1.7;color:#6b7280; text-align:center;">
+              © {% now "Y" %} {{ company_name }}
+            </p>
+          </td>
+        </tr>
+      </table>
+
+    </td>
+  </tr>
+</table>
+
+</body>
+</html>

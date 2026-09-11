@@ -1,0 +1,143 @@
+{% load i18n static %}
+
+<header class="site-header" id="siteHeader">
+  <div class="container nav-wrap">
+    <a class="brand" href="{% url 'main:home' %}#hero" aria-label="{{ company_base.name|default:'Erbauer' }}">
+      <span class="brand-logo-wrap">
+        <img
+                src="{% if company_base and company_base.logo %}{{ company_base.logo.url }}{% else %}{% static 'img/logo.png' %}{% endif %}"
+                alt="{{ company_base.name|default:'Erbauer' }} logo"
+                class="brand-logo"
+        >
+      </span>
+
+      <span class="brand-text text-navbar">
+        {{ company_base.name|default:"Erbauer" }}
+      </span>
+    </a>
+
+    <div class="nav-right">
+      <nav class="main-nav" aria-label="{% trans 'Main menu' %}">
+        <a href="{% url 'main:home' %}#hero">{% trans "Home" %}</a>
+        <a href="{% url 'main:home' %}#services">{% trans "Services" %}</a>
+        <a href="{% url 'main:home' %}#about">{% trans "About" %}</a>
+        <a href="{% url 'main:home' %}#projects">{% trans "Projects" %}</a>
+        <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
+        <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
+
+        {% if not user.is_authenticated %}
+        <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
+        {% endif %}
+
+      </nav>
+
+      <div class="nav-actions">
+        <form method="post" action="{% url 'set_language' %}" class="language-switcher"
+              aria-label="{% trans 'Language switcher' %}">
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+          <button
+                  type="submit"
+                  name="language"
+                  value="en"
+                  class="language-switcher__button{% if LANGUAGE_CODE == 'en' %} is-active{% endif %}"
+          >
+            EN
+          </button>
+
+          <button
+                  type="submit"
+                  name="language"
+                  value="uk"
+                  class="language-switcher__button{% if LANGUAGE_CODE == 'uk' %} is-active{% endif %}"
+          >
+            UA
+          </button>
+        </form>
+
+        {% if user.is_authenticated and profile %}
+        <div class="profile-menu">
+          <button
+                  class="nav-avatar-link"
+                  id="profileToggle"
+                  aria-label="{% trans 'Open profile menu' %}"
+                  aria-expanded="false"
+                  type="button"
+          >
+            <img
+                    src="{% if profile.avatar %}{{ profile.avatar.url }}{% else %}{% static 'img/default_profile.png' %}{% endif %}"
+                    alt="{% trans 'User avatar' %}"
+                    class="nav-avatar-image"
+            >
+          </button>
+
+          <div class="profile-dropdown" id="profileDropdown">
+            <a href="{% url 'account:profile' %}">{% trans "Profile" %}</a>
+            <a href="{% url 'account:cheat_sheets' %}">{% trans "Cheat sheet" %}</a>
+            <a href="{% url 'account:simple_invoice_create' %}">{% trans "Submit invoice" %}</a>
+            {% if user.is_staff %}
+            <a href="{% url 'custom_admin:index' %}" target="_blank" rel="noopener noreferrer">
+              {% trans "Admin panel" %}
+            </a>
+            {% endif %}
+            <form method="post" action="{% url 'user:logout' %}" class="mobile-nav-auth-form">
+              {% csrf_token %}
+              <button type="submit" class="mobile-nav-auth-button">{% trans "Log out" %}</button>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+
+        <button
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="{% trans 'Open menu' %}"
+                aria-expanded="false"
+                type="button"
+        >
+          <span></span><span></span><span></span>
+        </button>
+
+        <div class="mobile-nav" id="mobileNav">
+          <div class="mobile-nav__language">
+            <form method="post" action="{% url 'set_language' %}" class="language-switcher language-switcher--mobile">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+
+              <button
+                      type="submit"
+                      name="language"
+                      value="en"
+                      class="language-switcher__button{% if LANGUAGE_CODE == 'en' %} is-active{% endif %}"
+              >
+                EN
+              </button>
+
+              <button
+                      type="submit"
+                      name="language"
+                      value="uk"
+                      class="language-switcher__button{% if LANGUAGE_CODE == 'uk' %} is-active{% endif %}"
+              >
+                UA
+              </button>
+            </form>
+          </div>
+
+          <a href="{% url 'main:home' %}#hero">{% trans "Home" %}</a>
+          <a href="{% url 'main:home' %}#services">{% trans "Services" %}</a>
+          <a href="{% url 'main:home' %}#about">{% trans "About" %}</a>
+          <a href="{% url 'main:home' %}#projects">{% trans "Projects" %}</a>
+          <a href="{% url 'main:home' %}#team">{% trans "Team" %}</a>
+          <a href="{% url 'main:home' %}#contacts">{% trans "Contacts" %}</a>
+
+          {% if not user.is_authenticated %}
+          <a href="{% url 'user:login' %}">{% trans "Log in" %}</a>
+          {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

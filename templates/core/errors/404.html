@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}{% trans "Page not found" %}{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/core/errors.css' %}">
+{% endblock extra_css %}
+
+{% block content_wrapper %}
+<section class="error-page">
+  <div class="error-page__container">
+    <p class="error-page__code">404</p>
+
+    <h1 class="error-page__title">
+      {% trans "Page not found" %}
+    </h1>
+
+    <p class="error-page__text">
+      {% trans "The page you are looking for could not be found." %}
+    </p>
+
+    <p class="error-page__description">
+      {% blocktranslate %}
+      The link may be broken, the page may have been moved,
+      or the address may have been entered incorrectly.
+      {% endblocktranslate %}
+    </p>
+
+    <a href="{% url 'main:home' %}" class="error-page__button">
+      {% trans "Return to homepage" %}
+    </a>
+  </div>
+</section>
+{% endblock content_wrapper %}
