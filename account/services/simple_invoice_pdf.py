@@ -2,16 +2,12 @@ from pathlib import Path
 import os
 import subprocess
 import tempfile
-import threading
 
 from django.conf import settings
 
 
 class SimpleInvoicePdfConversionError(Exception):
     pass
-
-
-_conversion_lock = threading.Lock()
 
 
 def _get_libreoffice_path() -> str:
@@ -51,13 +47,12 @@ def convert_xlsx_to_pdf(*, xlsx_path: Path, output_dir: Path) -> Path:
         ]
 
         try:
-            with _conversion_lock:
-                result = subprocess.run(
-                    command,
-                    capture_output=True,
-                    text=True,
-                    timeout=180,
-                )
+            result = subprocess.run(
+                command,
+                capture_output=True,
+                text=True,
+                timeout=180,
+            )
         except subprocess.TimeoutExpired as exc:
             raise SimpleInvoicePdfConversionError(
                 "LibreOffice PDF conversion timed out."
@@ -75,8 +70,6 @@ def convert_xlsx_to_pdf(*, xlsx_path: Path, output_dir: Path) -> Path:
     pdf_path = output_dir / f"{xlsx_path.stem}.pdf"
 
     if not pdf_path.exists():
-        raise SimpleInvoicePdfConversionError(
-            f"PDF file was not created: {pdf_path}"
-        )
+        raise SimpleInvoicePdfConversionError(f"PDF file was not created: {pdf_path}")
 
     return pdf_path

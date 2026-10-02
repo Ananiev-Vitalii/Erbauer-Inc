@@ -15,20 +15,17 @@ INSTALLED_APPS = [
     "main.apps.MainConfig",
     "user",
     "account",
-
     "anymail",
     "crispy_forms",
     "crispy_bootstrap5",
     "cloudinary",
     "modeltranslation",
-
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
     "cloudinary_storage",
     "django_cleanup.apps.CleanupConfig",
 ]
@@ -36,7 +33,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
-
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -66,6 +62,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 
 DATABASES = {
     "default": {
@@ -76,7 +73,7 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",  # noqa: E501
     },
     {
         "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
@@ -170,8 +167,19 @@ LOGIN_COOLDOWN = int(os.getenv("LOGIN_COOLDOWN", 300))
 CF_TURNSTILE_SITE_KEY = os.getenv("CF_TURNSTILE_SITE_KEY", "")
 CF_TURNSTILE_SECRET_KEY = os.getenv("CF_TURNSTILE_SECRET_KEY", "")
 
-# Cache
+# Cache DB
 CACHE_DEFAULT_TIMEOUT = int(os.getenv("CACHE_DEFAULT_TIMEOUT", 900))
 
 # LibreOffice path (need install LibreOffice)
 LIBREOFFICE_PATH = os.getenv("LIBREOFFICE_PATH", "soffice")
+
+# Celery
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_BROKER_TRANSPORT_OPTIONS = {
+    "global_keyprefix": "erbauer:celery:",
+}
+CELERY_TASK_IGNORE_RESULT = True
+CELERY_ACCEPT_CONTENT = ["json"]
+CELERY_TASK_SERIALIZER = "json"
+CELERY_TIMEZONE = TIME_ZONE
+CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True

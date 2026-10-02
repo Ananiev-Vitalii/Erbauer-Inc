@@ -24,12 +24,13 @@ def send_simple_invoice_email(
     ]
 
     payload = EmailPayload(
-        subject=f"{employee.first_name} {employee.last_name} / Simple Invoice IA ({invoice.invoice_number})",
+        subject=f"{employee.first_name} {employee.last_name}"
+        f" / Simple Invoice IA ({invoice.invoice_number})",
         template_name="account/emails/simple_invoice.html",
         context={
             "invoice": invoice,
             "employee": employee,
-            "company_name": company_name
+            "company_name": company_name,
         },
         to=recipients,
         attachments=[
