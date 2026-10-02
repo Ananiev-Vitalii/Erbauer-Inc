@@ -71,7 +71,9 @@ def get_rate_limit_state(
     return RateLimitState(
         blocked=max_remaining_seconds > 0,
         remaining_seconds=max_remaining_seconds,
-        remaining_minutes=ceil(max_remaining_seconds / 60) if max_remaining_seconds > 0 else 0,
+        remaining_minutes=(
+            ceil(max_remaining_seconds / 60) if max_remaining_seconds > 0 else 0
+        ),
         attempts_limit=attempts_limit,
         triggered_by=matched_trigger,
     )

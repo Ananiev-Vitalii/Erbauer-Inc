@@ -6,7 +6,6 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.db import transaction
 from django.views import generic
-from threading import Thread
 
 from account.forms import (
     EmployeeContactForm,
@@ -21,7 +20,7 @@ from account.models import (
     Position,
     Profile,
 )
-from account.services.simple_invoice_service import process_simple_invoice_in_background
+from account.tasks import process_simple_invoice_task
 
 from account.services.cache import (
     get_cheat_sheets_cached,
@@ -236,16 +235,9 @@ class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
                     id=invoice.id,
                 ).delete()
 
-                transaction.on_commit(
-                    lambda: Thread(
-                        target=process_simple_invoice_in_background,
-                        kwargs={
-                            "invoice_id": invoice.id,
-                            "employee_data": employee_data,
-                        },
-                        daemon=True,
-                        name=f"simple-invoice-{invoice.id}",
-                    ).start()
+                process_simple_invoice_task.delay_on_commit(
+                    invoice.id,
+                    employee_data,
                 )
 
             employee_form = self.get_employee_form(employee)

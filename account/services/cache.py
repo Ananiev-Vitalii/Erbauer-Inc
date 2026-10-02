@@ -17,9 +17,7 @@ def get_cheat_sheets_cached():
 
     return cache.get_or_set(
         cache_key,
-        lambda: list(
-            CheatSheet.objects.order_by("name")
-        ),
+        lambda: list(CheatSheet.objects.order_by("name")),
         CACHE_TIMEOUT,
     )
 
