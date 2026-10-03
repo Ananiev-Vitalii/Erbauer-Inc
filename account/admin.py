@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.db.models import Max
+from django.db.models import Max, Q
+from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
 from account.models import (
@@ -13,13 +14,44 @@ from account.models import (
 from user.admin import custom_admin_site
 
 
+class EmployeeVerificationFilter(admin.SimpleListFilter):
+    title = _("Verified")
+    parameter_name = "is_verified"
+
+    def lookups(self, request, model_admin):
+        return (
+            ("yes", _("Yes")),
+            ("no", _("No")),
+        )
+
+    def queryset(self, request, queryset):
+        if self.value() == "yes":
+            return queryset.filter(user__is_verified=True)
+
+        if self.value() == "no":
+            return queryset.filter(Q(user__isnull=True) | Q(user__is_verified=False))
+
+        return queryset
+
+
 class PositionAdmin(TranslationAdmin):
     list_display = ("name",)
 
 
 class EmployeeAdmin(TranslationAdmin):
-    list_display = ("first_name", "last_name", "email", "position", "is_active")
-    list_filter = ("is_active", "position")
+    list_display = (
+        "first_name",
+        "last_name",
+        "email",
+        "position",
+        "is_active",
+        "is_verified",
+    )
+    list_filter = (
+        "is_active",
+        EmployeeVerificationFilter,
+        "position",
+    )
     search_fields = ("first_name", "last_name", "email")
     fields = (
         "first_name",
@@ -33,6 +65,16 @@ class EmployeeAdmin(TranslationAdmin):
         "province",
         "postal_code",
     )
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related("user", "position")
+
+    @admin.display(
+        boolean=True,
+        description=_("Verified"),
+    )
+    def is_verified(self, obj):
+        return bool(obj.user_id and obj.user.is_verified)
 
     def delete_model(self, request, obj):
         user = obj.user
