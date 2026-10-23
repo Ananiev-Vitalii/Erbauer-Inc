@@ -7,10 +7,12 @@ export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE:-config.settings.prod}"
 : "${REDIS_URL:?REDIS_URL environment variable is required}"
 : "${CELERY_BROKER_URL:?CELERY_BROKER_URL environment variable is required}"
 
-
 python manage.py migrate \
     --settings=config.settings.prod
 
+python manage.py migrate account \
+    --prune \
+    --settings=config.settings.prod
 
 celery -A config worker \
     --loglevel=INFO \
@@ -19,12 +21,10 @@ celery -A config worker \
     --without-mingle &
 CELERY_WORKER_PID=$!
 
-
 celery -A config beat \
     --loglevel=INFO \
     --scheduler redbeat.RedBeatScheduler &
 CELERY_BEAT_PID=$!
-
 
 gunicorn config.wsgi:application \
     --workers 1 \
@@ -34,7 +34,6 @@ gunicorn config.wsgi:application \
     --error-logfile - \
     --capture-output &
 GUNICORN_PID=$!
-
 
 shutdown() {
     kill -TERM \
@@ -50,9 +49,7 @@ shutdown() {
         2>/dev/null || true
 }
 
-
 trap shutdown SIGTERM SIGINT
-
 
 if wait -n \
     "$CELERY_WORKER_PID" \
@@ -63,7 +60,6 @@ then
 else
     EXIT_CODE=$?
 fi
-
 
 shutdown
 
