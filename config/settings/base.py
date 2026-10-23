@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+from celery.schedules import crontab
 from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
@@ -175,11 +176,38 @@ LIBREOFFICE_PATH = os.getenv("LIBREOFFICE_PATH", "soffice")
 
 # Celery
 CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+
 CELERY_BROKER_TRANSPORT_OPTIONS = {
     "global_keyprefix": "erbauer:celery:",
 }
+
 CELERY_TASK_IGNORE_RESULT = True
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_TIMEZONE = TIME_ZONE
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+
+CELERY_REDBEAT_REDIS_URL = CELERY_BROKER_URL
+
+CELERY_REDBEAT_REDIS_OPTIONS = {}
+
+CELERY_REDBEAT_KEY_PREFIX = "erbauer:redbeat"
+
+CELERY_BEAT_SCHEDULE = {
+    "cleanup-expired-simple-invoices-weekly": {
+        "task": "account.cleanup_expired_simple_invoices",
+        "schedule": crontab(
+            minute=0,
+            hour=3,
+            day_of_week="sunday",
+        ),
+    },
+    "cleanup-expired-work-hours-weekly": {
+        "task": "account.cleanup_expired_work_hours",
+        "schedule": crontab(
+            minute=15,
+            hour=4,
+            day_of_week="sunday",
+        ),
+    },
+}

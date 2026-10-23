@@ -52,7 +52,11 @@ class EmployeeAdmin(TranslationAdmin):
         EmployeeVerificationFilter,
         "position",
     )
-    search_fields = ("first_name", "last_name", "email")
+    search_fields = (
+        "first_name",
+        "last_name",
+        "email",
+    )
     fields = (
         "first_name",
         "last_name",
@@ -67,7 +71,14 @@ class EmployeeAdmin(TranslationAdmin):
     )
 
     def get_queryset(self, request):
-        return super().get_queryset(request).select_related("user", "position")
+        return (
+            super()
+            .get_queryset(request)
+            .select_related(
+                "user",
+                "position",
+            )
+        )
 
     @admin.display(
         boolean=True,
@@ -78,6 +89,7 @@ class EmployeeAdmin(TranslationAdmin):
 
     def delete_model(self, request, obj):
         user = obj.user
+
         if user:
             user.delete()
         else:
@@ -86,6 +98,7 @@ class EmployeeAdmin(TranslationAdmin):
     def delete_queryset(self, request, queryset):
         for obj in queryset.select_related("user"):
             user = obj.user
+
             if user:
                 user.delete()
             else:
@@ -93,14 +106,24 @@ class EmployeeAdmin(TranslationAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = ("get_first_name", "get_last_name")
+    list_display = (
+        "get_first_name",
+        "get_last_name",
+    )
     search_fields = (
         "employee__first_name",
         "employee__last_name",
         "employee__email",
     )
-    fields = ("get_first_name", "get_last_name", "avatar")
-    readonly_fields = ("get_first_name", "get_last_name")
+    fields = (
+        "get_first_name",
+        "get_last_name",
+        "avatar",
+    )
+    readonly_fields = (
+        "get_first_name",
+        "get_last_name",
+    )
 
     @admin.display(description="First name")
     def get_first_name(self, obj):
@@ -112,16 +135,36 @@ class ProfileAdmin(admin.ModelAdmin):
 
 
 class EmployeeSimpleInvoiceAdmin(admin.ModelAdmin):
-    list_display = ("get_first_name", "get_last_name")
+    list_display = (
+        "get_first_name",
+        "get_last_name",
+        "invoice_number",
+        "get_period",
+        "hours",
+        "status",
+        "created_at",
+        "has_pdf",
+    )
+    list_filter = (
+        "status",
+        "invoice_year",
+        "invoice_month",
+        "created_at",
+    )
     search_fields = (
         "employee__first_name",
         "employee__last_name",
+        "employee__email",
     )
+    list_select_related = ("employee",)
+
     fields = (
         "get_first_name",
         "get_last_name",
         "employee",
         "invoice_number",
+        "invoice_year",
+        "invoice_month",
         "start_day",
         "end_day",
         "hours",
@@ -129,16 +172,55 @@ class EmployeeSimpleInvoiceAdmin(admin.ModelAdmin):
         "gst_account_number",
         "gst",
         "wsbc",
+        "status",
+        "pdf_file",
+        "created_at",
     )
-    readonly_fields = ("get_first_name", "get_last_name")
 
-    @admin.display(description="First name")
+    readonly_fields = (
+        "get_first_name",
+        "get_last_name",
+        "employee",
+        "invoice_number",
+        "invoice_year",
+        "invoice_month",
+        "start_day",
+        "end_day",
+        "hours",
+        "rate",
+        "gst_account_number",
+        "gst",
+        "wsbc",
+        "status",
+        "pdf_file",
+        "created_at",
+    )
+
+    def has_add_permission(self, request):
+        return False
+
+    @admin.display(description=_("First name"))
     def get_first_name(self, obj):
         return obj.employee.first_name
 
-    @admin.display(description="Last name")
+    @admin.display(description=_("Last name"))
     def get_last_name(self, obj):
         return obj.employee.last_name
+
+    @admin.display(description=_("Period"))
+    def get_period(self, obj):
+        return (
+            f"{obj.get_invoice_month_display()} "
+            f"{obj.start_day}–{obj.end_day}, "
+            f"{obj.invoice_year}"
+        )
+
+    @admin.display(
+        boolean=True,
+        description=_("PDF"),
+    )
+    def has_pdf(self, obj):
+        return bool(obj.pdf_file)
 
 
 class CheatSheetStepInline(TranslationTabularInline):
@@ -156,8 +238,19 @@ class CheatSheetAdmin(TranslationAdmin):
     fields = ("name",)
     inlines = [CheatSheetStepInline]
 
-    def get_formset_kwargs(self, request, obj, inline, prefix):
-        kwargs = super().get_formset_kwargs(request, obj, inline, prefix)
+    def get_formset_kwargs(
+        self,
+        request,
+        obj,
+        inline,
+        prefix,
+    ):
+        kwargs = super().get_formset_kwargs(
+            request,
+            obj,
+            inline,
+            prefix,
+        )
 
         if obj and obj.pk and inline.model is CheatSheetStep:
             max_step_number = (
@@ -176,8 +269,23 @@ class CheatSheetAdmin(TranslationAdmin):
         return kwargs
 
 
-custom_admin_site.register(Position, PositionAdmin)
-custom_admin_site.register(Employee, EmployeeAdmin)
-custom_admin_site.register(Profile, ProfileAdmin)
-custom_admin_site.register(EmployeeSimpleInvoice, EmployeeSimpleInvoiceAdmin)
-custom_admin_site.register(CheatSheet, CheatSheetAdmin)
+custom_admin_site.register(
+    Position,
+    PositionAdmin,
+)
+custom_admin_site.register(
+    Employee,
+    EmployeeAdmin,
+)
+custom_admin_site.register(
+    Profile,
+    ProfileAdmin,
+)
+custom_admin_site.register(
+    EmployeeSimpleInvoice,
+    EmployeeSimpleInvoiceAdmin,
+)
+custom_admin_site.register(
+    CheatSheet,
+    CheatSheetAdmin,
+)

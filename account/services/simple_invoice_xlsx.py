@@ -1,7 +1,9 @@
-from pathlib import Path
+from calendar import month_abbr
 from decimal import Decimal
+from pathlib import Path
 
 from django.conf import settings
+from django.utils import timezone
 from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
@@ -18,6 +20,24 @@ def format_decimal(value: Decimal) -> Decimal:
     return Decimal(value).quantize(Decimal("0.01"))
 
 
+def format_work_period(
+    invoice: EmployeeSimpleInvoice,
+) -> str:
+    month = month_abbr[invoice.invoice_month]
+
+    if invoice.start_day == invoice.end_day:
+        return (
+            f"Work period: " f"{month} {invoice.start_day}, " f"{invoice.invoice_year}"
+        )
+
+    return (
+        f"Work period: "
+        f"{month} {invoice.start_day}"
+        f"–{invoice.end_day}, "
+        f"{invoice.invoice_year}"
+    )
+
+
 def generate_simple_invoice_xlsx(
     *,
     invoice: EmployeeSimpleInvoice,
@@ -31,7 +51,6 @@ def generate_simple_invoice_xlsx(
     - Does not modify the original template.
     - Saves the generated file to output_path.
     """
-
     workbook = load_workbook(TEMPLATE_PATH)
     sheet = workbook[SHEET_NAME]
 
@@ -39,34 +58,46 @@ def generate_simple_invoice_xlsx(
 
     sheet["C4"] = invoice.invoice_number
 
-    sheet["C6"] = f"{employee.last_name_en} {employee.first_name_en}".strip()
+    sheet["G4"] = timezone.localdate(invoice.created_at)
+
+    sheet["C6"] = (f"{employee.last_name_en} " f"{employee.first_name_en}").strip()
+
     sheet["C7"] = employee_data["street_address"]
-    sheet["C8"] = f'{employee_data["city"]}, {employee_data["province"]}'
+
+    sheet["C8"] = f'{employee_data["city"]}, ' f'{employee_data["province"]}'
+
     sheet["C9"] = employee_data["postal_code"]
+
     sheet["C10"] = invoice.gst_account_number or ""
 
-    sheet["C14"] = invoice.start_day
-    sheet["C14"].alignment = Alignment(
+    sheet.merge_cells("B14:D14")
+
+    sheet["B14"] = format_work_period(invoice)
+
+    sheet["B14"].alignment = Alignment(
         horizontal="left",
         vertical="center",
-    )
-
-    sheet["D14"] = invoice.end_day
-    sheet["D14"].alignment = Alignment(
-        horizontal="center",
-        vertical="center",
+        shrink_to_fit=True,
     )
 
     sheet["E14"] = format_decimal(invoice.hours)
+
     sheet["F14"] = format_decimal(invoice.rate)
 
     gst = format_decimal(invoice.gst)
+
     wsbc = format_decimal(invoice.wsbc)
 
     sheet["G27"] = f"=G26*{gst}%"
+
     sheet["G28"] = f"=G26*{wsbc}%"
 
-    output_path.parent.mkdir(parents=True, exist_ok=True)
+    output_path.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
+
     workbook.save(output_path)
+    workbook.close()
 
     return output_path
