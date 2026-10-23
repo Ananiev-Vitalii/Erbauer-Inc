@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}
+{{ company_profile.name|default:"Erbauer" }} / {% trans "My Invoices" %}
+{% endblock %}
+
+{% block extra_css %}
+<link
+        rel="stylesheet"
+        href="{% static 'css/account/invoice_history.css' %}"
+>
+{% endblock extra_css %}
+
+{% block content_wrapper %}
+<section class="invoice-history-page">
+  <div class="container invoice-history-container">
+
+    <header class="invoice-history-hero">
+      <div>
+        <p class="invoice-history-eyebrow">
+          {% trans "Employee invoices" %}
+        </p>
+
+        <h1 class="invoice-history-title">
+          {% trans "My Invoices" %}
+        </h1>
+
+        <p class="invoice-history-subtitle">
+          {% blocktrans trimmed %}
+          View and download your previously generated invoices.
+          Invoice records are available for up to 36 months.
+          {% endblocktrans %}
+        </p>
+      </div>
+    </header>
+
+    <div class="invoice-history-panel">
+
+      <div class="invoice-history-toolbar">
+        <div class="invoice-history-toolbar__heading">
+          <h2>{% trans "Invoice History" %}</h2>
+
+          <p>
+            {% trans "Filter your invoices by period or calendar year." %}
+          </p>
+        </div>
+
+        <div class="invoice-history-filters">
+
+          <form
+                  method="get"
+                  action="{% url 'account:simple_invoice_history' %}"
+                  class="invoice-history-filter"
+                  data-invoice-history-period-form
+          >
+            <label for="invoice-history-period">
+              {% trans "Period" %}
+            </label>
+
+            <div class="invoice-history-select-wrap">
+              <select
+                      id="invoice-history-period"
+                      name="period"
+                      data-invoice-history-period
+              >
+                {% if selected_period == "all" and not selected_year %}
+                <option value="all" selected>{% trans "All" %}</option>
+                {% else %}
+                <option value="all">{% trans "All" %}</option>
+                {% endif %}
+
+                {% if selected_period == "3" %}
+                <option value="3" selected>{% trans "Last 3 months" %}</option>
+                {% else %}
+                <option value="3">{% trans "Last 3 months" %}</option>
+                {% endif %}
+
+                {% if selected_period == "6" %}
+                <option value="6" selected>{% trans "Last 6 months" %}</option>
+                {% else %}
+                <option value="6">{% trans "Last 6 months" %}</option>
+                {% endif %}
+
+                {% if selected_period == "12" %}
+                <option value="12" selected>{% trans "Last 12 months" %}</option>
+                {% else %}
+                <option value="12">{% trans "Last 12 months" %}</option>
+                {% endif %}
+
+                {% if selected_period == "24" %}
+                <option value="24" selected>{% trans "Last 24 months" %}</option>
+                {% else %}
+                <option value="24">{% trans "Last 24 months" %}</option>
+                {% endif %}
+
+                {% if selected_period == "36" %}
+                <option value="36" selected>{% trans "Last 36 months" %}</option>
+                {% else %}
+                <option value="36">{% trans "Last 36 months" %}</option>
+                {% endif %}
+              </select>
+            </div>
+          </form>
+
+          <form
+                  method="get"
+                  action="{% url 'account:simple_invoice_history' %}"
+                  class="invoice-history-filter"
+                  data-invoice-history-year-form
+          >
+            <label for="invoice-history-year">
+              {% trans "Year" %}
+            </label>
+
+            <div class="invoice-history-select-wrap">
+              <select
+                      id="invoice-history-year"
+                      name="year"
+                      data-invoice-history-year
+              >
+                {% if not selected_year %}
+                <option value="" selected>{% trans "All years" %}</option>
+                {% else %}
+                <option value="">{% trans "All years" %}</option>
+                {% endif %}
+
+                {% for year in available_years %}
+                {% if selected_year == year.year %}
+                <option value="{{ year.year }}" selected>
+                  {{ year.year }}
+                </option>
+                {% else %}
+                <option value="{{ year.year }}">
+                  {{ year.year }}
+                </option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+      {% if invoices %}
+      <div class="invoice-history-table-wrap">
+        <table class="invoice-history-table">
+          <thead>
+          <tr>
+            <th>{% trans "Invoice" %}</th>
+            <th>{% trans "Created" %}</th>
+            <th>{% trans "Work period" %}</th>
+            <th>{% trans "Hours" %}</th>
+            <th>{% trans "Rate" %}</th>
+            <th>{% trans "Status" %}</th>
+            <th class="invoice-history-table__action">
+              {% trans "Action" %}
+            </th>
+          </tr>
+          </thead>
+
+          <tbody>
+          {% for invoice in invoices %}
+          <tr>
+            <td>
+                <span class="invoice-history-number">
+                  #{{ invoice.invoice_number }}
+                </span>
+            </td>
+
+            <td>
+              <time datetime="{{ invoice.created_at|date:'c' }}">
+                {{ invoice.created_at|date:"M j, Y" }}
+              </time>
+            </td>
+
+            <td>
+              {{ invoice.start_day }}–{{ invoice.end_day }}
+            </td>
+
+            <td>
+              {{ invoice.hours }}
+            </td>
+
+            <td>
+              ${{ invoice.rate }}
+            </td>
+
+            <td>
+                <span
+                        class="
+                      invoice-history-status
+                      invoice-history-status--{{ invoice.status }}
+                    "
+                >
+                  {{ invoice.get_status_display }}
+                </span>
+            </td>
+
+            <td class="invoice-history-table__action">
+              {% if invoice.status == "sent" and invoice.pdf_file %}
+              <a
+                      href="{% url 'account:simple_invoice_download' invoice_id=invoice.id %}"
+                      class="invoice-history-download"
+              >
+                {% trans "Download PDF" %}
+              </a>
+              {% elif invoice.status == "processing" %}
+              <span class="invoice-history-action-muted">
+                  {% trans "Processing" %}
+                </span>
+              {% else %}
+              <span class="invoice-history-action-muted">
+                  —
+                </span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      {% else %}
+      <div class="invoice-history-empty">
+        <div class="invoice-history-empty__icon" aria-hidden="true">
+          📄
+        </div>
+
+        <h2>{% trans "No invoices found" %}</h2>
+
+        <p>
+          {% blocktrans trimmed %}
+          There are no invoices available for the selected period.
+          {% endblocktrans %}
+        </p>
+      </div>
+      {% endif %}
+
+    </div>
+  </div>
+</section>
+{% endblock content_wrapper %}
+
+{% block extra_js %}
+<script src="{% static 'js/account/invoice_history.js' %}"></script>
+{% endblock extra_js %}

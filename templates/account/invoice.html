@@ -15,7 +15,9 @@
 
     <div class="invoice-hero">
       <div class="invoice-hero__content">
-        <p class="invoice-eyebrow">{% trans "Employee invoice" %}</p>
+        <p class="invoice-eyebrow">
+          {% trans "Employee invoice" %}
+        </p>
 
         <h1 class="invoice-title">
           {% trans "Simple Invoice" %}
@@ -38,7 +40,21 @@
     </div>
 
     {% partialdef simple-invoice-form inline %}
-    <div id="simple-invoice-form">
+    <div
+            id="simple-invoice-form"
+            data-period-preview-url="{% url 'account:simple_invoice_period_preview' %}"
+            data-period-request-error-text="{% trans 'Unable to calculate hours for the selected period. Please try again.' %}"
+            data-period-invoiced-text="{% trans 'The selected period has already been invoiced.' %}"
+            {% if invoice_id %}
+            data-invoice-id="{{ invoice_id }}"
+            data-status-url="{% url 'account:simple_invoice_status' invoice_id=invoice_id %}"
+            data-download-url="{% url 'account:simple_invoice_download' invoice_id=invoice_id %}"
+            {% endif %}
+            data-processing-text="{% trans 'Invoice submitted. Your PDF is being generated and sent.' %}"
+            data-sent-text="{% trans 'Invoice PDF has been created and sent successfully. You can now download it.' %}"
+            data-failed-text="{% trans 'Invoice processing failed. Please try again.' %}"
+            data-timeout-text="{% trans 'Invoice processing is taking longer than expected. Please refresh the page and check again.' %}"
+    >
       <div class="invoice-panel">
         <form
                 method="post"
@@ -52,8 +68,13 @@
           <section class="invoice-panel-section">
             <div class="invoice-section-header">
               <div>
-                <span class="invoice-section-kicker">{% trans "Billing information" %}</span>
-                <h2>{% trans "Employee Details" %}</h2>
+                <span class="invoice-section-kicker">
+                  {% trans "Billing information" %}
+                </span>
+
+                <h2>
+                  {% trans "Employee Details" %}
+                </h2>
               </div>
 
               <p>
@@ -63,7 +84,10 @@
 
             <div class="invoice-form-grid invoice-form-grid--employee">
               <div class="invoice-field">
-                <label for="id_street_address">{% trans "Street address" %}</label>
+                <label for="id_street_address">
+                  {% trans "Street address" %}
+                </label>
+
                 <input
                         type="text"
                         name="street_address"
@@ -73,6 +97,7 @@
                         autocomplete="street-address"
                         required
                 >
+
                 <div class="invoice-field-error">
                   {% if employee_form.street_address.errors %}
                   {% for error in employee_form.street_address.errors %}
@@ -83,7 +108,10 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_city">{% trans "City" %}</label>
+                <label for="id_city">
+                  {% trans "City" %}
+                </label>
+
                 <input
                         type="text"
                         name="city"
@@ -93,6 +121,7 @@
                         autocomplete="address-level2"
                         required
                 >
+
                 <div class="invoice-field-error">
                   {% if employee_form.city.errors %}
                   {% for error in employee_form.city.errors %}
@@ -103,10 +132,14 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_province">{% trans "Province" %}</label>
+                <label for="id_province">
+                  {% trans "Province" %}
+                </label>
+
                 <div class="invoice-select-wrap">
                   {{ employee_form.province }}
                 </div>
+
                 <div class="invoice-field-error">
                   {% if employee_form.province.errors %}
                   {% for error in employee_form.province.errors %}
@@ -117,7 +150,10 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_postal_code">{% trans "Postal code" %}</label>
+                <label for="id_postal_code">
+                  {% trans "Postal code" %}
+                </label>
+
                 <input
                         type="text"
                         name="postal_code"
@@ -131,6 +167,7 @@
                         class="invoice-postal-code-input"
                         required
                 >
+
                 <div class="invoice-field-error">
                   {% if employee_form.postal_code.errors %}
                   {% for error in employee_form.postal_code.errors %}
@@ -149,18 +186,29 @@
           <section class="invoice-panel-section">
             <div class="invoice-section-header">
               <div>
-                <span class="invoice-section-kicker">{% trans "Invoice details" %}</span>
-                <h2>{% trans "Work Period & Payment" %}</h2>
+                <span class="invoice-section-kicker">
+                  {% trans "Invoice details" %}
+                </span>
+
+                <h2>
+                  {% trans "Work Period & Payment" %}
+                </h2>
               </div>
 
               <p>
-                {% trans "Enter your invoice number, work period, hours, and rate." %}
+                {% blocktrans trimmed %}
+                Select the work period. Recorded work hours will be filled automatically when available, but
+                you can adjust the hours manually before submitting.
+                {% endblocktrans %}
               </p>
             </div>
 
             <div class="invoice-form-grid invoice-form-grid--invoice">
               <div class="invoice-field">
-                <label for="id_invoice_number">{% trans "Invoice number" %}</label>
+                <label for="id_invoice_number">
+                  {% trans "Invoice number" %}
+                </label>
+
                 <input
                         type="number"
                         name="invoice_number"
@@ -172,6 +220,7 @@
                         placeholder="1"
                         required
                 >
+
                 <div class="invoice-field-error">
                   {% if invoice_form.invoice_number.errors %}
                   {% for error in invoice_form.invoice_number.errors %}
@@ -182,10 +231,50 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_start_day">{% trans "Start day" %}</label>
+                <label for="id_invoice_year">
+                  {% trans "Year" %}
+                </label>
+
+                <div class="invoice-select-wrap invoice-select-wrap--year">
+                  {{ invoice_form.invoice_year }}
+                </div>
+
+                <div class="invoice-field-error">
+                  {% if invoice_form.invoice_year.errors %}
+                  {% for error in invoice_form.invoice_year.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="invoice-field">
+                <label for="id_invoice_month">
+                  {% trans "Month" %}
+                </label>
+
+                <div class="invoice-select-wrap invoice-select-wrap--month">
+                  {{ invoice_form.invoice_month }}
+                </div>
+
+                <div class="invoice-field-error">
+                  {% if invoice_form.invoice_month.errors %}
+                  {% for error in invoice_form.invoice_month.errors %}
+                  <span>{{ error }}</span>
+                  {% endfor %}
+                  {% endif %}
+                </div>
+              </div>
+
+              <div class="invoice-field">
+                <label for="id_start_day">
+                  {% trans "Start day" %}
+                </label>
+
                 <div class="invoice-select-wrap">
                   {{ invoice_form.start_day }}
                 </div>
+
                 <div class="invoice-field-error">
                   {% if invoice_form.start_day.errors %}
                   {% for error in invoice_form.start_day.errors %}
@@ -196,10 +285,14 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_end_day">{% trans "End day" %}</label>
+                <label for="id_end_day">
+                  {% trans "End day" %}
+                </label>
+
                 <div class="invoice-select-wrap">
                   {{ invoice_form.end_day }}
                 </div>
+
                 <div class="invoice-field-error">
                   {% if invoice_form.end_day.errors %}
                   {% for error in invoice_form.end_day.errors %}
@@ -210,18 +303,23 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_hours">{% trans "Hours" %}</label>
+                <label for="id_hours">
+                  {% trans "Hours" %}
+                </label>
+
                 <input
                         type="number"
                         name="hours"
                         id="id_hours"
-                        value="{{ invoice_form.hours.value|default_if_none:'' }}"
-                        min="0"
+                        value="{{ invoice_form.hours.value|default_if_none:'0.00' }}"
+                        min="0.01"
                         step="0.01"
                         inputmode="decimal"
                         placeholder="0.00"
+                        data-invoice-hours
                         required
                 >
+
                 <div class="invoice-field-error">
                   {% if invoice_form.hours.errors %}
                   {% for error in invoice_form.hours.errors %}
@@ -232,9 +330,13 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_rate">{% trans "Rate" %}</label>
+                <label for="id_rate">
+                  {% trans "Rate" %}
+                </label>
+
                 <div class="invoice-money-field">
                   <span class="invoice-money-prefix">$</span>
+
                   <input
                           type="number"
                           name="rate"
@@ -247,6 +349,7 @@
                           required
                   >
                 </div>
+
                 <div class="invoice-field-error">
                   {% if invoice_form.rate.errors %}
                   {% for error in invoice_form.rate.errors %}
@@ -257,14 +360,26 @@
               </div>
             </div>
 
+            <div
+                    class="invoice-period-status"
+                    data-invoice-period-message
+                    aria-live="polite"
+                    hidden
+            ></div>
+
             <div class="invoice-subsection-divider" aria-hidden="true">
               <span></span>
             </div>
 
             <div class="invoice-subsection-header">
               <div>
-                <span class="invoice-section-kicker">{% trans "Tax & deductions" %}</span>
-                <h3>{% trans "GST & WSBC" %}</h3>
+                <span class="invoice-section-kicker">
+                  {% trans "Tax & deductions" %}
+                </span>
+
+                <h3>
+                  {% trans "GST & WSBC" %}
+                </h3>
               </div>
 
               <p>
@@ -274,7 +389,10 @@
 
             <div class="invoice-tax-grid">
               <div class="invoice-field">
-                <label for="id_gst">GST</label>
+                <label for="id_gst">
+                  GST
+                </label>
+
                 <div class="invoice-percent-field">
                   <input
                           type="number"
@@ -288,8 +406,10 @@
                           placeholder="5.00"
                           required
                   >
+
                   <span class="invoice-percent-suffix">%</span>
                 </div>
+
                 <div class="invoice-field-error">
                   {% if invoice_form.gst.errors %}
                   {% for error in invoice_form.gst.errors %}
@@ -300,7 +420,10 @@
               </div>
 
               <div class="invoice-field">
-                <label for="id_wsbc">WSBC</label>
+                <label for="id_wsbc">
+                  WSBC
+                </label>
+
                 <div class="invoice-percent-field">
                   <input
                           type="number"
@@ -314,8 +437,10 @@
                           placeholder="2.87"
                           required
                   >
+
                   <span class="invoice-percent-suffix">%</span>
                 </div>
+
                 <div class="invoice-field-error">
                   {% if invoice_form.wsbc.errors %}
                   {% for error in invoice_form.wsbc.errors %}
@@ -329,6 +454,7 @@
                 <label for="id_gst_account_number">
                   {% trans "GST/HST Account Number" %}
                 </label>
+
                 <input
                         type="text"
                         name="gst_account_number"
@@ -340,6 +466,7 @@
                         placeholder="123456789 RT0001"
                         pattern="[0-9]{9} RT[0-9]{4}"
                 >
+
                 <div class="invoice-field-error">
                   {% if invoice_form.gst_account_number.errors %}
                   {% for error in invoice_form.gst_account_number.errors %}
@@ -357,11 +484,16 @@
             </div>
             {% endif %}
 
-            {% if invoice_form.is_success %}
-            <div class="invoice-form-success">
-              {% trans "Invoice PDF has been created and sent to your email address and the company email address." %}
+            <div
+                    class="invoice-form-status{% if invoice_form.is_success %} invoice-form-status--processing{% endif %}"
+                    data-invoice-status-message
+                    aria-live="polite"
+                    {% if not invoice_form.is_success %}hidden{% endif %}
+            >
+              {% if invoice_form.is_success %}
+              {% trans "Invoice submitted. Your PDF is being generated and sent." %}
+              {% endif %}
             </div>
-            {% endif %}
 
             <div class="invoice-form-actions">
               <button
@@ -371,12 +503,22 @@
               >
                 {% trans "Submit invoice" %}
               </button>
+
+              <button
+                      type="button"
+                      class="invoice-button invoice-button--download"
+                      data-invoice-download
+                      disabled
+              >
+                {% trans "Download PDF" %}
+              </button>
             </div>
           </section>
         </form>
       </div>
     </div>
     {% endpartialdef %}
+
   </div>
 </section>
 {% endblock content_wrapper %}

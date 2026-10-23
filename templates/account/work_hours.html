@@ -1,0 +1,377 @@
+{% extends "base.html" %}
+{% load i18n static %}
+
+{% block title %}
+{{ company_profile.name|default:"Erbauer" }} / {% trans "Work Hours" %}
+{% endblock %}
+
+{% block extra_css %}
+<link
+        rel="stylesheet"
+        href="{% static 'css/account/work_hours.css' %}"
+>
+{% endblock extra_css %}
+
+{% block content_wrapper %}
+<section class="work-hours-page">
+  <div class="container work-hours-container">
+
+    <div class="work-hours-hero">
+      <div class="work-hours-hero__content">
+        <p class="work-hours-eyebrow">
+          {% trans "Employee hours" %}
+        </p>
+
+        <h1 class="work-hours-title">
+          {% trans "Work Hours" %}
+        </h1>
+
+        <p class="work-hours-subtitle">
+          {% blocktrans trimmed %}
+          Record your daily work hours. You can review the previous 12 months and, when needed,
+          check other employees' recorded hours for reference.
+          {% endblocktrans %}
+        </p>
+      </div>
+    </div>
+
+    {% partialdef work-hours-content inline %}
+    <div
+            id="work-hours-content"
+            data-work-hours-content
+            data-refresh-url="{% url 'account:work_hours' %}"
+            data-update-url="{% url 'account:work_hours_update' %}"
+            data-request-error-text="{% trans 'Unable to update work hours. Please try again.' %}"
+            data-invalid-hours-text="{% trans 'Enter hours using numbers only, from 0 to 24.' %}"
+            data-negative-hours-text="{% trans 'Hours cannot be negative.' %}"
+            data-max-hours-text="{% trans 'Hours cannot exceed 24 hours per day.' %}"
+            data-decimal-hours-text="{% trans 'Hours can have at most two decimal places.' %}"
+            data-step-hours-text="{% trans 'Hours must be entered in 0.10-hour increments.' %}"
+    >
+      <form
+              class="work-hours-csrf-form"
+              data-work-hours-csrf
+              hidden
+      >
+        {% csrf_token %}
+      </form>
+
+      <div class="work-hours-toolbar">
+        <div class="work-hours-toolbar__filters">
+
+          <div class="work-hours-filter">
+            <label for="work-hours-month">
+              {% trans "Month" %}
+            </label>
+
+            <div class="work-hours-select-wrap">
+              <select
+                      id="work-hours-month"
+                      data-work-hours-month
+              >
+                {% for month in available_work_months %}
+                {% with month_value=month|date:"Y-m" %}
+                <option
+                        value="{{ month_value }}"
+                        {% if month_value == selected_work_month_value %}selected{% endif %}
+                >
+                  {{ month|date:"F Y" }}
+                </option>
+                {% endwith %}
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="work-hours-filter">
+            <label for="work-hours-employee">
+              {% trans "View" %}
+            </label>
+
+            {% trans "Employees" as employees_group_label %}
+
+            <div class="work-hours-select-wrap">
+              <select
+                      id="work-hours-employee"
+                      data-work-hours-employee
+              >
+                <option
+                        value="mine"
+                        {% if show_my_hours %}selected{% endif %}
+                >
+                  {% trans "My hours" %}
+                </option>
+
+                <option
+                        value="all"
+                        {% if show_all_employees %}selected{% endif %}
+                >
+                  {% trans "All employees" %}
+                </option>
+
+                {% if other_employees %}
+                <optgroup label="{{ employees_group_label }}">
+                  {% for employee in other_employees %}
+                  <option
+                          value="{{ employee.pk }}"
+                          {% if selected_employee_id == employee.pk %}selected{% endif %}
+                  >
+                    {% if employee.first_name or employee.last_name %}
+                    {{ employee.first_name }} {{ employee.last_name }}
+                    {% elif employee.email %}
+                    {{ employee.email }}
+                    {% else %}
+                    {% trans "Employee" %} #{{ employee.pk }}
+                    {% endif %}
+                  </option>
+                  {% endfor %}
+                </optgroup>
+                {% endif %}
+              </select>
+            </div>
+          </div>
+
+        </div>
+
+        <div
+                class="work-hours-feedback"
+                data-work-hours-feedback
+                aria-live="polite"
+                hidden
+        ></div>
+      </div>
+
+      <div class="work-hours-calendars">
+        {% for calendar in work_hours_calendars %}
+        <article
+                class="work-hours-card"
+                data-work-hours-calendar
+                data-employee-id="{{ calendar.employee.pk }}"
+        >
+          <header class="work-hours-card__header">
+
+            <div class="work-hours-employee">
+              <div class="work-hours-avatar">
+                {% if calendar.employee.profile.avatar %}
+                <img
+                        src="{{ calendar.employee.profile.avatar.url }}"
+                        alt=""
+                        loading="lazy"
+                >
+                {% else %}
+                <span aria-hidden="true">
+                  {% if calendar.employee.first_name %}
+                    {{ calendar.employee.first_name|first|upper }}
+                  {% endif %}
+
+                  {% if calendar.employee.last_name %}
+                    {{ calendar.employee.last_name|first|upper }}
+                  {% endif %}
+                </span>
+                {% endif %}
+              </div>
+
+              <div class="work-hours-employee__text">
+                <h2>
+                  {% if calendar.employee.first_name or calendar.employee.last_name %}
+                  {{ calendar.employee.first_name }} {{ calendar.employee.last_name }}
+                  {% elif calendar.employee.email %}
+                  {{ calendar.employee.email }}
+                  {% else %}
+                  {% trans "Employee" %} #{{ calendar.employee.pk }}
+                  {% endif %}
+                </h2>
+
+                <div class="work-hours-employee__meta">
+                  {% if calendar.employee.position %}
+                  <span>
+                    {{ calendar.employee.position }}
+                  </span>
+                  {% endif %}
+
+                  {% if calendar.can_edit %}
+                  <span class="work-hours-editable-badge">
+                    {% trans "Editable" %}
+                  </span>
+                  {% else %}
+                  <span class="work-hours-readonly-badge">
+                    {% trans "Read only" %}
+                  </span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="work-hours-total">
+              <span class="work-hours-total__label">
+                {% trans "Month total" %}
+              </span>
+
+              <strong
+                      class="work-hours-total__value"
+                      data-month-total
+              >
+                {{ calendar.total|floatformat:2 }}
+              </strong>
+
+              <span class="work-hours-total__unit">
+                {% trans "hours" %}
+              </span>
+            </div>
+
+          </header>
+
+          <div class="work-hours-calendar">
+
+            <div
+                    class="work-hours-weekdays"
+                    aria-hidden="true"
+            >
+              <span>{% trans "Mon" %}</span>
+              <span>{% trans "Tue" %}</span>
+              <span>{% trans "Wed" %}</span>
+              <span>{% trans "Thu" %}</span>
+              <span>{% trans "Fri" %}</span>
+              <span>{% trans "Sat" %}</span>
+              <span>{% trans "Sun" %}</span>
+            </div>
+
+            <div class="work-hours-calendar-grid">
+              {% for week in calendar.weeks %}
+              {% for day in week %}
+
+              {% if not day.in_month %}
+              <div
+                      class="work-hours-day work-hours-day--outside"
+                      aria-hidden="true"
+              ></div>
+
+              {% else %}
+              <div
+                      class="
+                          work-hours-day
+                          {% if day.is_weekend %}work-hours-day--weekend{% endif %}
+                          {% if day.is_today %}work-hours-day--today{% endif %}
+                          {% if day.is_future %}work-hours-day--future{% endif %}
+                          {% if day.is_locked %}work-hours-day--locked{% endif %}
+                          {% if day.has_hours %}work-hours-day--filled{% endif %}
+                        "
+                      data-work-hours-day
+                      data-work-date="{{ day.date_value }}"
+              >
+
+                <div class="work-hours-day__header">
+                  <span class="work-hours-day__number">
+                    {{ day.day }}
+                  </span>
+
+                  {% if day.is_locked %}
+                  <span
+                          class="work-hours-lock"
+                          title="{% trans 'This date is locked by an invoice.' %}"
+                          aria-label="{% trans 'Locked' %}"
+                  >
+                    🔒
+                  </span>
+                  {% endif %}
+                </div>
+
+                <div class="work-hours-day__body">
+
+                  {% if day.can_edit %}
+                  <div class="work-hours-input-wrap">
+                    <input
+                            id="work-hours-{{ calendar.employee.pk }}-{{ day.date_value }}"
+                            class="work-hours-input"
+                            type="text"
+                            value="{{ day.hours }}"
+                            inputmode="decimal"
+                            maxlength="5"
+                            placeholder="0"
+                            aria-label="{% trans 'Hours' %} {{ day.day }}"
+                            data-work-hours-input
+                            data-work-date="{{ day.date_value }}"
+                            autocomplete="off"
+                            spellcheck="false"
+                    >
+
+                    <span class="work-hours-input-unit">
+                      {% trans "h" %}
+                    </span>
+                  </div>
+
+                  {% else %}
+                  <div class="work-hours-readonly-value">
+                    {% if day.hours %}
+                    <strong>
+                      {{ day.hours }}
+                    </strong>
+
+                    <span>
+                      {% trans "h" %}
+                    </span>
+                    {% else %}
+                    <span class="work-hours-empty-value">
+                      —
+                    </span>
+                    {% endif %}
+                  </div>
+                  {% endif %}
+
+                </div>
+              </div>
+              {% endif %}
+
+              {% endfor %}
+              {% endfor %}
+            </div>
+
+          </div>
+
+          <footer class="work-hours-card__legend">
+            <span>
+              <i class="work-hours-legend work-hours-legend--filled"></i>
+              {% trans "Hours recorded" %}
+            </span>
+
+            <span>
+              <i class="work-hours-legend work-hours-legend--weekend"></i>
+              {% trans "Weekend" %}
+            </span>
+
+            <span>
+              <i class="work-hours-legend work-hours-legend--today"></i>
+              {% trans "Today" %}
+            </span>
+
+            <span>
+              <i class="work-hours-legend work-hours-legend--locked"></i>
+              {% trans "Locked" %}
+            </span>
+          </footer>
+
+        </article>
+
+        {% empty %}
+        <div class="work-hours-empty">
+          <h2>
+            {% trans "No employees found" %}
+          </h2>
+
+          <p>
+            {% trans "There are no employee calendars available to display." %}
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+    {% endpartialdef %}
+
+  </div>
+</section>
+{% endblock content_wrapper %}
+
+{% block extra_js %}
+<script src="{% static 'js/account/work_hours.js' %}"></script>
+{% endblock extra_js %}
