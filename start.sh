@@ -10,10 +10,6 @@ export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE:-config.settings.prod}"
 python manage.py migrate \
     --settings=config.settings.prod
 
-python manage.py migrate account \
-    --prune \
-    --settings=config.settings.prod
-
 celery -A config worker \
     --loglevel=INFO \
     --pool=solo \
