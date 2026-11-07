@@ -11,6 +11,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DJANGO_DEBUG", "") != "False"
 ALLOWED_HOSTS = ["127.0.0.1"]
 
+CLIENT_IP_SOURCE = os.getenv("CLIENT_IP_SOURCE", "remote_addr")
+
 INSTALLED_APPS = [
     "core",
     "main.apps.MainConfig",

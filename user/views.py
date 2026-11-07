@@ -6,6 +6,8 @@ from django.contrib.auth import views as auth_views
 from django.contrib.auth import get_user_model, login
 from django.utils.translation import gettext_lazy as _
 
+from core.mixins import RateLimitUnavailableMixin
+
 from main.models import CompanyProfile
 
 from user import forms
@@ -45,6 +47,7 @@ User = get_user_model()
 
 # <-- Register -->
 class UserRegistrationView(
+    RateLimitUnavailableMixin,
     mixins.TurnstileMixin,
     mixins.AnonymousRequiredMixin,
     generic.CreateView,
@@ -76,11 +79,6 @@ class UserRegistrationView(
 
     def form_valid(self, form):
         if not self.is_turnstile_valid():
-            state = register_registration_attempt(self.request)
-
-            if state.blocked:
-                form.service_message = get_registration_cooldown_message(state)
-
             return self.handle_turnstile_failure(form)
 
         employee = form.employee
@@ -114,6 +112,7 @@ class UserRegistrationView(
 
 
 class ConfirmUser(
+    RateLimitUnavailableMixin,
     mixins.TurnstileMixin,
     mixins.AnonymousRequiredMixin,
     generic.FormView,
@@ -185,6 +184,7 @@ class InvalidVerify(generic.TemplateView):
 
 # < -- Login -->
 class LoginUser(
+    RateLimitUnavailableMixin,
     mixins.TurnstileMixin,
     auth_views.LoginView,
 ):
@@ -216,9 +216,8 @@ class LoginUser(
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form):
-        response = super().form_valid(form)
         reset_login_rate_limit(self.request)
-        return response
+        return super().form_valid(form)
 
     def form_invalid(self, form):
         state = register_login_attempt(self.request)
@@ -231,6 +230,7 @@ class LoginUser(
 
 # <-- Password reset -->
 class CustomPasswordResetView(
+    RateLimitUnavailableMixin,
     mixins.TurnstileMixin,
     mixins.AnonymousRequiredMixin,
     auth_views.PasswordResetView,

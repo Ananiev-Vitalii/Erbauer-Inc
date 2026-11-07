@@ -4,6 +4,8 @@ from django.utils.translation import get_language, gettext as _
 from django.views import generic
 from kombu.exceptions import OperationalError
 
+from core.mixins import RateLimitUnavailableMixin
+
 from main.services.rate_limit import (
     get_contact_form_rate_limit_state,
     register_contact_form_attempt,
@@ -54,10 +56,11 @@ class HomePageView(generic.TemplateView):
         return context
 
 
-class ContactFormView(generic.FormView):
+class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
     form_class = ContactForm
     http_method_names = ["post"]
     template_name = "main/includes/sections/contacts.html#contact-form"
+    rate_limit_partial_template = template_name
 
     def post(self, request, *args, **kwargs):
         state = get_contact_form_rate_limit_state(request)

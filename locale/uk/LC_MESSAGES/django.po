@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-06 18:38-0800\n"
+"POT-Creation-Date: 2026-11-07 12:44-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -526,13 +526,17 @@ msgstr "Некоректна дата роботи."
 msgid "No invoice months are available for the selected year."
 msgstr "Для вибраного року немає доступних місяців із інвойсами."
 
-#: .\config\settings\base.py:93
+#: .\config\settings\base.py:95
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: .\config\settings\base.py:94
+#: .\config\settings\base.py:96
 msgid "English"
 msgstr "Англійська"
+
+#: .\core\mixins.py:21
+msgid "This service is temporarily unavailable. Please try again later."
+msgstr "Сервіс тимчасово недоступний. Спробуйте пізніше."
 
 #: .\main\admin.py:84 .\main\models.py:122
 msgid "Icon"
@@ -772,7 +776,7 @@ msgstr[2] "%(count)d секунд"
 msgid "Too many attempts. Please try again in %(time)s."
 msgstr "Забагато спроб. Будь ласка, спробуйте ще раз через %(time)s."
 
-#: .\main\views.py:90
+#: .\main\views.py:93
 msgid "We could not submit your message. Please try again later."
 msgstr "Не вдалося передати ваше повідомлення. Спробуйте пізніше."
 
@@ -1370,7 +1374,7 @@ msgstr ""
 "    "
 
 #: .\templates\core\errors\403.html:31 .\templates\core\errors\404.html:31
-#: .\templates\core\errors\500.html:28
+#: .\templates\core\errors\500.html:28 .\templates\core\errors\503.html:20
 msgid "Return to homepage"
 msgstr "Повернутися на головну сторінку"
 
@@ -1405,6 +1409,10 @@ msgstr "Під час обробки вашого запиту на нашому
 #: .\templates\core\errors\500.html:24
 msgid "Please try again later or return to the homepage."
 msgstr "Будь ласка, спробуйте пізніше або поверніться на головну сторінку."
+
+#: .\templates\core\errors\503.html:7 .\templates\core\errors\503.html:16
+msgid "Service temporarily unavailable"
+msgstr "Сервіс тимчасово недоступний"
 
 #: .\templates\main\contact_email.html:8
 msgid "Contact Message"
@@ -2622,7 +2630,7 @@ msgstr ""
 "Якщо ця електронна адреса пов’язана з непідтвердженим обліковим записом, ми "
 "надіслали новий лист для підтвердження."
 
-#: .\user\views.py:63 .\user\views.py:131 .\user\views.py:249
+#: .\user\views.py:66 .\user\views.py:130 .\user\views.py:249
 msgid "The captcha check failed. Please try again."
 msgstr "Перевірку CAPTCHA не пройдено. Будь ласка, спробуйте ще раз."
 
