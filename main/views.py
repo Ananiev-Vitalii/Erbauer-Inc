@@ -1,13 +1,15 @@
 from typing import Any
-from threading import Thread
+from django.http import HttpResponse
+from django.utils.translation import get_language, gettext as _
 from django.views import generic
+from kombu.exceptions import OperationalError
 
 from main.services.rate_limit import (
     get_contact_form_rate_limit_state,
     register_contact_form_attempt,
     get_contact_form_cooldown_message,
 )
-from main.services.email import send_contact_email_in_background
+from main.tasks import send_contact_email_task
 from main.forms import ContactForm
 from main.services.cache import (
     get_homepage_company_profile_cached,
@@ -72,15 +74,22 @@ class ContactFormView(generic.FormView):
 
         return super().post(request, *args, **kwargs)
 
-    def form_valid(self, form):
-        data = form.cleaned_data.copy()
+    def form_valid(self, form: ContactForm) -> HttpResponse:
+        data = {
+            field: form.cleaned_data[field] for field in ("name", "phone", "message")
+        }
 
-        Thread(
-            target=send_contact_email_in_background,
-            args=(data,),
-            daemon=True,
-            name="contact-form-email",
-        ).start()
+        try:
+            send_contact_email_task.apply_async(
+                kwargs={"data": data, "language": get_language()},
+                kwargsrepr="<redacted contact email arguments>",
+                retry=False,
+            )
+        except OperationalError:
+            form.service_message = _(
+                "We could not submit your message. Please try again later."
+            )
+            return self.form_invalid(form)
 
         new_form = self.get_form_class()()
         new_form.is_success = True

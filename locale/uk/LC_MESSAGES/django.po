@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-22 20:49-0700\n"
+"POT-Creation-Date: 2026-11-06 18:38-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -741,7 +741,7 @@ msgstr "Зображення проєкту"
 msgid "Project images"
 msgstr "Галерея зображень проєкту"
 
-#: .\main\services\email.py:23 .\templates\main\contact_email.html:32
+#: .\main\services\email.py:17 .\templates\main\contact_email.html:32
 msgid "New Contact Request"
 msgstr "Новий запит через форму зв’язку"
 
@@ -771,6 +771,10 @@ msgstr[2] "%(count)d секунд"
 #, python-format
 msgid "Too many attempts. Please try again in %(time)s."
 msgstr "Забагато спроб. Будь ласка, спробуйте ще раз через %(time)s."
+
+#: .\main\views.py:90
+msgid "We could not submit your message. Please try again later."
+msgstr "Не вдалося передати ваше повідомлення. Спробуйте пізніше."
 
 #: .\templates\account\cheat_sheet.html:20
 msgid "Quick reference"
@@ -1421,8 +1425,8 @@ msgid "Privacy Policy"
 msgstr "Політика конфіденційності"
 
 #: .\templates\main\includes\forms\form_errors.html:6
-msgid "Your message has been sent successfully."
-msgstr "Ваше повідомлення успішно надіслано."
+msgid "Your message has been submitted successfully."
+msgstr "Ваше повідомлення успішно передано на обробку."
 
 #: .\templates\main\includes\navbar.html:20
 msgid "Main menu"
