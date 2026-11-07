@@ -21,20 +21,22 @@
     </div>
   </div>
 
+  {% if company_profile %}
   <div class="container about__stats">
     <article class="about__stat-card reveal">
-      <span class="about__stat-value">{{ company_profile.years_on_market|default:"10" }}+</span>
+      <span class="about__stat-value">{{ company_profile.years_on_market|default_if_none:"—" }}{% if company_profile.years_on_market > 0 %}+{% endif %}</span>
       <span class="about__stat-label">{% trans "Years of experience" %}</span>
     </article>
 
     <article class="about__stat-card reveal" data-delay="120">
-      <span class="about__stat-value">{{ company_profile.completed_objects_count|default:"100" }}+</span>
+      <span class="about__stat-value">{{ company_profile.completed_objects_count|default_if_none:"—" }}{% if company_profile.completed_objects_count > 0 %}+{% endif %}</span>
       <span class="about__stat-label">{% trans "Completed projects" context "about stat label" %}</span>
     </article>
 
     <article class="about__stat-card reveal" data-delay="240">
-      <span class="about__stat-value">{{ company_profile.employees_count|default:"50" }}+</span>
+      <span class="about__stat-value">{{ company_profile.employees_count|default_if_none:"—" }}{% if company_profile.employees_count > 0 %}+{% endif %}</span>
       <span class="about__stat-label">{% trans "Specialists" %}</span>
     </article>
   </div>
+  {% endif %}
 </section>
