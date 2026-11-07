@@ -1,3 +1,6 @@
+from pathlib import Path
+from uuid import uuid4
+
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -6,8 +9,8 @@ from account.models import Employee
 
 
 def team_member_directory_path(instance: "TeamMember", filename: str) -> str:
-    profile_slug = slugify(f"{instance.employee.last_name}_{instance.employee.email}")
-    return f"team_member/{profile_slug}/{filename}"
+    extension = Path(filename).suffix.lower()
+    return f"team_member/{uuid4().hex}{extension}"
 
 
 def company_logo_upload_path(instance: "CompanyProfile", filename: str) -> str:
