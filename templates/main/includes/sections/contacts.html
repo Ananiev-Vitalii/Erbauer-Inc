@@ -40,9 +40,12 @@
     </div>
     {% endcache %}
 
-    <div class="contacts__form-wrap reveal" data-delay="120" id="contactFormWrapper">
+    <div class="contacts__form-wrap reveal" data-delay="120" id="contactFormWrapper"
+         data-submit-error="{% trans 'We could not confirm your submission. Please try again later.' %}">
       {% partialdef contact-form inline %}
-      {% crispy form %}
+      <div data-contact-form-response>
+        {% crispy form %}
+      </div>
       {% endpartialdef contact-form %}
     </div>
   </div>

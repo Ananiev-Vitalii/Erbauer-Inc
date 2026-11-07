@@ -1436,6 +1436,10 @@ msgstr "Політика конфіденційності"
 msgid "Your message has been submitted successfully."
 msgstr "Ваше повідомлення успішно передано на обробку."
 
+#: .\templates\main\includes\sections\contacts.html
+msgid "We could not confirm your submission. Please try again later."
+msgstr "Не вдалося підтвердити прийняття вашого повідомлення. Спробуйте пізніше."
+
 #: .\templates\main\includes\navbar.html:20
 msgid "Main menu"
 msgstr "Головне меню"
