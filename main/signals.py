@@ -9,7 +9,7 @@ def remove_empty_parent_dirs(sender, file, **kwargs):
 
     try:
         current_dir = Path(file.path).resolve().parent
-    except ValueError:
+    except (ValueError, NotImplementedError):
         return
 
     while current_dir != media_root and media_root in current_dir.parents:
