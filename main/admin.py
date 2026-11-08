@@ -1,5 +1,6 @@
 from django.contrib import admin
-from django.db.models import Max
+from django.db.models import Count, Max, QuerySet
+from django.http import HttpRequest
 from django.utils.html import mark_safe
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
@@ -121,6 +122,11 @@ class ProjectAdmin(TranslationAdmin):
     readonly_fields = ("cover_preview",)
     inlines = (ProjectImageInline,)
 
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Project]:
+        return super().get_queryset(request).annotate(
+            gallery_images_count=Count("images"),
+        )
+
     def cover_preview(self, obj):
         if obj.cover_image:
             return mark_safe(
@@ -131,8 +137,8 @@ class ProjectAdmin(TranslationAdmin):
 
     cover_preview.short_description = _("Cover preview")
 
-    def images_count(self, obj):
-        return obj.images.count()
+    def images_count(self, obj: Project) -> int:
+        return obj.gallery_images_count
 
     images_count.short_description = _("Gallery images")
 
