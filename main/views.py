@@ -1,5 +1,7 @@
 from typing import Any
 from django.http import HttpResponse
+from django.middleware.csrf import get_token
+from django.template.loader import render_to_string
 from django.utils.translation import get_language, gettext as _
 from django.views import generic
 from kombu.exceptions import OperationalError
@@ -33,7 +35,7 @@ class HomePageView(generic.TemplateView):
     def get_service_pages(self, services: list[Service]) -> list[list[Service]]:
         page_size = self.services_page_size
         return [
-            services[index : index + page_size]
+            services[index: index + page_size]
             for index in range(0, len(services), page_size)
         ]
 
@@ -61,6 +63,16 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
     http_method_names = ["post"]
     template_name = "main/includes/sections/contacts.html#contact-form"
     rate_limit_partial_template = template_name
+
+    def render_to_response(
+            self, context: dict[str, Any], **response_kwargs: Any
+    ) -> HttpResponse:
+        context = {**context, "csrf_token": get_token(self.request)}
+        response_kwargs.setdefault("content_type", self.content_type)
+        html = render_to_string(
+            self.get_template_names(), context, using=self.template_engine
+        )
+        return HttpResponse(html, **response_kwargs)
 
     def post(self, request, *args, **kwargs):
         state = get_contact_form_rate_limit_state(request)
