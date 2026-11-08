@@ -85,6 +85,12 @@ class ContactForm(BaseStyledForm, forms.Form):
         privacy_policy_text = pgettext_lazy(
             "contact form checkbox link", "Privacy Policy"
         )
+        privacy_policy_id = self["privacy_policy"].id_for_label
+        privacy_acknowledge_id = f"{privacy_policy_id}_acknowledge"
+        privacy_policy_link_id = f"{privacy_policy_id}_link"
+        self.fields["privacy_policy"].widget.attrs["aria-labelledby"] = (
+            f"{privacy_acknowledge_id} {privacy_policy_link_id}"
+        )
 
         self.helper.layout = Layout(
             HTML('{% include "main/includes/forms/form_errors.html" %}'),
@@ -100,9 +106,11 @@ class ContactForm(BaseStyledForm, forms.Form):
                     Field("privacy_policy"),
                     HTML(f"""
                         <span>
-                          {privacy_acknowledge_text}
+                          <label for="{privacy_policy_id}" id="{privacy_acknowledge_id}">
+                            {privacy_acknowledge_text}
+                          </label>
                           <a href="{{% url 'main:privacy_policy' %}}" target="_blank" rel="noopener noreferrer" 
-                          class="external-link">
+                          class="external-link" id="{privacy_policy_link_id}">
                             {privacy_policy_text}
                             <span class="external-icon">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
