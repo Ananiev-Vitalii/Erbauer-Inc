@@ -58,7 +58,7 @@
             >
 
             <div class="projects__image-meta">
-              <p class="projects__image-date">{{ project.created_at|date:"F j, Y" }}</p>
+              <p class="projects__image-date">{% include "main/includes/project_date.html" with project_date=project.created_at only %}</p>
             </div>
 
             <div class="projects__image-overlay">

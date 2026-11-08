@@ -64,7 +64,7 @@
           <button
                   class="services__dot {% if forloop.first %}is-active{% endif %}"
                   type="button"
-                  aria-label="Show services page {{ forloop.counter }}"
+                  aria-label="{% blocktrans with page_number=forloop.counter %}Show services page {{ page_number }}{% endblocktrans %}"
                   data-index="{{ forloop.counter0 }}"
           ></button>
           {% endfor %}

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 {% load i18n %}
+{% trans "Company" as company_fallback %}
 
 <html lang="{% get_current_language as LANGUAGE_CODE %}{{ LANGUAGE_CODE }}">
 <head>
@@ -20,7 +21,7 @@
         <tr>
           <td style="background:#0057b7; padding:20px; text-align:center;">
             <span style="color:#ffffff; font-size:20px; font-weight:bold;">
-              {{ company_base.name|default:"Company" }}
+              {{ company_base.name|default:company_fallback }}
             </span>
           </td>
         </tr>
@@ -53,7 +54,7 @@
 
         <tr>
           <td style="background:#ffd700; padding:20px; text-align:center; font-size:12px; color:#111827; font-weight:600;">
-            © {% now "Y" %} {{ company_base.name|default:"Company" }}
+            © {% now "Y" %} {{ company_base.name|default:company_fallback }}
           </td>
         </tr>
 

@@ -2644,3 +2644,8 @@ msgstr "Перевірку CAPTCHA не пройдено. Будь ласка, �
 
 msgid "Send message"
 msgstr "Надіслати повідомлення"
+
+#: templates/main/includes/sections/services.html
+#, python-format
+msgid "Show services page %(page_number)s"
+msgstr "Показати сторінку послуг %(page_number)s"

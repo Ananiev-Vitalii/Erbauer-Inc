@@ -1,0 +1,1 @@
+{% load i18n %}{% get_current_language as current_language %}{% if current_language == "uk" %}{{ project_date|date:"d" }} {{ project_date|date:"E"|capfirst }} {{ project_date|date:"Y" }} р.{% else %}{{ project_date|date:"DATE_FORMAT" }}{% endif %}
