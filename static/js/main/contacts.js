@@ -7,13 +7,40 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let requestInProgress = false;
 
-  function formatCanadianPhone(value) {
-    const digits = value.replace(/\D/g, "").slice(0, 10);
+  const completePhonePattern = new RegExp(
+    "^(?:\\+?1 ?)?(" +
+    "[0-9]{10}|[0-9]{3}([ .-])[0-9]{3}\\2[0-9]{4}|" +
+    "\\([0-9]{3}\\) [0-9]{3}-[0-9]{4})$"
+  );
+
+  function formatNationalPhone(digits) {
 
     if (digits.length === 0) return "";
     if (digits.length < 4) return `(${digits}`;
     if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
     return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6, 10)}`;
+  }
+
+  function formatCompletePhone(value) {
+    const match = completePhonePattern.exec(value.trim());
+    if (!match) return null;
+    // Strip only validated national-number separators, never arbitrary input.
+    return formatNationalPhone(match[1].replace(/[ ().-]/g, ""));
+  }
+
+  function formatPhoneInput(value, allowPartial) {
+    const complete = formatCompletePhone(value);
+    if (complete !== null) return complete;
+    if (!allowPartial) return value;
+
+    // Only raw digits or intermediate states produced by our own mask qualify.
+    const isPartial = /^[0-9]{0,10}$/.test(value) ||
+      /^\([0-9]{0,3}$/.test(value) ||
+      /^\([0-9]{3}\) [0-9]{0,3}$/.test(value) ||
+      /^\([0-9]{3}\) [0-9]{3}-[0-9]{0,4}$/.test(value);
+    return isPartial
+      ? formatNationalPhone(value.replace(/[ ()-]/g, ""))
+      : value;
   }
 
   function setSubmitLoading(form, isLoading) {
@@ -98,13 +125,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (phoneInput) {
       phoneInput.addEventListener("input", function (event) {
-        event.target.value = formatCanadianPhone(event.target.value);
+        const allowPartial =
+          (event.inputType === "insertText" && event.data?.length === 1) ||
+          event.inputType?.startsWith("delete");
+        phoneInput.value = formatPhoneInput(phoneInput.value, allowPartial);
       });
 
       phoneInput.addEventListener("paste", function (event) {
+        const clipboard = event.clipboardData || window.clipboardData;
+        if (!clipboard) return;
         event.preventDefault();
-        const pasted = (event.clipboardData || window.clipboardData).getData("text");
-        phoneInput.value = formatCanadianPhone(pasted);
+        const pasted = clipboard.getData("text");
+        phoneInput.setRangeText(
+          pasted, phoneInput.selectionStart, phoneInput.selectionEnd, "end"
+        );
+        // Invalid pasted content stays visible and reaches server validation.
+        phoneInput.value = formatPhoneInput(phoneInput.value, false);
       });
     }
 

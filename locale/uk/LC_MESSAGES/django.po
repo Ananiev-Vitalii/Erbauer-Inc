@@ -55,9 +55,13 @@ msgstr "PDF-файл"
 msgid "Staff"
 msgstr "Персонал"
 
-#: .\account\forms.py:44 .\main\forms.py:127
+#: .\account\forms.py:44
 msgid "Please enter a valid 10-digit Canadian phone number."
 msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
+
+#: .\main\forms.py
+msgid "Enter a 10-digit Canadian or US phone number, optionally prefixed with +1 or 1."
+msgstr "Введіть 10-значний номер телефону Канади або США, за потреби з префіксом +1 або 1."
 
 #: .\account\forms.py:62
 msgid "A user with this email is already registered."

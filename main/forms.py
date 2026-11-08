@@ -1,8 +1,15 @@
+import re
+
 from django import forms
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Layout, Field, Div
+
+
+PHONE_ERROR_MESSAGE = _(
+    "Enter a 10-digit Canadian or US phone number, optionally prefixed with +1 or 1."
+)
 
 
 class BaseStyledForm:
@@ -28,7 +35,8 @@ class ContactForm(BaseStyledForm, forms.Form):
     )
 
     phone = forms.CharField(
-        max_length=14,
+        max_length=17,
+        error_messages={"max_length": PHONE_ERROR_MESSAGE},
         widget=forms.TextInput(
             attrs={
                 "class": "contacts__input contacts__input--phone",
@@ -66,6 +74,8 @@ class ContactForm(BaseStyledForm, forms.Form):
     def __init__(self, *args, **kwargs):
         self.service_message = kwargs.pop("service_message", "")
         super().__init__(*args, **kwargs)
+        # Keep server length validation without truncating input in the browser.
+        self.fields["phone"].widget.attrs.pop("maxlength", None)
         self.is_success = False
         self.init_form_helper()
         self.helper.form_class = "contacts__form"
@@ -118,13 +128,16 @@ class ContactForm(BaseStyledForm, forms.Form):
             """),
         )
 
-    def clean_phone(self):
+    def clean_phone(self) -> str:
         phone = self.cleaned_data["phone"]
-        normalized = "".join(ch for ch in phone if ch.isdigit())
+        match = re.fullmatch(
+            r"(?:\+?1 ?)?("
+            r"[0-9]{10}|[0-9]{3}([ .-])[0-9]{3}\2[0-9]{4}|"
+            r"\([0-9]{3}\) [0-9]{3}-[0-9]{4})",
+            phone,
+        )
+        if match is None:
+            raise forms.ValidationError(PHONE_ERROR_MESSAGE, code="invalid")
 
-        if len(normalized) != 10:
-            raise forms.ValidationError(
-                _("Please enter a valid 10-digit Canadian phone number.")
-            )
-
-        return phone
+        national_number = re.sub(r"[ ().-]", "", match.group(1))
+        return f"+1{national_number}"
