@@ -34,35 +34,65 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".projects__image-icon")
   );
 
-  const openLightbox = (imageSrc, imageAlt = "") => {
-    if (!lightbox || !lightboxImage || !imageSrc) return;
+  if (!lightbox || !lightboxImage || !lightboxClose) return;
+
+  let openingTrigger = null;
+  let cleanupTimer = null;
+  lightboxClose.tabIndex = -1;
+
+  const canFocus = (element) => element?.isConnected &&
+    !element.matches(":disabled") &&
+    !element.closest('[inert], [hidden], [aria-hidden="true"]') &&
+    element.getClientRects().length > 0 &&
+    getComputedStyle(element).visibility === "visible";
+
+  const openLightbox = (imageSrc, imageAlt, trigger) => {
+    if (!imageSrc) return;
+
+    clearTimeout(cleanupTimer);
+    cleanupTimer = null;
+    openingTrigger = trigger;
 
     lightboxImage.src = imageSrc;
     lightboxImage.alt = imageAlt;
     lightbox.classList.add("is-open");
     lightbox.setAttribute("aria-hidden", "false");
     document.body.classList.add("lightbox-open");
+    lightboxClose.tabIndex = 0;
+    if (canFocus(lightboxClose)) lightboxClose.focus({ preventScroll: true });
   };
 
   const closeLightbox = () => {
-    if (!lightbox || !lightboxImage) return;
+    if (!lightbox.classList.contains("is-open")) return;
 
     lightbox.classList.remove("is-open");
+    lightboxClose.tabIndex = -1;
+    if (canFocus(openingTrigger)) openingTrigger.focus({ preventScroll: true });
+    openingTrigger = null;
     lightbox.setAttribute("aria-hidden", "true");
-    lightboxImage.src = "";
-    lightboxImage.alt = "";
     document.body.classList.remove("lightbox-open");
+
+    clearTimeout(cleanupTimer);
+    cleanupTimer = setTimeout(() => {
+      cleanupTimer = null;
+      if (!lightbox.classList.contains("is-open")) {
+        lightboxImage.removeAttribute("src");
+        lightboxImage.alt = "";
+      }
+    }, 280);
   };
 
   imageButtons.forEach((button) => {
     button.addEventListener("click", () => {
-      openLightbox(button.dataset.image, button.dataset.alt || "");
+      openLightbox(button.dataset.image, button.dataset.alt || "", button);
     });
   });
 
   if (lightbox) {
     lightbox.addEventListener("click", (event) => {
-      if (event.target.hasAttribute("data-lightbox-close")) {
+      if (event.target === lightbox || event.target.matches(
+        "[data-lightbox-close], .projects-lightbox__dialog"
+      )) {
         closeLightbox();
       }
     });
@@ -73,8 +103,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && lightbox?.classList.contains("is-open")) {
+    if (!lightbox.classList.contains("is-open")) return;
+    if (event.key === "Escape") {
+      event.preventDefault();
       closeLightbox();
+    } else if (event.key === "Tab") {
+      // The close button is the only interactive control inside this dialog.
+      event.preventDefault();
+      if (canFocus(lightboxClose)) lightboxClose.focus({ preventScroll: true });
+    }
+  });
+
+  document.addEventListener("focusin", (event) => {
+    if (lightbox.classList.contains("is-open") &&
+        !lightbox.contains(event.target) && canFocus(lightboxClose)) {
+      lightboxClose.focus({ preventScroll: true });
     }
   });
 });
