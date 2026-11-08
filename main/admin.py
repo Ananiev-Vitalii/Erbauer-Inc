@@ -1,9 +1,9 @@
 from django.contrib import admin
 from django.db.models import Count, Max, QuerySet
 from django.http import HttpRequest
-from django.utils.html import mark_safe
+from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
-from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
+from modeltranslation.admin import TranslationAdmin
 
 from user.admin import custom_admin_site
 from main.models import (
@@ -59,8 +59,10 @@ class TeamMemberAdmin(TranslationAdmin):
         "is_visible",
     )
 
-    def get_changeform_initial_data(self, request):
-        max_order = TeamMember.objects.aggregate(max_order=Max("display_order"))["max_order"]
+    def get_changeform_initial_data(self, request: HttpRequest) -> dict[str, int]:
+        max_order = TeamMember.objects.aggregate(max_order=Max("display_order"))[
+            "max_order"
+        ]
         next_order = (max_order or 0) + 1
         return {"display_order": next_order}
 
@@ -75,10 +77,12 @@ class ServiceAdmin(TranslationAdmin):
         "icon",
     )
 
-    def icon_preview(self, obj):
+    def icon_preview(self, obj: Service) -> str:
         if obj.icon:
-            return mark_safe(
-                f'<img src="{obj.icon.url}" width="40" height="40" style="object-fit:cover;border-radius:6px;" />'
+            return format_html(
+                '<img src="{}" width="40" height="40" '
+                'style="object-fit:cover;border-radius:6px;" />',
+                obj.icon.url,
             )
         return "—"
 
@@ -91,11 +95,12 @@ class ProjectImageInline(admin.TabularInline):
     fields = ("image", "image_preview")
     readonly_fields = ("image_preview",)
 
-    def image_preview(self, obj):
+    def image_preview(self, obj: ProjectImage) -> str:
         if obj.image:
-            return mark_safe(
-                f'<img src="{obj.image.url}" width="80" height="80" '
-                f'style="object-fit:cover;border-radius:8px;" />'
+            return format_html(
+                '<img src="{}" width="80" height="80" '
+                'style="object-fit:cover;border-radius:8px;" />',
+                obj.image.url,
             )
         return "—"
 
@@ -127,11 +132,12 @@ class ProjectAdmin(TranslationAdmin):
             gallery_images_count=Count("images"),
         )
 
-    def cover_preview(self, obj):
+    def cover_preview(self, obj: Project) -> str:
         if obj.cover_image:
-            return mark_safe(
-                f'<img src="{obj.cover_image.url}" width="80" height="80" '
-                f'style="object-fit:cover;border-radius:8px;" />'
+            return format_html(
+                '<img src="{}" width="80" height="80" '
+                'style="object-fit:cover;border-radius:8px;" />',
+                obj.cover_image.url,
             )
         return "—"
 
@@ -155,11 +161,12 @@ class ProjectImageAdmin(admin.ModelAdmin):
     )
     readonly_fields = ("image_preview",)
 
-    def image_preview(self, obj):
+    def image_preview(self, obj: ProjectImage) -> str:
         if obj.image:
-            return mark_safe(
-                f'<img src="{obj.image.url}" width="80" height="80" '
-                f'style="object-fit:cover;border-radius:8px;" />'
+            return format_html(
+                '<img src="{}" width="80" height="80" '
+                'style="object-fit:cover;border-radius:8px;" />',
+                obj.image.url,
             )
         return "—"
 

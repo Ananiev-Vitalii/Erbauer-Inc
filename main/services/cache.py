@@ -39,7 +39,7 @@ def _lang() -> str:
     return get_language() or settings.LANGUAGE_CODE
 
 
-def get_company_base_cached():
+def get_company_base_cached() -> CompanyProfile | None:
     language = _lang()
     cache_key = f"company_base:{language}"
 
@@ -61,7 +61,7 @@ def get_company_base_cached():
     )
 
 
-def get_homepage_company_profile_cached():
+def get_homepage_company_profile_cached() -> CompanyProfile | None:
     language = _lang()
     cache_key = f"homepage:company_profile:{language}"
 
@@ -72,7 +72,7 @@ def get_homepage_company_profile_cached():
     )
 
 
-def get_homepage_services_cached():
+def get_homepage_services_cached() -> list[Service]:
     language = _lang()
     cache_key = f"homepage:services:{language}"
 
@@ -83,7 +83,7 @@ def get_homepage_services_cached():
     )
 
 
-def get_homepage_projects_cached():
+def get_homepage_projects_cached() -> list[Project]:
     language = _lang()
     cache_key = f"homepage:projects:{language}"
 
@@ -94,7 +94,7 @@ def get_homepage_projects_cached():
     )
 
 
-def get_homepage_team_members_cached():
+def get_homepage_team_members_cached() -> list[TeamMember]:
     language = _lang()
     cache_key = f"homepage:team_members:{language}"
 

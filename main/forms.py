@@ -6,14 +6,13 @@ from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Layout, Field, Div
 
-
 PHONE_ERROR_MESSAGE = _(
     "Enter a 10-digit Canadian or US phone number, optionally prefixed with +1 or 1."
 )
 
 
 class BaseStyledForm:
-    def init_form_helper(self):
+    def init_form_helper(self) -> None:
         self.helper = FormHelper()
         self.helper.form_method = "post"
         self.helper.form_action = reverse_lazy("main:contact_submit")
@@ -71,7 +70,7 @@ class ContactForm(BaseStyledForm, forms.Form):
         error_messages={"required": _("You must agree to the Privacy Policy.")},
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.service_message = kwargs.pop("service_message", "")
         super().__init__(*args, **kwargs)
         # Keep server length validation without truncating input in the browser.
@@ -106,10 +105,12 @@ class ContactForm(BaseStyledForm, forms.Form):
                     Field("privacy_policy"),
                     HTML(f"""
                         <span>
-                          <label for="{privacy_policy_id}" id="{privacy_acknowledge_id}">
+                          <label for="{privacy_policy_id}"
+                                 id="{privacy_acknowledge_id}">
                             {privacy_acknowledge_text}
                           </label>
-                          <a href="{{% url 'main:privacy_policy' %}}" target="_blank" rel="noopener noreferrer" 
+                          <a href="{{% url 'main:privacy_policy' %}}"
+                          target="_blank" rel="noopener noreferrer"
                           class="external-link" id="{privacy_policy_link_id}">
                             {privacy_policy_text}
                             <span class="external-icon">

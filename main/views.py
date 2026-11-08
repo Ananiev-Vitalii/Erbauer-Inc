@@ -1,5 +1,7 @@
 from typing import Any
-from django.http import HttpResponse
+
+from django.db.models import QuerySet
+from django.http import HttpRequest, HttpResponse
 from django.middleware.csrf import get_token
 from django.template.loader import render_to_string
 from django.utils.translation import get_language, gettext as _
@@ -74,7 +76,7 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
         )
         return HttpResponse(html, **response_kwargs)
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         state = get_contact_form_rate_limit_state(request)
         if state.blocked:
             form = self.get_form_class()(request.POST)
@@ -111,7 +113,7 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
 
         return self.render_to_response(self.get_context_data(form=new_form))
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: ContactForm) -> HttpResponse:
         return self.render_to_response(self.get_context_data(form=form))
 
 
@@ -129,17 +131,17 @@ class ProjectListView(generic.ListView):
     paginate_by = 6
 
     @property
-    def current_category(self):
+    def current_category(self) -> str:
         category = self.request.GET.get("category")
         return category if category in ProjectCategory.values else "all"
 
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Project]:
         queryset = super().get_queryset()
         if self.current_category != "all":
             queryset = queryset.filter(category=self.current_category)
         return queryset
 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
         context["current_category"] = self.current_category
         return context

@@ -113,7 +113,7 @@ class TeamMember(models.Model):
         verbose_name_plural = _("Team Members")
         ordering = ["display_order"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         full_name = f"{self.employee.first_name} {self.employee.last_name}".strip()
         return full_name or str(self.display_order)
 
