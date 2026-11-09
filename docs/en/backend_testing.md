@@ -50,7 +50,7 @@ Run the following commands manually after preparing Docker:
 ```powershell
 python manage.py check --settings=config.settings.test
 python manage.py check --settings=config.settings.test --database default
-python manage.py test --settings=config.settings.test
+python manage.py test main.tests core.tests --settings=config.settings.test --exclude-tag=redis
 ```
 
 The main command always selects test settings explicitly. Neither `manage.py`
@@ -65,7 +65,7 @@ Alternatively, for the current PowerShell process:
 
 ```powershell
 $env:DJANGO_SETTINGS_MODULE = "config.settings.test"
-python manage.py test
+python manage.py test main.tests core.tests --exclude-tag=redis
 Remove-Item Env:DJANGO_SETTINGS_MODULE
 ```
 
@@ -82,7 +82,7 @@ We will verify them with the first database tests.
 Create a separate **Python Run Configuration**:
 
 - Script: `manage.py` in the project root.
-- Parameters: `test --settings=config.settings.test`.
+- Parameters: `test main.tests core.tests --settings=config.settings.test --exclude-tag=redis`.
 - Interpreter: the project `.venv`.
 - Working directory: the project root.
 - Environment: `DJANGO_SETTINGS_MODULE=config.settings.test`.
@@ -136,7 +136,7 @@ The regular suite does not need Redis. For future Lua tests:
 $env:COMPOSE_DISABLE_ENV_FILE = "1"
 docker compose -f compose.test.yaml --profile redis up -d --wait
 $env:TEST_REDIS_INTEGRATION = "1"
-python manage.py test --settings=config.settings.test --tag=redis
+python manage.py test core.tests.test_rate_limit_integration --settings=config.settings.test --tag=redis
 Remove-Item Env:TEST_REDIS_INTEGRATION
 ```
 

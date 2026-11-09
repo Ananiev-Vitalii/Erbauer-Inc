@@ -50,7 +50,7 @@ Django створює окрему БД `test_erbauer_backend`, застосов
 ```powershell
 python manage.py check --settings=config.settings.test
 python manage.py check --settings=config.settings.test --database default
-python manage.py test --settings=config.settings.test
+python manage.py test main.tests core.tests --settings=config.settings.test --exclude-tag=redis
 ```
 
 Основна команда завжди явно обирає test settings. Звичайний `.env` не
@@ -65,7 +65,7 @@ service/password files не використовуються.
 
 ```powershell
 $env:DJANGO_SETTINGS_MODULE = "config.settings.test"
-python manage.py test
+python manage.py test main.tests core.tests --exclude-tag=redis
 Remove-Item Env:DJANGO_SETTINGS_MODULE
 ```
 
@@ -82,7 +82,7 @@ Remove-Item Env:DJANGO_SETTINGS_MODULE
 Створіть окрему **Python Run Configuration**:
 
 - Script: `manage.py` у корені проєкту.
-- Parameters: `test --settings=config.settings.test`.
+- Parameters: `test main.tests core.tests --settings=config.settings.test --exclude-tag=redis`.
 - Interpreter: проєктна `.venv`.
 - Working directory: корінь проєкту.
 - Environment: `DJANGO_SETTINGS_MODULE=config.settings.test`.
@@ -134,7 +134,7 @@ Redis не потрібен звичайному набору. Для майбу
 $env:COMPOSE_DISABLE_ENV_FILE = "1"
 docker compose -f compose.test.yaml --profile redis up -d --wait
 $env:TEST_REDIS_INTEGRATION = "1"
-python manage.py test --settings=config.settings.test --tag=redis
+python manage.py test core.tests.test_rate_limit_integration --settings=config.settings.test --tag=redis
 Remove-Item Env:TEST_REDIS_INTEGRATION
 ```
 
