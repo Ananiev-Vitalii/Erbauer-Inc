@@ -5,7 +5,8 @@ from celery.schedules import crontab
 from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv(BASE_DIR / ".env")
+if os.environ.get("DJANGO_SETTINGS_MODULE") != "config.settings.test":
+    load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DJANGO_DEBUG", "") != "False"
