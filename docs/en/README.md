@@ -16,6 +16,11 @@ English is the primary documentation language. A supplementary
   configuration, Render public/private ingress requirements, shared Redis rate
   limiting, HTTP 503 handling, and deployment verification requirements.
 
+## Main
+
+- [View Algorithms](main/views.md) — request handling, data loading, contact form
+  validation and rate limiting, Celery submission, and response outcomes.
+
 ## Adding Documentation
 
 Store application documentation at `docs/<language>/<django_application>/<document>.md`.
