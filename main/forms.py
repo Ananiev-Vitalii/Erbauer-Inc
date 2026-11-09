@@ -121,7 +121,7 @@ class ContactForm(BaseStyledForm, forms.Form):
                             </span>
                           </a>
                         </span>
-                        """),
+                        """),  # noqa: E501 -- Keep the SVG path unchanged.
                     css_class="contacts__checkbox-label",
                 ),
                 css_class="contacts__checkbox-field",

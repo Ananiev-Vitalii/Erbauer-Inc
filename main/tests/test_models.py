@@ -43,9 +43,10 @@ class UploadPathTests(SimpleTestCase):
             self.assertEqual(project_gallery_upload_path(
                 ProjectImage(project=project), "photo.jpg"),
                 "projects/my-project/gallery/photo.jpg")
-            self.assertEqual(service_icon_upload_path(Service(title_en="My Service"),
-                                                     "icon.png"),
-                             "services/my-service/icons/icon.png")
+            self.assertEqual(
+                service_icon_upload_path(Service(title_en="My Service"), "icon.png"),
+                "services/my-service/icons/icon.png",
+            )
         self.assertEqual(company_logo_upload_path(CompanyProfile(), "logo.png"),
                          "company/logo/logo.png")
         self.assertEqual(company_favicon_upload_path(CompanyProfile(), "icon.png"),

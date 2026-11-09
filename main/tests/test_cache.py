@@ -61,8 +61,13 @@ class HomepageCacheTests(TestCase):
         self.assertEqual([item.pk for item in members],
                          [self.first_member.pk, self.later_member.pk])
         with self.assertNumQueries(0):
-            self.assertTrue(all(member.employee.first_name and
-                                member.employee.position.name for member in members))
+            self.assertTrue(
+                all(
+                    member.employee.first_name
+                    and member.employee.position.name
+                    for member in members
+                )
+            )
 
     def test_language_keys_are_separate_and_data_remains_language_aware(self) -> None:
         for language, expected in (("en", "Description EN"),

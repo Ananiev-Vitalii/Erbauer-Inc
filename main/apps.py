@@ -7,4 +7,4 @@ class MainConfig(AppConfig):
     verbose_name = _("Company")
 
     def ready(self) -> None:
-        import main.signals
+        import main.signals  # noqa: F401 -- Register signal receivers.

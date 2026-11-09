@@ -69,13 +69,13 @@ SCRIPT_SHA = hashlib.sha1(SCRIPT.encode(), usedforsecurity=False).hexdigest()
 
 
 def execute_rate_limit(
-        *,
-        keys: list[str],
-        operation: str,
-        now: int,
-        attempts_limit: int = 0,
-        window_seconds: int = 0,
-        cooldown_seconds: int = 0,
+    *,
+    keys: list[str],
+    operation: str,
+    now: int,
+    attempts_limit: int = 0,
+    window_seconds: int = 0,
+    cooldown_seconds: int = 0,
 ) -> tuple[int, int]:
     backend = caches["default"]
     if not isinstance(backend, RedisCache):
@@ -107,9 +107,9 @@ def execute_rate_limit(
             pool.release(connection)
     except (ConnectionError, TimeoutError, ResponseError) as error:
         if isinstance(error, ResponseError) and (
-                "user_script:" in str(error)
-                or "Error compiling script" in str(error)
-                or str(error).startswith("WRONGTYPE")
+            "user_script:" in str(error)
+            or "Error compiling script" in str(error)
+            or str(error).startswith("WRONGTYPE")
         ):
             raise
         logger.error("Rate limit Redis operation failed (%s).", type(error).__name__)

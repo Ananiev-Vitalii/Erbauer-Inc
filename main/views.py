@@ -67,7 +67,7 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
     rate_limit_partial_template = template_name
 
     def render_to_response(
-            self, context: dict[str, Any], **response_kwargs: Any
+        self, context: dict[str, Any], **response_kwargs: Any
     ) -> HttpResponse:
         context = {**context, "csrf_token": get_token(self.request)}
         response_kwargs.setdefault("content_type", self.content_type)
