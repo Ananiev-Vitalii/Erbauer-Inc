@@ -31,6 +31,8 @@ from main.models import (
 
 
 class HomePageView(generic.TemplateView):
+    """Render the home page from cached public data and a fresh contact form."""
+
     template_name = "main/home.html"
     services_page_size = 6
 
@@ -42,6 +44,7 @@ class HomePageView(generic.TemplateView):
         ]
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        """Load cached data, group services, and prepare team and form context."""
         context = super().get_context_data(**kwargs)
         services = get_homepage_services_cached()
         team_members = get_homepage_team_members_cached()
@@ -61,6 +64,11 @@ class HomePageView(generic.TemplateView):
 
 
 class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
+    """Rate-limit contact POSTs, validate data, and queue email delivery.
+
+    Return HTML partials; the shared mixin handles Redis failures with HTTP 503.
+    """
+
     form_class = ContactForm
     http_method_names = ["post"]
     template_name = "main/includes/sections/contacts.html#contact-form"
@@ -69,6 +77,7 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
     def render_to_response(
         self, context: dict[str, Any], **response_kwargs: Any
     ) -> HttpResponse:
+        """Render the partial with CSRF and response options, without processors."""
         context = {**context, "csrf_token": get_token(self.request)}
         response_kwargs.setdefault("content_type", self.content_type)
         html = render_to_string(
@@ -77,6 +86,10 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
         return HttpResponse(html, **response_kwargs)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        """Check Redis blocking and count the attempt before form validation.
+
+        Return a bound form on cooldown; otherwise continue normal processing.
+        """
         state = get_contact_form_rate_limit_state(request)
         if state.blocked:
             form = self.get_form_class()(request.POST)
@@ -92,6 +105,11 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
         return super().post(request, *args, **kwargs)
 
     def form_valid(self, form: ContactForm) -> HttpResponse:
+        """Queue cleaned contact data with the active language, then reset the form.
+
+        Keep submitted data on broker OperationalError. Success confirms queuing,
+        not delivery.
+        """
         data = {
             field: form.cleaned_data[field] for field in ("name", "phone", "message")
         }
@@ -118,6 +136,8 @@ class ContactFormView(RateLimitUnavailableMixin, generic.FormView):
 
 
 class ProjectDetailView(generic.DetailView):
+    """Render a project by primary key with prefetched images, or return 404."""
+
     model = Project
     template_name = "main/project_detail.html"
     context_object_name = "project"
@@ -125,6 +145,11 @@ class ProjectDetailView(generic.DetailView):
 
 
 class ProjectListView(generic.ListView):
+    """List projects by optional valid category, newest first, six per page.
+
+    Unsupported categories show all projects; invalid pages return 404.
+    """
+
     model = Project
     template_name = "main/project_list.html"
     context_object_name = "projects"
