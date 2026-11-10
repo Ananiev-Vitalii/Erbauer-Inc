@@ -2,7 +2,6 @@ import calendar
 import re
 
 from django import forms
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -19,8 +18,6 @@ from account.services.simple_invoice_period import (
     get_available_invoice_years,
     validate_invoice_period_available,
 )
-
-User = get_user_model()
 
 
 class EmployeeContactForm(forms.ModelForm):
@@ -48,21 +45,6 @@ class EmployeeContactForm(forms.ModelForm):
             return ""
 
         return f"({normalized[:3]}) " f"{normalized[3:6]}-" f"{normalized[6:]}"
-
-    def clean_email(self):
-        email = self.cleaned_data["email"]
-        current_user = self.instance.user
-
-        if (
-            User.objects.exclude(pk=current_user.pk)
-            .filter(email__iexact=email)
-            .exists()
-        ):
-            raise forms.ValidationError(
-                _("A user with this email " "is already registered.")
-            )
-
-        return email
 
     def clean_street_address(self):
         street_address = self.cleaned_data.get(

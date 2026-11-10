@@ -1,14 +1,16 @@
+from django.http import HttpRequest, HttpResponse
 from django.views import generic
 from django.db import transaction
+from django.db.models import Value
+from django.db.models.functions import Lower
 from django.urls import reverse_lazy
 from django.shortcuts import redirect
 from django.contrib.auth import views as auth_views
 from django.contrib.auth import get_user_model, login
+from django.contrib import messages
 from django.utils.translation import gettext_lazy as _
 
 from core.mixins import RateLimitUnavailableMixin
-
-from main.models import CompanyProfile
 
 from user import forms
 from user import mixins
@@ -17,16 +19,19 @@ from user.services.rate_limits.login import (
     get_login_cooldown_message,
     reset_login_rate_limit,
     register_login_attempt,
+    register_login_captcha_failure,
 )
 from user.services.rate_limits.resend_verification import (
     get_resend_verification_cooldown_message,
     get_resend_verification_rate_limit_state,
     register_resend_verification_attempt,
+    register_resend_verification_captcha_failure,
     get_resend_verification_success_message,
 )
 
 from user.services.rate_limits.password_reset import (
     register_password_reset_attempt,
+    register_password_reset_captcha_failure,
     get_password_reset_cooldown_message,
     get_password_reset_rate_limit_state,
 )
@@ -37,35 +42,26 @@ from user.services.rate_limits.registration import (
     register_registration_attempt,
 )
 
-from user.services.email import send_verification_email
+from user.services.email import get_email_company_name, send_verification_email
+from user.services.registration import RegistrationConflict, register_employee_user
 from user.services.tokens import get_user_from_verification_data
-
-from account.models import Profile
 
 User = get_user_model()
 
 
-# <-- Register -->
 class UserRegistrationView(
     RateLimitUnavailableMixin,
     mixins.TurnstileMixin,
     mixins.AnonymousRequiredMixin,
     generic.CreateView,
 ):
-    """
-    1) Даем доступ к странице только неавторизованым пользователям
-    2) Регистрация только сотрудников компании
-    3) Перед авторизацией проходим верификацию, функция которая будет отправлять сообщение на почту
-    4) Создаем пользователя с is_active = False и перенаправляем на страницу с сообщением (проверьте почту)
-    5) Turnstile captcha
-    6) Ограничиваем количество попыток регистраций по "ip" при невалидных данных
-    """
+    """Coordinate employee registration, CAPTCHA, and post-commit email feedback."""
 
     template_name = "registration/register.html"
     form_class = forms.UserRegistrationForm
     turnstile_error_message = _("The captcha check failed. Please try again.")
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         state = get_registration_rate_limit_state(request)
         if state.blocked:
             self.object = None
@@ -77,31 +73,37 @@ class UserRegistrationView(
 
         return super().post(request, *args, **kwargs)
 
-    def form_valid(self, form):
+    def form_valid(self, form: forms.UserRegistrationForm) -> HttpResponse:
+        """Register validated data and report email failures after commit."""
         if not self.is_turnstile_valid():
             return self.handle_turnstile_failure(form)
 
-        employee = form.employee
+        user = form.save(commit=False)
+        # Preserve the submitted value for the database identity recheck.
+        user.email = form.cleaned_data["email"]
 
-        with transaction.atomic():
-            user = form.save(commit=False)
-            user.email = employee.email
-            user.first_name = employee.first_name_en or employee.first_name
-            user.last_name = employee.last_name_en or employee.last_name
-            user.is_active = False
-            user.save()
+        def send_after_commit(created_user: User) -> None:
+            if not send_verification_email(self.request, created_user):
+                messages.warning(
+                    self.request,
+                    _(
+                        "Your account has been created, but we could not "
+                        "send the verification email. Please request "
+                        "another verification email later."
+                    ),
+                )
 
-            employee.user = user
-            employee.save(update_fields=["user"])
+        try:
+            self.object = register_employee_user(
+                employee_id=form.employee.pk, user=user, on_created=send_after_commit
+            )
+        except RegistrationConflict as error:
+            form.add_error("email", str(error))
+            return self.form_invalid(form)
 
-            Profile.objects.create(employee=employee)
-
-            transaction.on_commit(lambda: send_verification_email(self.request, user))
-
-        self.object = user
         return redirect("user:confirm_user")
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: forms.UserRegistrationForm) -> HttpResponse:
         self.object = None
         state = register_registration_attempt(self.request)
 
@@ -113,39 +115,33 @@ class UserRegistrationView(
 
 class ConfirmUser(
     RateLimitUnavailableMixin,
-    mixins.TurnstileMixin,
+    mixins.RateLimitedTurnstileMixin,
     mixins.AnonymousRequiredMixin,
     generic.FormView,
 ):
-    """
-    1) Даем доступ к странице только неавторизованым пользователям
-    2) Ограничиваем количество повторных отправок письма по полям: ["ip", "email"]
-    3) Повторная отправка только если пользователь is_active=False
-    4) Показываем service/success message прямо в форме
-    5) Turnstile captcha
-    """
+    """Resend pending-account verification with neutral responses and rate limiting."""
 
     template_name = "registration/confirm_user.html"
     form_class = forms.ResendVerificationEmailForm
     turnstile_error_message = _("The captcha check failed. Please try again.")
 
-    def form_valid(self, form):
-        if not self.is_turnstile_valid():
-            return self.handle_turnstile_failure(form)
+    get_email_rate_limit_state = staticmethod(get_resend_verification_rate_limit_state)
+    register_email_attempt = staticmethod(register_resend_verification_attempt)
+    register_captcha_failure = staticmethod(
+        register_resend_verification_captcha_failure
+    )
+    get_email_cooldown_message = staticmethod(get_resend_verification_cooldown_message)
 
+    def form_valid(self, form: forms.ResendVerificationEmailForm) -> HttpResponse:
         email = form.cleaned_data["email"]
 
-        state = get_resend_verification_rate_limit_state(self.request, email)
-        if state.blocked:
-            form.service_message = get_resend_verification_cooldown_message(state)
-            return self.render_to_response(self.get_context_data(form=form))
-
-        state = register_resend_verification_attempt(self.request, email)
-        if state.blocked:
-            form.service_message = get_resend_verification_cooldown_message(state)
-            return self.render_to_response(self.get_context_data(form=form))
-
-        user = User.objects.filter(email__iexact=email, is_active=False).first()
+        user = (
+            User.objects.alias(_email_lower=Lower("email"))
+            .filter(
+                _email_lower=Lower(Value(email)), is_active=False, is_verified=False
+            )
+            .first()
+        )
 
         if user:
             send_verification_email(self.request, user)
@@ -157,19 +153,14 @@ class ConfirmUser(
 
 
 @transaction.atomic
-def verify_user(request, uidb64, token):
-    """
-    1) Находим пользователя по валидному uid/token
-    2) Если срок действия токена истек редиректим на invalid_verify
-    3) Активируем и верифицируем пользователя
-    4) Логиним в систему и отправляем на главную
-    """
+def verify_user(request: HttpRequest, uidb64: str, token: str) -> HttpResponse:
+    """Lock and verify a pending account, then log in only after activation."""
     user = get_user_from_verification_data(uidb64, token)
 
     if not user:
         return redirect("user:invalid_verify")
 
-    if not user.is_active:
+    if not user.is_active and not user.is_verified:
         user.is_active = True
         user.is_verified = True
         user.save(update_fields=["is_active", "is_verified"])
@@ -182,44 +173,62 @@ class InvalidVerify(generic.TemplateView):
     template_name = "registration/invalid_verify.html"
 
 
-# < -- Login -->
 class LoginUser(
     RateLimitUnavailableMixin,
     mixins.TurnstileMixin,
     auth_views.LoginView,
 ):
-    """
-    1) Лимитируем попытки логина по полям: ["ip", "email"]
-    2) После успешного логина сбрасываем счетчики
-    3) Turnstile captcha
-    """
+    """Gate Django login with CAPTCHA and separate failure counters."""
 
     template_name = "registration/login.html"
     authentication_form = forms.UserAuthenticationForm
     redirect_authenticated_user = True
     turnstile_error_message = _("Please confirm that you are not a robot.")
 
-    def post(self, request, *args, **kwargs):
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         state = get_login_rate_limit_state(request)
         if state.blocked:
             form = self.authentication_form(
                 request=request,
                 data=request.POST or None,
                 service_message=get_login_cooldown_message(state),
+                allow_authentication=False,
             )
             return self.render_to_response(self.get_context_data(form=form))
 
-        if not self.is_turnstile_valid():
-            form = self.authentication_form(request=request, data=request.POST or None)
-            return self.handle_turnstile_failure(form)
+        captcha_valid = self.is_turnstile_valid()
+        state = get_login_rate_limit_state(request)
+        if state.blocked:
+            form = self.authentication_form(
+                request=request,
+                data=request.POST or None,
+                service_message=get_login_cooldown_message(state),
+                allow_authentication=False,
+            )
+            return self.render_to_response(self.get_context_data(form=form))
+
+        if not captcha_valid:
+            state = register_login_captcha_failure(request)
+            form = self.authentication_form(
+                request=request,
+                data=request.POST or None,
+                allow_authentication=False,
+                service_message=(
+                    get_login_cooldown_message(state)
+                    if state.blocked
+                    else self.turnstile_error_message
+                ),
+            )
+            # Render directly: form_invalid() accounts only for invalid credentials.
+            return self.render_to_response(self.get_context_data(form=form))
 
         return super().post(request, *args, **kwargs)
 
-    def form_valid(self, form):
+    def form_valid(self, form: forms.UserAuthenticationForm) -> HttpResponse:
         reset_login_rate_limit(self.request)
         return super().form_valid(form)
 
-    def form_invalid(self, form):
+    def form_invalid(self, form: forms.UserAuthenticationForm) -> HttpResponse:
         state = register_login_attempt(self.request)
 
         if state.blocked:
@@ -228,19 +237,13 @@ class LoginUser(
         return self.render_to_response(self.get_context_data(form=form))
 
 
-# <-- Password reset -->
 class CustomPasswordResetView(
     RateLimitUnavailableMixin,
-    mixins.TurnstileMixin,
+    mixins.RateLimitedTurnstileMixin,
     mixins.AnonymousRequiredMixin,
     auth_views.PasswordResetView,
 ):
-    """
-    1) Доступ только анонимным пользователям
-    2) Ограничение количества попыток по  ["ip", "email"]
-    3) Turnstile captcha
-    4) Стандартный Django password reset flow
-    """
+    """Apply CAPTCHA and rate limits before Django password reset."""
 
     form_class = forms.CustomPasswordResetForm
     template_name = "registration/password_reset_form.html"
@@ -248,24 +251,14 @@ class CustomPasswordResetView(
     success_url = reverse_lazy("user:password-reset-done")
     turnstile_error_message = _("The captcha check failed. Please try again.")
 
-    def form_valid(self, form):
-        if not self.is_turnstile_valid():
-            return self.handle_turnstile_failure(form)
+    get_email_rate_limit_state = staticmethod(get_password_reset_rate_limit_state)
+    register_email_attempt = staticmethod(register_password_reset_attempt)
+    register_captcha_failure = staticmethod(register_password_reset_captcha_failure)
+    get_email_cooldown_message = staticmethod(get_password_reset_cooldown_message)
 
-        email = form.cleaned_data["email"]
-
-        state = get_password_reset_rate_limit_state(self.request, email)
-        if state.blocked:
-            form.service_message = get_password_reset_cooldown_message(state)
-            return self.render_to_response(self.get_context_data(form=form))
-
-        state = register_password_reset_attempt(self.request, email)
-        if state.blocked:
-            form.service_message = get_password_reset_cooldown_message(state)
-            return self.render_to_response(self.get_context_data(form=form))
-
+    def form_valid(self, form: forms.CustomPasswordResetForm) -> HttpResponse:
         self.extra_email_context = {
-            "company_base": CompanyProfile.objects.only("name").get(is_active=True),
+            "company_base": {"name": get_email_company_name()},
         }
 
         return super().form_valid(form)

@@ -86,6 +86,17 @@ class CompanyProfile(models.Model):
         verbose_name = _("Company Profile")
         verbose_name_plural = _("Company Profiles")
         ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["is_active"],
+                condition=models.Q(is_active=True),
+                name="main_single_active_company_profile",
+                violation_error_message=_(
+                    "Only one company profile can be active. "
+                    "Deactivate the current profile first."
+                ),
+            ),
+        ]
 
     def __str__(self) -> str:
         return self.name

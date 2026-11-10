@@ -1,4 +1,10 @@
+from django.utils.functional import Promise
+from collections.abc import Iterator
+
 from django import forms
+from django.contrib.auth.base_user import AbstractBaseUser
+from django.db.models import Value
+from django.db.models.functions import Lower
 from crispy_forms.helper import FormHelper
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
@@ -14,7 +20,7 @@ class BaseStyledForm:
     turnstile_submit_css_id = "form-submit-btn"
     submit_css_class = "base_submit_btn"
 
-    def init_form_helper(self):
+    def init_form_helper(self) -> None:
         self.helper = FormHelper()
         self.helper.form_method = "post"
         self.helper.form_class = "base-form"
@@ -22,7 +28,7 @@ class BaseStyledForm:
         self.helper.form_show_labels = False
         self.helper.form_show_errors = False
 
-    def style_fields(self):
+    def style_fields(self) -> None:
         for field_name, field in self.fields.items():
             if isinstance(field.widget, forms.CheckboxInput):
                 continue
@@ -37,7 +43,7 @@ class BaseStyledForm:
                 }
             )
 
-    def get_turnstile_html(self, extra_classes="mt-3"):
+    def get_turnstile_html(self, extra_classes: str = "mt-3") -> HTML:
         classes = f"cf-turnstile {extra_classes}".strip()
         return HTML(f"""
             <div
@@ -51,7 +57,12 @@ class BaseStyledForm:
             ></div>
             """)
 
-    def get_turnstile_submit(self, name="submit", value="Submit", css_class=None):
+    def get_turnstile_submit(
+        self,
+        name: str = "submit",
+        value: str | Promise = "Submit",
+        css_class: str | None = None,
+    ) -> HTML:
         return HTML(f"""
             <button
                 type="submit"
@@ -83,7 +94,7 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
         model = User
         fields = ["email", "password1", "password2", "privacy_policy"]
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.service_message = kwargs.pop("service_message", "")
         super().__init__(*args, **kwargs)
         self.init_form_helper()
@@ -96,7 +107,8 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" '
+                'with error_mode="default" %}'
             ),
             Field("email"),
             Field("password1", template="user/forms/fields/password.html"),
@@ -114,7 +126,8 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
                             {privacy_policy_text}
                             <span class="external-icon">
                               <svg viewBox="0 0 24 24" aria-hidden="true">
-                                <path d="M14 3h7v7h-2V6.41l-9.29 9.3-1.42-1.42 9.3-9.29H14V3z"/>
+                                <path d="M14 3h7v7h-2V6.41l-9.29\
+ 9.3-1.42-1.42 9.3-9.29H14V3z"/>
                                 <path d="M5 5h6v2H7v10h10v-4h2v6H5V5z"/>
                               </svg>
                             </span>
@@ -129,11 +142,19 @@ class UserRegistrationForm(BaseStyledForm, auth_forms.UserCreationForm):
             self.get_turnstile_submit(value=_("Register")),
         )
 
-    def clean_email(self):
-        email = self.cleaned_data["email"].casefold()
-        employee = Employee.objects.filter(email__iexact=email, is_active=True).first()
+    def clean_email(self) -> str:
+        email = self.cleaned_data["email"]
+        employee = (
+            Employee.objects.rewrite(False).alias(_email_lower=Lower("email"))
+            .filter(_email_lower=Lower(Value(email)), is_active=True)
+            .first()
+        )
 
-        if User.objects.filter(email__iexact=email).exists():
+        if (
+            User.objects.alias(_email_lower=Lower("email"))
+            .filter(_email_lower=Lower(Value(email)))
+            .exists()
+        ):
             raise forms.ValidationError(_("User with this email already exists"))
 
         if not employee:
@@ -160,26 +181,28 @@ class ResendVerificationEmailForm(BaseStyledForm, forms.Form):
         ),
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.service_message = kwargs.pop("service_message", "")
         self.success_message = kwargs.pop("success_message", "")
         super().__init__(*args, **kwargs)
         self.init_form_helper()
         self.helper.layout = Layout(
             HTML(
-                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" '
+                'with error_mode="default" %}'
             ),
             Field("email"),
             self.get_turnstile_html(),
             self.get_turnstile_submit(value=_("Resend verification email")),
         )
 
-    def clean_email(self):
-        return self.cleaned_data["email"].casefold()
+    def clean_email(self) -> str:
+        return self.cleaned_data["email"]
 
 
 class UserAuthenticationForm(BaseStyledForm, auth_forms.AuthenticationForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, allow_authentication: bool = True, **kwargs) -> None:
+        self.allow_authentication = allow_authentication
         self.service_message = kwargs.pop("service_message", "")
         super().__init__(*args, **kwargs)
         self.init_form_helper()
@@ -187,7 +210,8 @@ class UserAuthenticationForm(BaseStyledForm, auth_forms.AuthenticationForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "user/forms/includes/form_errors.html" with error_mode="login" %}'
+                '{% include "user/forms/includes/form_errors.html" '
+                'with error_mode="login" %}'
             ),
             Field("username"),
             Field("password", template="user/forms/fields/password.html"),
@@ -195,9 +219,18 @@ class UserAuthenticationForm(BaseStyledForm, auth_forms.AuthenticationForm):
             self.get_turnstile_submit(value=_("Log in")),
         )
 
+    def clean(self) -> dict[str, str]:
+        """Skip authentication for rejected requests, even during lazy rendering."""
+        if not self.allow_authentication:
+            raise forms.ValidationError(
+                self.service_message or _("Please confirm that you are not a robot."),
+                code="authentication_blocked",
+            )
+        return super().clean()
+
 
 class CustomPasswordResetForm(BaseStyledForm, auth_forms.PasswordResetForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.service_message = kwargs.pop("service_message", "")
         super().__init__(*args, **kwargs)
         self.init_form_helper()
@@ -205,19 +238,27 @@ class CustomPasswordResetForm(BaseStyledForm, auth_forms.PasswordResetForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" '
+                'with error_mode="default" %}'
             ),
             Field("email"),
             self.get_turnstile_html(),
             self.get_turnstile_submit(value=_("Send an email")),
         )
 
-    def clean_email(self):
-        return self.cleaned_data["email"].casefold()
+    def clean_email(self) -> str:
+        return self.cleaned_data["email"]
+
+    def get_users(self, email: str) -> Iterator[AbstractBaseUser]:
+        """Select active users by database-lowered email with usable passwords."""
+        users = User.objects.alias(_email_lower=Lower("email")).filter(
+            _email_lower=Lower(Value(email)), is_active=True
+        )
+        return (user for user in users if user.has_usable_password())
 
 
 class CustomSetPasswordForm(BaseStyledForm, auth_forms.SetPasswordForm):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.init_form_helper()
         self.style_fields()
@@ -227,7 +268,8 @@ class CustomSetPasswordForm(BaseStyledForm, auth_forms.SetPasswordForm):
 
         self.helper.layout = Layout(
             HTML(
-                '{% include "user/forms/includes/form_errors.html" with error_mode="default" %}'
+                '{% include "user/forms/includes/form_errors.html" '
+                'with error_mode="default" %}'
             ),
             Field("new_password1", template="user/forms/fields/password.html"),
             Field("new_password2", template="user/forms/fields/password.html"),

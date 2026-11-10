@@ -21,6 +21,11 @@
 - [Алгоритми views](main/views.md) — обробка запитів, завантаження даних,
   валідація та rate limiting контактної форми, постановка Celery-задач і відповіді.
 
+## User
+
+- [Алгоритми views](user/views.md) — реєстрація працівника, authentication,
+  verification, password reset, межі транзакцій та CAPTCHA rate limiting.
+
 ## Додавання документації
 
 Документацію додатків зберігайте за шляхом

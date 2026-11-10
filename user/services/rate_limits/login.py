@@ -18,17 +18,19 @@ COOLDOWN_SECONDS = settings.LOGIN_COOLDOWN
 
 
 def get_login_identifier(request: HttpRequest) -> str:
-    return (request.POST.get("username") or "").strip().casefold()
+    return (request.POST.get("username") or "").strip().lower()
 
 
 def get_login_rate_limit_state(request: HttpRequest) -> RateLimitState:
     email = get_login_identifier(request)
+    ip = get_client_ip_key(request)
 
     return get_rate_limit_state(
         scope=SCOPE,
         fields=[
-            RateLimitField(name="ip", value=get_client_ip_key(request)),
+            RateLimitField(name="ip", value=ip),
             RateLimitField(name="email", value=email),
+            RateLimitField(name="captcha_ip", value=ip),
         ],
         attempts_limit=ATTEMPTS,
     )
@@ -49,14 +51,27 @@ def register_login_attempt(request: HttpRequest) -> RateLimitState:
     )
 
 
+def register_login_captcha_failure(request: HttpRequest) -> RateLimitState:
+    """Count failed CAPTCHA only against its separate IP counter."""
+    return register_rate_limit_attempt(
+        scope=SCOPE,
+        fields=[RateLimitField(name="captcha_ip", value=get_client_ip_key(request))],
+        attempts_limit=ATTEMPTS,
+        window_seconds=WINDOW_SECONDS,
+        cooldown_seconds=COOLDOWN_SECONDS,
+    )
+
+
 def reset_login_rate_limit(request: HttpRequest) -> None:
     email = get_login_identifier(request)
+    ip = get_client_ip_key(request)
 
     reset_rate_limit(
         scope=SCOPE,
         fields=[
-            RateLimitField(name="ip", value=get_client_ip_key(request)),
+            RateLimitField(name="ip", value=ip),
             RateLimitField(name="email", value=email),
+            RateLimitField(name="captcha_ip", value=ip),
         ],
     )
 

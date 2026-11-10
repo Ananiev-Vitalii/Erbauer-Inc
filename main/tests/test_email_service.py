@@ -8,8 +8,8 @@ from main.tests.helpers import create_company
 
 @override_settings(COMPANY_CONTACT_EMAIL="recipient@example.invalid")
 class ContactEmailServiceTests(TestCase):
-    def test_payload_contains_contact_data_and_latest_active_company(self) -> None:
-        create_company("Older company")
+    def test_payload_contains_contact_data_and_active_company(self) -> None:
+        create_company("Older company", active=False)
         active = create_company("Current company")
         create_company("Inactive company", active=False)
         data = {"name": "Visitor", "phone": "+16045550123", "message": "Question"}

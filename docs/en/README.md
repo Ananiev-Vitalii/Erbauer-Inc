@@ -21,6 +21,11 @@ English is the primary documentation language. A supplementary
 - [View Algorithms](main/views.md) — request handling, data loading, contact form
   validation and rate limiting, Celery submission, and response outcomes.
 
+## User
+
+- [View Algorithms](user/views.md) — employee registration, authentication,
+  verification, password reset, transaction boundaries, and CAPTCHA rate limiting.
+
 ## Adding Documentation
 
 Store application documentation at `docs/<language>/<django_application>/<document>.md`.

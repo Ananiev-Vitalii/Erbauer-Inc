@@ -2649,3 +2649,11 @@ msgstr "Надіслати повідомлення"
 #, python-format
 msgid "Show services page %(page_number)s"
 msgstr "Показати сторінку послуг %(page_number)s"
+
+#: user/views.py
+msgid ""
+"Your account has been created, but we could not send the verification email. "
+"Please request another verification email later."
+msgstr ""
+"Ваш обліковий запис створено, але не вдалося надіслати лист підтвердження. "
+"Будь ласка, запросіть повторний лист підтвердження пізніше."

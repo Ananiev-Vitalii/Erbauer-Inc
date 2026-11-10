@@ -3,13 +3,15 @@ from datetime import date
 from decimal import Decimal
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import (
     MaxValueValidator,
     MinValueValidator,
     RegexValidator,
 )
-from django.db import models
+from django.db import models, router, transaction
+from django.db.models.functions import Lower
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -30,8 +32,8 @@ def current_invoice_month() -> int:
 
 
 def simple_invoice_pdf_path(
-    instance: "EmployeeSimpleInvoice",
-    filename: str,
+        instance: "EmployeeSimpleInvoice",
+        filename: str,
 ) -> str:
     return (
         f"invoices/employee-{instance.employee_id}/" f"invoice-{instance.id}/{filename}"
@@ -39,8 +41,8 @@ def simple_invoice_pdf_path(
 
 
 def cheatsheet_step_image_path(
-    instance: "CheatSheetStep",
-    filename: str,
+        instance: "CheatSheetStep",
+        filename: str,
 ) -> str:
     cheatsheet_slug = slugify(instance.cheatsheet.name)
 
@@ -53,8 +55,8 @@ def cheatsheet_step_image_path(
 
 
 def profile_directory_path(
-    instance: "Profile",
-    filename: str,
+        instance: "Profile",
+        filename: str,
 ) -> str:
     profile_slug = slugify(
         f"{instance.employee.last_name}_" f"{instance.employee.email}"
@@ -180,22 +182,35 @@ class Employee(models.Model):
     class Meta:
         verbose_name = _("Employee")
         verbose_name_plural = _("Employees")
+        constraints = [
+            models.UniqueConstraint(Lower("email"), name="employee_email_lower_unique"),
+        ]
 
-    def save(
-        self,
-        *args,
-        **kwargs,
-    ) -> None:
-        super().save(
-            *args,
-            **kwargs,
-        )
+    def clean(self) -> None:
+        """Validate the linked user's email before synchronizing it on save."""
+        super().clean()
+        if self.user_id and (
+                get_user_model().objects.exclude(pk=self.user_id)
+                        .alias(_email_lower=Lower("email"))
+                        .filter(_email_lower=Lower(models.Value(self.email)))
+                        .exists()
+        ):
+            raise ValidationError(
+                {"email": _("A user with this email is already registered.")}
+            )
 
-        # noinspection PyUnresolvedReferences
-        if self.user_id and self.user.email != self.email:
-            self.user.email = self.email
+    def save(self, *args, **kwargs) -> None:
+        database = kwargs.get("using") or router.db_for_write(type(self), instance=self)
+        with transaction.atomic(using=database):
+            super().save(
+                *args,
+                **kwargs,
+            )
 
-            self.user.save(update_fields=["email"])
+            # Roll back both writes if the linked user's email is not unique.
+            if self.user_id and self.user.email != self.email:
+                self.user.email = self.email
+                self.user.save(using=database, update_fields=["email"])
 
     def __str__(self) -> str:
         return (f"{self.first_name} " f"{self.last_name}").strip() or self.email
@@ -426,9 +441,9 @@ class EmployeeSimpleInvoice(models.Model):
                 )
 
         if (
-            self.start_day is not None
-            and self.end_day is not None
-            and self.start_day > self.end_day
+                self.start_day is not None
+                and self.end_day is not None
+                and self.start_day > self.end_day
         ):
             errors["end_day"] = _("End day cannot be earlier " "than start day.")
 
@@ -538,14 +553,14 @@ class EmployeeWorkHours(models.Model):
 
         if self.invoice_id:
             if self.employee_id is not None and (
-                self.invoice.employee_id != self.employee_id
+                    self.invoice.employee_id != self.employee_id
             ):
                 errors["invoice"] = _(
                     "The invoice must belong " "to the same employee."
                 )
 
             if self.work_date is not None and not (
-                self.invoice.period_start <= self.work_date <= self.invoice.period_end
+                    self.invoice.period_start <= self.work_date <= self.invoice.period_end
             ):
                 errors["invoice"] = _(
                     "The work date must be " "within the invoice period."

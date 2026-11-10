@@ -139,6 +139,38 @@ ANYMAIL = {
 }
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "formatters": {
+        "auth_email": {
+            "()": "config.logging.EmailErrorFormatter",
+            "format": "{levelname} {name}: {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "auth_email_console": {
+            "class": "logging.StreamHandler",
+            "level": "ERROR",
+            "stream": "ext://sys.stderr",
+            "formatter": "auth_email",
+        },
+    },
+    "loggers": {
+        "user.services.email": {
+            "handlers": ["auth_email_console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.contrib.auth": {
+            "handlers": ["auth_email_console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
+
 COMPANY_CONTACT_EMAIL = os.getenv("COMPANY_CONTACT_EMAIL")
 SIMPLE_INVOICE_RECIPIENT_EMAIL = os.getenv("SIMPLE_INVOICE_RECIPIENT_EMAIL")
 
