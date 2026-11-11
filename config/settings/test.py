@@ -1,7 +1,7 @@
 """Isolated settings for the local backend test suite."""
 
 import os
-from pathlib import Path
+from pathlib import Path as _Path
 from tempfile import gettempdir
 from uuid import uuid4
 
@@ -67,7 +67,7 @@ os.environ.update(
     }
 )
 
-from config.settings.base import *  # noqa: E402,F403
+from config.settings.base import *  # noqa: E402,F401,F403
 
 DEBUG = False
 ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
@@ -122,7 +122,7 @@ ADMINS = []
 MANAGERS = []
 
 # The runner replaces this fallback with a unique, managed temporary directory.
-MEDIA_ROOT = Path(gettempdir()) / "erbauer-backend-tests"
+MEDIA_ROOT = _Path(gettempdir()) / "erbauer-backend-tests"
 MEDIA_URL = "/test-media/"
 STORAGES = {
     "default": {"BACKEND": "django.core.files.storage.FileSystemStorage"},

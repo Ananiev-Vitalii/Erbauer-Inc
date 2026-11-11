@@ -9,6 +9,11 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout as auth_logout
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.views import redirect_to_login
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 
 from user.models import User
 from main.models import CompanyProfile
@@ -51,6 +56,25 @@ class CustomAdminSite(AdminSite):
         auth_logout(request)
         return redirect("main:home")
 
+    @method_decorator(never_cache)
+    @method_decorator(csrf_protect)
+    def login(
+        self,
+        request: HttpRequest,
+        extra_context: dict[str, object] | None = None,
+    ) -> HttpResponse:
+        """Use the shared login without accepting admin authentication POSTs."""
+        if request.method != "GET":
+            raise PermissionDenied
+
+        index_url = reverse(f"{self.name}:index")
+        if request.user.is_authenticated:
+            if not self.has_permission(request):
+                raise PermissionDenied
+            return redirect(index_url)
+
+        return redirect_to_login(index_url, reverse("user:login"))
+
     def admin_view(
         self,
         view: Callable[..., HttpResponse],
@@ -61,7 +85,9 @@ class CustomAdminSite(AdminSite):
         def inner(request: HttpRequest, *args, **kwargs) -> HttpResponse:
 
             if not request.user.is_authenticated:
-                return redirect("user:login")
+                return redirect_to_login(
+                    request.get_full_path(), reverse("user:login")
+                )
 
             if not self.has_permission(request):
                 raise PermissionDenied
@@ -107,6 +133,14 @@ class UserAdmin(BaseUserAdmin):
             },
         ),
     )
+
+    def get_readonly_fields(
+        self, request: HttpRequest, obj: User | None = None
+    ) -> tuple[str, ...]:
+        fields = super().get_readonly_fields(request, obj)
+        if obj is not None and hasattr(obj, "employee"):
+            return (*fields, "email")
+        return tuple(fields)
 
     def add_view(
         self,
