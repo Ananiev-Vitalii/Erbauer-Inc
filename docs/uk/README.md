@@ -26,6 +26,12 @@
 - [Алгоритми views](user/views.md) — реєстрація працівника, authentication,
   verification, password reset, межі транзакцій та CAPTCHA rate limiting.
 
+## Account
+
+- [Робочі процеси Account](account/workflows.md) — профілі працівників, доступ до
+  робочих годин, статуси й транзакції Invoice, Celery/файли/email, retention,
+  кешування Cheat Sheet, логування та backend-перевірки.
+
 ## Додавання документації
 
 Документацію додатків зберігайте за шляхом

@@ -26,6 +26,12 @@ English is the primary documentation language. A supplementary
 - [View Algorithms](user/views.md) — employee registration, authentication,
   verification, password reset, transaction boundaries, and CAPTCHA rate limiting.
 
+## Account
+
+- [Account Workflows](account/workflows.md) — employee profiles, work-hour access,
+  invoice states and transactions, Celery/file/email processing, retention,
+  Cheat Sheet caching, logging, and backend checks.
+
 ## Adding Documentation
 
 Store application documentation at `docs/<language>/<django_application>/<document>.md`.

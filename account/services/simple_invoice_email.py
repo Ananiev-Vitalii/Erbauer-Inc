@@ -2,9 +2,9 @@ from pathlib import Path
 
 from django.conf import settings
 
-from core.services.email import EmailPayload, EmailAttachment, send_html_email
 from account.models import EmployeeSimpleInvoice
-from main.models import CompanyProfile
+from core.services.email import EmailAttachment, EmailPayload, send_html_email
+from user.services.email import get_email_company_name
 
 
 def send_simple_invoice_email(
@@ -13,15 +13,12 @@ def send_simple_invoice_email(
     pdf_path: Path,
 ) -> None:
     employee = invoice.employee
-    company_name = CompanyProfile.objects.values_list("name", flat=True).first()
+    company_name = get_email_company_name()
 
     pdf_content = pdf_path.read_bytes()
     pdf_filename = pdf_path.name
 
-    recipients = [
-        settings.SIMPLE_INVOICE_RECIPIENT_EMAIL,
-        employee.email,
-    ]
+    recipients = [settings.SIMPLE_INVOICE_RECIPIENT_EMAIL, employee.email]
 
     payload = EmailPayload(
         subject=f"{employee.first_name} {employee.last_name}"

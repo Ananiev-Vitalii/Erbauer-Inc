@@ -2,7 +2,7 @@
 
 We use Django's standard testing framework: `unittest`,
 `SimpleTestCase`, `TestCase`, `TransactionTestCase`, and `unittest.mock`.
-This configuration does not add tests or test the frontend.
+The suite covers Python/Django backend behavior, not the frontend.
 
 ## 1. Windows Prerequisites
 
@@ -50,7 +50,7 @@ Run the following commands manually after preparing Docker:
 ```powershell
 python manage.py check --settings=config.settings.test
 python manage.py check --settings=config.settings.test --database default
-python manage.py test main.tests core.tests --settings=config.settings.test --exclude-tag=redis
+python manage.py test main.tests core.tests user.tests account.tests config.tests --settings=config.settings.test --exclude-tag=redis
 ```
 
 The main command always selects test settings explicitly. Neither `manage.py`
@@ -65,24 +65,38 @@ Alternatively, for the current PowerShell process:
 
 ```powershell
 $env:DJANGO_SETTINGS_MODULE = "config.settings.test"
-python manage.py test main.tests core.tests --exclude-tag=redis
+python manage.py test main.tests core.tests user.tests account.tests config.tests --exclude-tag=redis
 Remove-Item Env:DJANGO_SETTINGS_MODULE
 ```
 
 Running `test` without explicitly selecting test settings fails before loading
 the regular `.env`. After testing, do not leave test settings selected in the
-development server configuration. Do not use `--keepdb` during the initial stage.
+development server configuration. Do not use `--keepdb`.
 
-While there are no test modules, Django may report `0 tests` and skip database
-creation. This result does not verify migrations or test database creation.
-We will verify them with the first database tests.
+Backend tests now exist in `main/tests`, `user/tests`, `account/tests` and
+`core/tests`. `config/tests/test_database.py` checks the PostgreSQL database/role,
+connection address and an ORM write/read. A `0 tests` result is not the expected
+outcome for these labels and does not verify database setup.
+
+To run one application's suite:
+
+```powershell
+python manage.py test main.tests --settings=config.settings.test
+python manage.py test user.tests --settings=config.settings.test
+python manage.py test account.tests --settings=config.settings.test
+python manage.py test config.tests.test_database --settings=config.settings.test
+```
+
+All 34 account tests were confirmed passing on PostgreSQL in the main Erbauer
+repository. The combined command above includes the current application suites
+and database isolation test; no new combined-run result is claimed here.
 
 ## 4. PyCharm
 
 Create a separate **Python Run Configuration**:
 
 - Script: `manage.py` in the project root.
-- Parameters: `test main.tests core.tests --settings=config.settings.test --exclude-tag=redis`.
+- Parameters: `test main.tests core.tests user.tests account.tests config.tests --settings=config.settings.test --exclude-tag=redis`.
 - Interpreter: the project `.venv`.
 - Working directory: the project root.
 - Environment: `DJANGO_SETTINGS_MODULE=config.settings.test`.
@@ -100,8 +114,8 @@ provide the runtime guards described below.
 - Email uses the memory backend, with addresses ending in `.invalid`.
 - Celery uses `memory://`, with no result backend, eager mode disabled, and no
   Beat schedule. The runner blocks unmocked `Task.apply_async()` and
-  `Celery.send_task()` calls. Future tests should mock the boundary where it is
-  called. Test task wrappers by calling them directly with the service mocked.
+  `Celery.send_task()` calls. Mock the boundary where it is called. Test task
+  wrappers by calling them directly with the service mocked.
 - Default storage is `FileSystemStorage`. The runner creates a unique
   `TemporaryDirectory` and removes it even if an exception occurs. Running `check`
   does not create this directory; outside the runner, the fallback media path
@@ -128,9 +142,11 @@ was deleted successfully.
 Do not start a worker, Beat, `start.sh`, or the production Dockerfile for tests.
 New external integrations will require a review of the test boundaries.
 
-## 6. Future Redis Integration Tests
+## 6. Redis Integration Tests
 
-The regular suite does not need Redis. For future Lua tests:
+The regular suite does not need Redis. The eight opt-in Lua integration tests
+are in `core/tests/test_rate_limit_integration.py`; a successful run of all eight
+was previously confirmed. Run them separately:
 
 ```powershell
 $env:COMPOSE_DISABLE_ENV_FILE = "1"
@@ -145,7 +161,7 @@ automatically switch the default cache. Redis runs without persistence.
 The `settings.TEST_REDIS_CACHE` setting provides a Django `RedisCache`
 configuration for this endpoint and a random test `KEY_PREFIX`.
 
-Future integration tests must:
+Redis integration tests follow these isolation rules:
 
 1. Use the `redis` tag and skip when `TEST_REDIS_INTEGRATION` is disabled.
 2. Use `override_settings` to temporarily set `TEST_REDIS_CACHE` as
@@ -155,8 +171,9 @@ Future integration tests must:
 5. Never use `FLUSHALL`, `FLUSHDB`, or a global `cache.clear()`.
 6. Treat unavailable Redis as an error, not a skip, when opt-in is enabled.
 
-Without opt-in, Redis calls are blocked. We will verify TTL, concurrency, and
-Lua only after adding integration tests, not through LocMemCache.
+Without opt-in, the Redis integration class is skipped and Redis calls remain
+blocked. These integration tests check TTL, thresholds, cooldown, reset and
+concurrency against real local Redis/Lua, not through LocMemCache.
 
 ## 7. Shutting Down
 

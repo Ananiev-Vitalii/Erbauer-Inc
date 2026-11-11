@@ -239,6 +239,18 @@ msgstr "Профілі"
 msgid "Processing"
 msgstr "Обробляється"
 
+#: .\account\models.py
+msgid "Preparing"
+msgstr "Готується"
+
+#: .\templates\account\profile.html
+msgid "We could not save your changes. Please try again."
+msgstr "Не вдалося зберегти зміни. Будь ласка, спробуйте ще раз."
+
+#: .\templates\account\profile.html
+msgid "Your session may have expired. Refresh the page and sign in again."
+msgstr "Можливо, термін дії сеансу минув. Оновіть сторінку й увійдіть знову."
+
 #: .\account\models.py:235
 msgid "Sent"
 msgstr "Надіслано"
@@ -896,6 +908,18 @@ msgstr ""
 #: .\templates\account\invoice.html:55
 msgid "Invoice processing failed. Please try again."
 msgstr "Обробка інвойсу не вдалася. Будь ласка, спробуйте ще раз."
+
+#: .\account\services\simple_invoice_submission.py
+msgid "Your invoice was saved, but processing failed. Please try again."
+msgstr "Рахунок збережено, але обробка не вдалася. Будь ласка, спробуйте ще раз."
+
+#: .\account\services\simple_invoice_submission.py
+msgid ""
+"Your invoice was saved, but its processing status could not be confirmed. "
+"Check your invoice history before submitting again."
+msgstr ""
+"Рахунок збережено, але не вдалося підтвердити стан його обробки. "
+"Перевірте історію рахунків, перш ніж подавати його повторно."
 
 #: .\templates\account\invoice.html:56
 msgid ""

@@ -142,6 +142,14 @@ DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
+    "filters": {
+        "account_task_failure": {
+            "()": "config.logging.AccountTaskFailureFilter",
+        },
+        "account_cleanup_failure": {
+            "()": "config.logging.AccountCleanupFailureFilter",
+        },
+    },
     "formatters": {
         "auth_email": {
             "()": "config.logging.EmailErrorFormatter",
@@ -150,6 +158,12 @@ LOGGING = {
         },
     },
     "handlers": {
+        "account_console": {
+            "class": "logging.StreamHandler",
+            "level": "NOTSET",
+            "stream": "ext://sys.stderr",
+            "formatter": "auth_email",
+        },
         "auth_email_console": {
             "class": "logging.StreamHandler",
             "level": "ERROR",
@@ -158,6 +172,17 @@ LOGGING = {
         },
     },
     "loggers": {
+        "account": {
+            "handlers": ["account_console"],
+            "level": "NOTSET",
+            "propagate": False,
+        },
+        "celery.app.trace": {
+            "filters": ["account_task_failure"],
+        },
+        "django_cleanup.handlers": {
+            "filters": ["account_cleanup_failure"],
+        },
         "user.services.email": {
             "handlers": ["auth_email_console"],
             "level": "ERROR",

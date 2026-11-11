@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from calendar import month_abbr
 from decimal import Decimal
 from pathlib import Path
@@ -8,6 +10,7 @@ from openpyxl import load_workbook
 from openpyxl.styles import Alignment
 
 from account.models import EmployeeSimpleInvoice
+from account.types import EmployeeAddressData
 
 TEMPLATE_PATH = (
     Path(settings.BASE_DIR) / "account" / "invoice_templates" / "simple-invoice.xlsx"
@@ -20,15 +23,11 @@ def format_decimal(value: Decimal) -> Decimal:
     return Decimal(value).quantize(Decimal("0.01"))
 
 
-def format_work_period(
-    invoice: EmployeeSimpleInvoice,
-) -> str:
+def format_work_period(invoice: EmployeeSimpleInvoice) -> str:
     month = month_abbr[invoice.invoice_month]
 
     if invoice.start_day == invoice.end_day:
-        return (
-            f"Work period: " f"{month} {invoice.start_day}, " f"{invoice.invoice_year}"
-        )
+        return f"Work period: {month} {invoice.start_day}, {invoice.invoice_year}"
 
     return (
         f"Work period: "
@@ -41,7 +40,7 @@ def format_work_period(
 def generate_simple_invoice_xlsx(
     *,
     invoice: EmployeeSimpleInvoice,
-    employee_data: dict,
+    employee_data: EmployeeAddressData,
     output_path: Path,
 ) -> Path:
     """
@@ -60,15 +59,18 @@ def generate_simple_invoice_xlsx(
 
     sheet["G4"] = timezone.localdate(invoice.created_at)
 
-    sheet["C6"] = (f"{employee.last_name_en} " f"{employee.first_name_en}").strip()
+    sheet["C6"] = f"{employee.last_name_en} {employee.first_name_en}".strip()
 
     sheet["C7"] = employee_data["street_address"]
 
-    sheet["C8"] = f'{employee_data["city"]}, ' f'{employee_data["province"]}'
+    sheet["C8"] = f'{employee_data["city"]}, {employee_data["province"]}'
 
     sheet["C9"] = employee_data["postal_code"]
 
     sheet["C10"] = invoice.gst_account_number or ""
+
+    for coordinate in ("C6", "C7", "C8", "C9", "C10"):
+        sheet[coordinate].data_type = "s"
 
     sheet.merge_cells("B14:D14")
 
@@ -92,10 +94,7 @@ def generate_simple_invoice_xlsx(
 
     sheet["G28"] = f"=G26*{wsbc}%"
 
-    output_path.parent.mkdir(
-        parents=True,
-        exist_ok=True,
-    )
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
     workbook.save(output_path)
     workbook.close()

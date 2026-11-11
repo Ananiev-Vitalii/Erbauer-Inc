@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static cache %}
+{% load i18n static %}
 
 {% block title %}
 {{ company_profile.name|default:"Erbauer" }} / {% trans "Cheat sheets" %}
@@ -15,7 +15,6 @@
   <div class="container cheat-sheet-container">
 
     <header class="cheat-sheet-header">
-      {% cache 86400 account_cheat_sheet_intro LANGUAGE_CODE %}
         <p class="cheat-sheet-kicker">
           {% trans "Quick reference" %}
         </p>
@@ -27,7 +26,6 @@
         <p class="cheat-sheet-description">
           {% trans "Choose a guide to view step-by-step instructions." %}
         </p>
-      {% endcache %}
 
       <div
         class="cheat-sheet-dropdown"
@@ -141,12 +139,10 @@
           </div>
         {% else %}
           {% if request.GET.partial %}
-            {% cache 86400 account_cheat_sheet_no_steps LANGUAGE_CODE %}
               <div class="cheat-sheet-empty">
                 <h3>{% trans "No steps yet" %}</h3>
                 <p>{% trans "This cheat sheet does not have any steps added yet." %}</p>
               </div>
-            {% endcache %}
           {% endif %}
         {% endif %}
       {% endpartialdef %}

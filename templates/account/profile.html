@@ -119,13 +119,15 @@
           </div>
 
           {% partialdef contact-form inline %}
-          <div id="profile-contact-form">
+          <div id="profile-contact-form" data-profile-form-response="contact">
             <form
                     method="post"
                     action="{% url 'account:update_contact_details' %}"
                     class="profile-form profile-form--contact"
                     data-contact-details-form
                     data-target="#profile-contact-form"
+                    data-submit-error="{% trans 'We could not save your changes. Please try again.' %}"
+                    data-session-error="{% trans 'Your session may have expired. Refresh the page and sign in again.' %}"
             >
               {% csrf_token %}
 
@@ -144,7 +146,6 @@
                             placeholder="(555) 555-5555"
                             inputmode="tel"
                             autocomplete="tel-national"
-                            maxlength="14"
                             class="profile-phone-input"
                     >
                   </div>
@@ -252,7 +253,6 @@
                           inputmode="text"
                           autocomplete="postal-code"
                           autocapitalize="characters"
-                          maxlength="7"
                           class="profile-postal-code-input"
                   >
 
@@ -310,13 +310,15 @@
         </div>
 
         {% partialdef employee-position-form inline %}
-        <div id="profile-employee-position-form">
+        <div id="profile-employee-position-form" data-profile-form-response="position">
           <form
                   method="post"
                   action="{% url 'account:update_employee_position' %}"
                   class="profile-form"
                   data-employee-position-form
                   data-target="#profile-employee-position-form"
+                  data-submit-error="{% trans 'We could not save your changes. Please try again.' %}"
+                  data-session-error="{% trans 'Your session may have expired. Refresh the page and sign in again.' %}"
           >
             {% csrf_token %}
 
@@ -395,13 +397,15 @@
         </div>
 
         {% partialdef password-form inline %}
-        <div id="profile-password-form">
+        <div id="profile-password-form" data-profile-form-response="password">
           <form
                   method="post"
                   action="{% url 'account:update_password' %}"
                   class="profile-form"
                   data-password-form
                   data-target="#profile-password-form"
+                  data-submit-error="{% trans 'We could not save your changes. Please try again.' %}"
+                  data-session-error="{% trans 'Your session may have expired. Refresh the page and sign in again.' %}"
           >
             {% csrf_token %}
 

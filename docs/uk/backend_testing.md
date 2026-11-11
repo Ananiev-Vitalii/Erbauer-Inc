@@ -2,7 +2,7 @@
 
 Використовуємо стандартний Django testing framework: `unittest`,
 `SimpleTestCase`, `TestCase`, `TransactionTestCase` і `unittest.mock`.
-Ця конфігурація не додає самих тестів і не перевіряє frontend.
+Набір перевіряє Python/Django backend-поведінку, а не frontend.
 
 ## 1. Передумови Windows
 
@@ -50,7 +50,7 @@ Django створює окрему БД `test_erbauer_backend`, застосов
 ```powershell
 python manage.py check --settings=config.settings.test
 python manage.py check --settings=config.settings.test --database default
-python manage.py test main.tests core.tests --settings=config.settings.test --exclude-tag=redis
+python manage.py test main.tests core.tests user.tests account.tests config.tests --settings=config.settings.test --exclude-tag=redis
 ```
 
 Основна команда завжди явно обирає test settings. Звичайний `.env` не
@@ -65,24 +65,38 @@ service/password files не використовуються.
 
 ```powershell
 $env:DJANGO_SETTINGS_MODULE = "config.settings.test"
-python manage.py test main.tests core.tests --exclude-tag=redis
+python manage.py test main.tests core.tests user.tests account.tests config.tests --exclude-tag=redis
 Remove-Item Env:DJANGO_SETTINGS_MODULE
 ```
 
 `test` без явного вибору test settings завершується помилкою до завантаження
 звичайного `.env`. Після тестування не залишайте test settings у конфігурації
-запуску dev-сервера. Не використовуйте `--keepdb` на початковому етапі.
+запуску dev-сервера. Не використовуйте `--keepdb`.
 
-Поки тестових модулів немає, Django може повідомити `0 tests` і пропустити
-створення БД. Такий результат не підтверджує роботу migrations або створення
-тестової БД. Це перевіримо з першими database tests.
+Backend-тести вже існують у `main/tests`, `user/tests`, `account/tests` та
+`core/tests`. `config/tests/test_database.py` перевіряє PostgreSQL database/role,
+адресу підключення та запис/читання через ORM. Результат `0 tests` не є очікуваним
+для цих labels і не підтверджує налаштування тестової БД.
+
+Для запуску набору окремого додатка:
+
+```powershell
+python manage.py test main.tests --settings=config.settings.test
+python manage.py test user.tests --settings=config.settings.test
+python manage.py test account.tests --settings=config.settings.test
+python manage.py test config.tests.test_database --settings=config.settings.test
+```
+
+У головному Erbauer підтверджено успішний запуск усіх 34 тестів account на
+PostgreSQL. Загальна команда вище включає поточні набори додатків та database
+isolation test; нового результату спільного запуску тут не заявлено.
 
 ## 4. PyCharm
 
 Створіть окрему **Python Run Configuration**:
 
 - Script: `manage.py` у корені проєкту.
-- Parameters: `test main.tests core.tests --settings=config.settings.test --exclude-tag=redis`.
+- Parameters: `test main.tests core.tests user.tests account.tests config.tests --settings=config.settings.test --exclude-tag=redis`.
 - Interpreter: проєктна `.venv`.
 - Working directory: корінь проєкту.
 - Environment: `DJANGO_SETTINGS_MODULE=config.settings.test`.
@@ -100,7 +114,7 @@ Django `TEST_RUNNER`. IDE test configurations, які обходять Django ru
 - Email — memory backend, адреси закінчуються на `.invalid`.
 - Celery — `memory://`, без result backend, eager mode і Beat schedule.
   Непідмінені `Task.apply_async()` та `Celery.send_task()` заблоковані runner.
-  У майбутніх tests використовуйте mocks у місці виклику. Task wrapper
+  Використовуйте mocks у місці виклику. Task wrapper
   перевіряйте прямим викликом із підміненим сервісом.
 - Default storage — `FileSystemStorage`. Runner створює унікальний
   `TemporaryDirectory` і прибирає його навіть при винятку. Запуск `check`
@@ -126,9 +140,11 @@ guards тестом може обійти його. Не запускайте te
 Не запускайте worker, Beat, `start.sh` або production Dockerfile для тестів.
 Нові зовнішні інтеграції потребуватимуть перегляду test boundaries.
 
-## 6. Майбутні Redis integration tests
+## 6. Redis integration tests
 
-Redis не потрібен звичайному набору. Для майбутніх Lua tests:
+Redis не потрібен звичайному набору. Вісім opt-in Lua integration tests містяться
+в `core/tests/test_rate_limit_integration.py`; їхній успішний запуск уже було
+підтверджено. Запускайте їх окремо:
 
 ```powershell
 $env:COMPOSE_DISABLE_ENV_FILE = "1"
@@ -143,7 +159,7 @@ Opt-in дозволяє socket connections лише на `127.0.0.1:56379`; ві
 Налаштування `settings.TEST_REDIS_CACHE` містить Django `RedisCache` для
 цього endpoint і випадковий тестовий `KEY_PREFIX`.
 
-Майбутні integration tests мають:
+Redis integration tests дотримуються таких правил ізоляції:
 
 1. Отримати tag `redis` і пропускатися, якщо `TEST_REDIS_INTEGRATION` вимкнений.
 2. Через `override_settings` тимчасово встановити `TEST_REDIS_CACHE` як
@@ -153,8 +169,9 @@ Opt-in дозволяє socket connections лише на `127.0.0.1:56379`; ві
 5. Не використовувати `FLUSHALL`, `FLUSHDB` або глобальний `cache.clear()`.
 6. При ввімкненому opt-in вважати недоступний Redis помилкою, а не skip.
 
-Без opt-in Redis-звернення блокуються. TTL, concurrency і Lua перевірятимемо
-лише після появи integration tests, а не за допомогою LocMemCache.
+Без opt-in клас Redis integration tests пропускається, а Redis-звернення
+залишаються заблокованими. Ці integration tests перевіряють TTL, пороги,
+cooldown, reset і concurrency на реальному локальному Redis/Lua, а не LocMemCache.
 
 ## 7. Завершення
 
