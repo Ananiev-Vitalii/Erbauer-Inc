@@ -1,27 +1,31 @@
+from __future__ import annotations
+
 from datetime import date
 from decimal import Decimal
 
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Q, Sum
+from django.db.models import Q, QuerySet, Sum
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from account.models import (
-    Employee,
-    EmployeeSimpleInvoice,
-    EmployeeWorkHours,
-)
+from account.models import Employee, EmployeeSimpleInvoice, EmployeeWorkHours
 from account.services.simple_invoice_processing import (
+    ACTIVE_INVOICE_STATUSES,
     SimpleInvoiceProcessingCancelled,
+    SimpleInvoiceProcessingExpired,
     expire_stale_simple_invoices_for_employees_month,
     expire_stale_simple_invoices_for_period,
     get_simple_invoice_processing_cutoff,
+    is_simple_invoice_processing_expired,
+    lock_simple_invoice,
+    mark_simple_invoice_failed,
 )
 from account.services.work_hours import get_available_work_months
+from account.types import InvoicePeriodData
 
 BLOCKING_INVOICE_STATUSES = (
-    EmployeeSimpleInvoice.Status.PROCESSING,
+    *ACTIVE_INVOICE_STATUSES,
     EmployeeSimpleInvoice.Status.SENT,
 )
 
@@ -30,16 +34,12 @@ def _get_employee_filter(
     *,
     employee: Employee | None = None,
     employee_user_id: int | None = None,
-) -> dict:
+) -> dict[str, Employee | int]:
     if employee is not None:
-        return {
-            "employee": employee,
-        }
+        return {"employee": employee}
 
     if employee_user_id is not None:
-        return {
-            "employee__user_id": employee_user_id,
-        }
+        return {"employee__user_id": employee_user_id}
 
     raise ValueError("Either employee or employee_user_id must be provided.")
 
@@ -48,9 +48,7 @@ def get_available_invoice_years(
     *,
     reference_date: date | None = None,
 ) -> tuple[int, ...]:
-    available_months = get_available_work_months(
-        reference_date=reference_date,
-    )
+    available_months = get_available_work_months(reference_date=reference_date)
 
     return tuple(dict.fromkeys(month.year for month in available_months))
 
@@ -60,9 +58,7 @@ def get_available_invoice_months(
     year: int,
     reference_date: date | None = None,
 ) -> list[int]:
-    available_months = get_available_work_months(
-        reference_date=reference_date,
-    )
+    available_months = get_available_work_months(reference_date=reference_date)
 
     return sorted(month.month for month in available_months if month.year == year)
 
@@ -75,23 +71,15 @@ def build_invoice_period(
     end_day: int,
 ) -> tuple[date, date]:
     if start_day > end_day:
-        raise ValidationError(_("End day cannot be earlier " "than start day."))
+        raise ValidationError(_("End day cannot be earlier than start day."))
 
     try:
-        start_date = date(
-            year,
-            month,
-            start_day,
-        )
+        start_date = date(year, month, start_day)
 
-        end_date = date(
-            year,
-            month,
-            end_day,
-        )
+        end_date = date(year, month, end_day)
 
     except ValueError as exc:
-        raise ValidationError(_("The selected invoice period " "is invalid.")) from exc
+        raise ValidationError(_("The selected invoice period is invalid.")) from exc
 
     return start_date, end_date
 
@@ -103,9 +91,9 @@ def get_conflicting_invoices(
     employee: Employee | None = None,
     employee_user_id: int | None = None,
     exclude_invoice_id: int | None = None,
-):
+) -> QuerySet[EmployeeSimpleInvoice]:
     if start_date.year != end_date.year or start_date.month != end_date.month:
-        raise ValueError("An invoice period must be " "inside one calendar month.")
+        raise ValueError("An invoice period must be inside one calendar month.")
 
     employee_filter = _get_employee_filter(
         employee=employee,
@@ -122,9 +110,7 @@ def get_conflicting_invoices(
     )
 
     if exclude_invoice_id is not None:
-        queryset = queryset.exclude(
-            pk=exclude_invoice_id,
-        )
+        queryset = queryset.exclude(pk=exclude_invoice_id)
 
     return queryset
 
@@ -161,27 +147,20 @@ def get_invoice_period_conflict_status(
         processing_cutoff = get_simple_invoice_processing_cutoff()
 
         queryset = queryset.filter(
-            Q(
-                status=EmployeeSimpleInvoice.Status.SENT,
-            )
-            | Q(
-                status=EmployeeSimpleInvoice.Status.PROCESSING,
-                created_at__gt=processing_cutoff,
-            )
+            Q(status=EmployeeSimpleInvoice.Status.SENT)
+            | Q(status__in=ACTIVE_INVOICE_STATUSES, created_at__gt=processing_cutoff)
         )
 
-    statuses = set(
-        queryset.values_list(
-            "status",
-            flat=True,
-        )
-    )
+    statuses = set(queryset.values_list("status", flat=True))
 
     if EmployeeSimpleInvoice.Status.SENT in statuses:
         return EmployeeSimpleInvoice.Status.SENT
 
     if EmployeeSimpleInvoice.Status.PROCESSING in statuses:
         return EmployeeSimpleInvoice.Status.PROCESSING
+
+    if EmployeeSimpleInvoice.Status.PREPARING in statuses:
+        return EmployeeSimpleInvoice.Status.PREPARING
 
     return None
 
@@ -223,17 +202,13 @@ def validate_invoice_period_available(
     )
 
     if conflict_status == EmployeeSimpleInvoice.Status.SENT:
-        raise ValidationError(_("The selected period has " "already been invoiced."))
+        raise ValidationError(_("The selected period has already been invoiced."))
 
-    if conflict_status == EmployeeSimpleInvoice.Status.PROCESSING:
-        raise ValidationError(_("The selected period is " "currently being processed."))
+    if conflict_status in ACTIVE_INVOICE_STATUSES:
+        raise ValidationError(_("The selected period is currently being processed."))
 
 
-def is_work_date_locked(
-    *,
-    employee: Employee,
-    work_date: date,
-) -> bool:
+def is_work_date_locked(*, employee: Employee, work_date: date) -> bool:
     expire_stale_simple_invoices_for_period(
         employee=employee,
         start_date=work_date,
@@ -250,12 +225,7 @@ def is_work_date_locked(
     ).exists()
 
 
-def get_locked_work_dates(
-    *,
-    employee: Employee,
-    year: int,
-    month: int,
-) -> set[date]:
+def get_locked_work_dates(*, employee: Employee, year: int, month: int) -> set[date]:
     expire_stale_simple_invoices_for_employees_month(
         employee_ids=(employee.pk,),
         year=year,
@@ -274,21 +244,9 @@ def get_locked_work_dates(
 
     locked_dates = set()
 
-    for (
-        start_day,
-        end_day,
-    ) in invoices:
-        for day in range(
-            start_day,
-            end_day + 1,
-        ):
-            locked_dates.add(
-                date(
-                    year,
-                    month,
-                    day,
-                )
-            )
+    for (start_day, end_day) in invoices:
+        for day in range(start_day, end_day + 1):
+            locked_dates.add(date(year, month, day))
 
     return locked_dates
 
@@ -301,7 +259,7 @@ def get_invoice_period_hours_total(
     employee_user_id: int | None = None,
 ) -> Decimal:
     if start_date > end_date:
-        raise ValueError("Start date cannot be later " "than end date.")
+        raise ValueError("Start date cannot be later than end date.")
 
     employee_filter = _get_employee_filter(
         employee=employee,
@@ -312,22 +270,17 @@ def get_invoice_period_hours_total(
 
     available_hours = EmployeeWorkHours.objects.filter(
         **employee_filter,
-        work_date__range=(
-            start_date,
-            end_date,
-        ),
+        work_date__range=(start_date, end_date),
     ).filter(
         Q(invoice__isnull=True)
         | Q(invoice__status=(EmployeeSimpleInvoice.Status.FAILED))
         | Q(
-            invoice__status=(EmployeeSimpleInvoice.Status.PROCESSING),
+            invoice__status__in=ACTIVE_INVOICE_STATUSES,
             invoice__created_at__lte=processing_cutoff,
         )
     )
 
-    total = available_hours.aggregate(
-        total=Sum("hours"),
-    )["total"]
+    total = available_hours.aggregate(total=Sum("hours"))["total"]
 
     return (total or Decimal("0.00")).quantize(Decimal("0.01"))
 
@@ -336,7 +289,7 @@ def get_initial_invoice_period(
     *,
     employee: Employee,
     reference_date: date | None = None,
-) -> dict:
+) -> InvoicePeriodData:
     reference_date = reference_date or timezone.localdate()
 
     start_date = reference_date.replace(day=1)
@@ -356,67 +309,64 @@ def get_initial_invoice_period(
     }
 
 
-def reserve_work_hours_for_invoice(
-    *,
-    invoice: EmployeeSimpleInvoice,
-) -> int:
+def reserve_work_hours_for_invoice(*, invoice: EmployeeSimpleInvoice) -> int:
+    """Claim a queued invoice and reserve its hours in one transaction."""
     if not invoice.pk:
-        raise ValueError(
-            "The invoice must be saved " "before work hours can be reserved."
-        )
+        raise ValueError("The invoice must be saved before work hours can be reserved.")
 
     with transaction.atomic():
-        locked_invoice = (
-            EmployeeSimpleInvoice.objects.select_for_update()
-            .select_related(
-                "employee",
-            )
-            .get(
-                pk=invoice.pk,
-            )
+        locked_invoice = lock_simple_invoice(
+            invoice_id=invoice.pk,
+            employee_id=invoice.employee_id,
         )
 
-        if locked_invoice.status != EmployeeSimpleInvoice.Status.PROCESSING:
+        if (
+            locked_invoice is None
+            or locked_invoice.status != EmployeeSimpleInvoice.Status.PROCESSING
+        ):
             raise SimpleInvoiceProcessingCancelled(
                 "The invoice is no longer processing."
             )
 
-        start_date = locked_invoice.period_start
+        expired = is_simple_invoice_processing_expired(locked_invoice)
+        if expired:
+            mark_simple_invoice_failed(
+                invoice_id=locked_invoice.pk,
+                expected_statuses=(EmployeeSimpleInvoice.Status.PROCESSING,),
+            )
+        else:
+            start_date = locked_invoice.period_start
+            end_date = locked_invoice.period_end
 
-        end_date = locked_invoice.period_end
+            validate_invoice_period_available(
+                employee=locked_invoice.employee,
+                start_date=start_date,
+                end_date=end_date,
+                exclude_invoice_id=locked_invoice.pk,
+            )
 
-        validate_invoice_period_available(
-            employee=locked_invoice.employee,
-            start_date=start_date,
-            end_date=end_date,
-            exclude_invoice_id=locked_invoice.pk,
-        )
+            locked_invoice.status = EmployeeSimpleInvoice.Status.PREPARING
+            locked_invoice.save(update_fields=["status"])
+            reserved_count = EmployeeWorkHours.objects.filter(
+                employee=locked_invoice.employee,
+                work_date__range=(start_date, end_date),
+                invoice__isnull=True,
+            ).update(invoice=locked_invoice)
 
-        work_hours = EmployeeWorkHours.objects.select_for_update().filter(
-            employee=locked_invoice.employee,
-            work_date__range=(
-                start_date,
-                end_date,
-            ),
-            invoice__isnull=True,
-        )
-
-        return work_hours.update(
-            invoice=locked_invoice,
-        )
+    if expired:
+        raise SimpleInvoiceProcessingExpired("The invoice processing window expired.")
+    invoice.status = EmployeeSimpleInvoice.Status.PREPARING
+    return reserved_count
 
 
-def release_work_hours_from_invoice(
-    *,
-    invoice: EmployeeSimpleInvoice,
-) -> int:
+def release_work_hours_from_invoice(*, invoice: EmployeeSimpleInvoice) -> int:
     with transaction.atomic():
-        return (
-            EmployeeWorkHours.objects.select_for_update()
-            .filter(
-                invoice=invoice,
-            )
-            .update(
-                invoice=None,
-            )
+        locked_invoice = lock_simple_invoice(
+            invoice_id=invoice.pk,
+            employee_id=invoice.employee_id,
+        )
+        if locked_invoice is None:
+            return 0
+        return EmployeeWorkHours.objects.filter(invoice=locked_invoice).update(
+            invoice=None,
         )

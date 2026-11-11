@@ -24,7 +24,7 @@
 
         <div class="project-detail__meta">
           <p class="project-detail__date">
-            {{ project.created_at|date:"F j, Y" }}
+            {% include "main/includes/project_date.html" with project_date=project.created_at only %}
           </p>
         </div>
 

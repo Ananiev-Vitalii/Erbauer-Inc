@@ -1,15 +1,22 @@
+from __future__ import annotations
+
+from typing import Any
+
 from django.contrib import admin
-from django.db.models import Max, Q
+from django.contrib.admin.options import InlineModelAdmin
+from django.db.models import Max, Q, QuerySet
+from django.http import HttpRequest
+from django.utils.functional import Promise
 from django.utils.translation import gettext_lazy as _
 from modeltranslation.admin import TranslationAdmin, TranslationTabularInline
 
 from account.models import (
-    Position,
-    Employee,
-    Profile,
-    EmployeeSimpleInvoice,
     CheatSheet,
     CheatSheetStep,
+    Employee,
+    EmployeeSimpleInvoice,
+    Position,
+    Profile,
 )
 from user.admin import custom_admin_site
 
@@ -18,13 +25,18 @@ class EmployeeVerificationFilter(admin.SimpleListFilter):
     title = _("Verified")
     parameter_name = "is_verified"
 
-    def lookups(self, request, model_admin):
-        return (
-            ("yes", _("Yes")),
-            ("no", _("No")),
-        )
+    def lookups(
+        self,
+        request: HttpRequest,
+        model_admin: admin.ModelAdmin,
+    ) -> tuple[tuple[str, Promise], ...]:
+        return (("yes", _("Yes")), ("no", _("No")))
 
-    def queryset(self, request, queryset):
+    def queryset(
+        self,
+        request: HttpRequest,
+        queryset: QuerySet[Employee],
+    ) -> QuerySet[Employee]:
         if self.value() == "yes":
             return queryset.filter(user__is_verified=True)
 
@@ -47,16 +59,8 @@ class EmployeeAdmin(TranslationAdmin):
         "is_active",
         "is_verified",
     )
-    list_filter = (
-        "is_active",
-        EmployeeVerificationFilter,
-        "position",
-    )
-    search_fields = (
-        "first_name",
-        "last_name",
-        "email",
-    )
+    list_filter = ("is_active", EmployeeVerificationFilter, "position")
+    search_fields = ("first_name", "last_name", "email")
     fields = (
         "first_name",
         "last_name",
@@ -70,24 +74,14 @@ class EmployeeAdmin(TranslationAdmin):
         "postal_code",
     )
 
-    def get_queryset(self, request):
-        return (
-            super()
-            .get_queryset(request)
-            .select_related(
-                "user",
-                "position",
-            )
-        )
+    def get_queryset(self, request: HttpRequest) -> QuerySet[Employee]:
+        return super().get_queryset(request).select_related("user", "position")
 
-    @admin.display(
-        boolean=True,
-        description=_("Verified"),
-    )
-    def is_verified(self, obj):
+    @admin.display(boolean=True, description=_("Verified"))
+    def is_verified(self, obj: Employee) -> bool:
         return bool(obj.user_id and obj.user.is_verified)
 
-    def delete_model(self, request, obj):
+    def delete_model(self, request: HttpRequest, obj: Employee) -> None:
         user = obj.user
 
         if user:
@@ -95,7 +89,11 @@ class EmployeeAdmin(TranslationAdmin):
         else:
             obj.delete()
 
-    def delete_queryset(self, request, queryset):
+    def delete_queryset(
+        self,
+        request: HttpRequest,
+        queryset: QuerySet[Employee],
+    ) -> None:
         for obj in queryset.select_related("user"):
             user = obj.user
 
@@ -106,31 +104,22 @@ class EmployeeAdmin(TranslationAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    list_display = (
-        "get_first_name",
-        "get_last_name",
-    )
-    search_fields = (
-        "employee__first_name",
-        "employee__last_name",
-        "employee__email",
-    )
-    fields = (
-        "get_first_name",
-        "get_last_name",
-        "avatar",
-    )
-    readonly_fields = (
-        "get_first_name",
-        "get_last_name",
-    )
+    list_select_related = ("employee",)
+
+    def has_add_permission(self, request: HttpRequest) -> bool:
+        return False
+
+    list_display = ("get_first_name", "get_last_name")
+    search_fields = ("employee__first_name", "employee__last_name", "employee__email")
+    fields = ("get_first_name", "get_last_name", "avatar")
+    readonly_fields = ("get_first_name", "get_last_name")
 
     @admin.display(description="First name")
-    def get_first_name(self, obj):
+    def get_first_name(self, obj: Profile) -> str:
         return obj.employee.first_name
 
     @admin.display(description="Last name")
-    def get_last_name(self, obj):
+    def get_last_name(self, obj: Profile) -> str:
         return obj.employee.last_name
 
 
@@ -145,17 +134,8 @@ class EmployeeSimpleInvoiceAdmin(admin.ModelAdmin):
         "created_at",
         "has_pdf",
     )
-    list_filter = (
-        "status",
-        "invoice_year",
-        "invoice_month",
-        "created_at",
-    )
-    search_fields = (
-        "employee__first_name",
-        "employee__last_name",
-        "employee__email",
-    )
+    list_filter = ("status", "invoice_year", "invoice_month", "created_at")
+    search_fields = ("employee__first_name", "employee__last_name", "employee__email")
     list_select_related = ("employee",)
 
     fields = (
@@ -196,41 +176,34 @@ class EmployeeSimpleInvoiceAdmin(admin.ModelAdmin):
         "created_at",
     )
 
-    def has_add_permission(self, request):
+    def has_add_permission(self, request: HttpRequest) -> bool:
         return False
 
     @admin.display(description=_("First name"))
-    def get_first_name(self, obj):
+    def get_first_name(self, obj: EmployeeSimpleInvoice) -> str:
         return obj.employee.first_name
 
     @admin.display(description=_("Last name"))
-    def get_last_name(self, obj):
+    def get_last_name(self, obj: EmployeeSimpleInvoice) -> str:
         return obj.employee.last_name
 
     @admin.display(description=_("Period"))
-    def get_period(self, obj):
+    def get_period(self, obj: EmployeeSimpleInvoice) -> str:
         return (
             f"{obj.get_invoice_month_display()} "
             f"{obj.start_day}–{obj.end_day}, "
             f"{obj.invoice_year}"
         )
 
-    @admin.display(
-        boolean=True,
-        description=_("PDF"),
-    )
-    def has_pdf(self, obj):
+    @admin.display(boolean=True, description=_("PDF"))
+    def has_pdf(self, obj: EmployeeSimpleInvoice) -> bool:
         return bool(obj.pdf_file)
 
 
 class CheatSheetStepInline(TranslationTabularInline):
     model = CheatSheetStep
     extra = 1
-    fields = (
-        "step_number",
-        "image",
-        "description",
-    )
+    fields = ("step_number", "image", "description")
 
 
 class CheatSheetAdmin(TranslationAdmin):
@@ -240,17 +213,12 @@ class CheatSheetAdmin(TranslationAdmin):
 
     def get_formset_kwargs(
         self,
-        request,
-        obj,
-        inline,
-        prefix,
-    ):
-        kwargs = super().get_formset_kwargs(
-            request,
-            obj,
-            inline,
-            prefix,
-        )
+        request: HttpRequest,
+        obj: CheatSheet | None,
+        inline: InlineModelAdmin,
+        prefix: str,
+    ) -> dict[str, Any]:
+        kwargs = super().get_formset_kwargs(request, obj, inline, prefix)
 
         if obj and obj.pk and inline.model is CheatSheetStep:
             max_step_number = (
@@ -260,32 +228,13 @@ class CheatSheetAdmin(TranslationAdmin):
                 or 0
             )
 
-            kwargs["initial"] = [
-                {
-                    "step_number": max_step_number + 1,
-                }
-            ]
+            kwargs["initial"] = [{"step_number": max_step_number + 1}]
 
         return kwargs
 
 
-custom_admin_site.register(
-    Position,
-    PositionAdmin,
-)
-custom_admin_site.register(
-    Employee,
-    EmployeeAdmin,
-)
-custom_admin_site.register(
-    Profile,
-    ProfileAdmin,
-)
-custom_admin_site.register(
-    EmployeeSimpleInvoice,
-    EmployeeSimpleInvoiceAdmin,
-)
-custom_admin_site.register(
-    CheatSheet,
-    CheatSheetAdmin,
-)
+custom_admin_site.register(Position, PositionAdmin)
+custom_admin_site.register(Employee, EmployeeAdmin)
+custom_admin_site.register(Profile, ProfileAdmin)
+custom_admin_site.register(EmployeeSimpleInvoice, EmployeeSimpleInvoiceAdmin)
+custom_admin_site.register(CheatSheet, CheatSheetAdmin)

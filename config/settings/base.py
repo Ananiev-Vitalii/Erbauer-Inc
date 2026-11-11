@@ -5,11 +5,14 @@ from celery.schedules import crontab
 from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
-load_dotenv(BASE_DIR / ".env")
+if os.environ.get("DJANGO_SETTINGS_MODULE") != "config.settings.test":
+    load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DJANGO_DEBUG", "") != "False"
 ALLOWED_HOSTS = ["127.0.0.1"]
+
+CLIENT_IP_SOURCE = os.getenv("CLIENT_IP_SOURCE", "remote_addr")
 
 INSTALLED_APPS = [
     "core",
@@ -135,6 +138,63 @@ ANYMAIL = {
     "BREVO_API_KEY": os.getenv("BREVO_API_KEY"),
 }
 DEFAULT_FROM_EMAIL = os.getenv("DEFAULT_FROM_EMAIL")
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "filters": {
+        "account_task_failure": {
+            "()": "config.logging.AccountTaskFailureFilter",
+        },
+        "account_cleanup_failure": {
+            "()": "config.logging.AccountCleanupFailureFilter",
+        },
+    },
+    "formatters": {
+        "auth_email": {
+            "()": "config.logging.EmailErrorFormatter",
+            "format": "{levelname} {name}: {message}",
+            "style": "{",
+        },
+    },
+    "handlers": {
+        "account_console": {
+            "class": "logging.StreamHandler",
+            "level": "NOTSET",
+            "stream": "ext://sys.stderr",
+            "formatter": "auth_email",
+        },
+        "auth_email_console": {
+            "class": "logging.StreamHandler",
+            "level": "ERROR",
+            "stream": "ext://sys.stderr",
+            "formatter": "auth_email",
+        },
+    },
+    "loggers": {
+        "account": {
+            "handlers": ["account_console"],
+            "level": "NOTSET",
+            "propagate": False,
+        },
+        "celery.app.trace": {
+            "filters": ["account_task_failure"],
+        },
+        "django_cleanup.handlers": {
+            "filters": ["account_cleanup_failure"],
+        },
+        "user.services.email": {
+            "handlers": ["auth_email_console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+        "django.contrib.auth": {
+            "handlers": ["auth_email_console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
 
 COMPANY_CONTACT_EMAIL = os.getenv("COMPANY_CONTACT_EMAIL")
 SIMPLE_INVOICE_RECIPIENT_EMAIL = os.getenv("SIMPLE_INVOICE_RECIPIENT_EMAIL")

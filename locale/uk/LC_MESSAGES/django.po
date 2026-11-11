@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-22 20:49-0700\n"
+"POT-Creation-Date: 2026-11-07 12:44-0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -55,9 +55,13 @@ msgstr "PDF-файл"
 msgid "Staff"
 msgstr "Персонал"
 
-#: .\account\forms.py:44 .\main\forms.py:127
+#: .\account\forms.py:44
 msgid "Please enter a valid 10-digit Canadian phone number."
 msgstr "Будь ласка, введіть дійсний 10-значний канадський номер телефону."
+
+#: .\main\forms.py
+msgid "Enter a 10-digit Canadian or US phone number, optionally prefixed with +1 or 1."
+msgstr "Введіть 10-значний номер телефону Канади або США, за потреби з префіксом +1 або 1."
 
 #: .\account\forms.py:62
 msgid "A user with this email is already registered."
@@ -234,6 +238,18 @@ msgstr "Профілі"
 #: .\account\models.py:231 .\templates\account\invoice_history.html:211
 msgid "Processing"
 msgstr "Обробляється"
+
+#: .\account\models.py
+msgid "Preparing"
+msgstr "Готується"
+
+#: .\templates\account\profile.html
+msgid "We could not save your changes. Please try again."
+msgstr "Не вдалося зберегти зміни. Будь ласка, спробуйте ще раз."
+
+#: .\templates\account\profile.html
+msgid "Your session may have expired. Refresh the page and sign in again."
+msgstr "Можливо, термін дії сеансу минув. Оновіть сторінку й увійдіть знову."
 
 #: .\account\models.py:235
 msgid "Sent"
@@ -526,13 +542,17 @@ msgstr "Некоректна дата роботи."
 msgid "No invoice months are available for the selected year."
 msgstr "Для вибраного року немає доступних місяців із інвойсами."
 
-#: .\config\settings\base.py:93
+#: .\config\settings\base.py:95
 msgid "Ukrainian"
 msgstr "Українська"
 
-#: .\config\settings\base.py:94
+#: .\config\settings\base.py:96
 msgid "English"
 msgstr "Англійська"
+
+#: .\core\mixins.py:21
+msgid "This service is temporarily unavailable. Please try again later."
+msgstr "Сервіс тимчасово недоступний. Спробуйте пізніше."
 
 #: .\main\admin.py:84 .\main\models.py:122
 msgid "Icon"
@@ -741,7 +761,7 @@ msgstr "Зображення проєкту"
 msgid "Project images"
 msgstr "Галерея зображень проєкту"
 
-#: .\main\services\email.py:23 .\templates\main\contact_email.html:32
+#: .\main\services\email.py:17 .\templates\main\contact_email.html:32
 msgid "New Contact Request"
 msgstr "Новий запит через форму зв’язку"
 
@@ -771,6 +791,10 @@ msgstr[2] "%(count)d секунд"
 #, python-format
 msgid "Too many attempts. Please try again in %(time)s."
 msgstr "Забагато спроб. Будь ласка, спробуйте ще раз через %(time)s."
+
+#: .\main\views.py:93
+msgid "We could not submit your message. Please try again later."
+msgstr "Не вдалося передати ваше повідомлення. Спробуйте пізніше."
 
 #: .\templates\account\cheat_sheet.html:20
 msgid "Quick reference"
@@ -884,6 +908,18 @@ msgstr ""
 #: .\templates\account\invoice.html:55
 msgid "Invoice processing failed. Please try again."
 msgstr "Обробка інвойсу не вдалася. Будь ласка, спробуйте ще раз."
+
+#: .\account\services\simple_invoice_submission.py
+msgid "Your invoice was saved, but processing failed. Please try again."
+msgstr "Рахунок збережено, але обробка не вдалася. Будь ласка, спробуйте ще раз."
+
+#: .\account\services\simple_invoice_submission.py
+msgid ""
+"Your invoice was saved, but its processing status could not be confirmed. "
+"Check your invoice history before submitting again."
+msgstr ""
+"Рахунок збережено, але не вдалося підтвердити стан його обробки. "
+"Перевірте історію рахунків, перш ніж подавати його повторно."
 
 #: .\templates\account\invoice.html:56
 msgid ""
@@ -1366,7 +1402,7 @@ msgstr ""
 "    "
 
 #: .\templates\core\errors\403.html:31 .\templates\core\errors\404.html:31
-#: .\templates\core\errors\500.html:28
+#: .\templates\core\errors\500.html:28 .\templates\core\errors\503.html:20
 msgid "Return to homepage"
 msgstr "Повернутися на головну сторінку"
 
@@ -1402,6 +1438,10 @@ msgstr "Під час обробки вашого запиту на нашому
 msgid "Please try again later or return to the homepage."
 msgstr "Будь ласка, спробуйте пізніше або поверніться на головну сторінку."
 
+#: .\templates\core\errors\503.html:7 .\templates\core\errors\503.html:16
+msgid "Service temporarily unavailable"
+msgstr "Сервіс тимчасово недоступний"
+
 #: .\templates\main\contact_email.html:8
 msgid "Contact Message"
 msgstr "Повідомлення з форми зв’язку"
@@ -1421,8 +1461,12 @@ msgid "Privacy Policy"
 msgstr "Політика конфіденційності"
 
 #: .\templates\main\includes\forms\form_errors.html:6
-msgid "Your message has been sent successfully."
-msgstr "Ваше повідомлення успішно надіслано."
+msgid "Your message has been submitted successfully."
+msgstr "Ваше повідомлення успішно передано на обробку."
+
+#: .\templates\main\includes\sections\contacts.html
+msgid "We could not confirm your submission. Please try again later."
+msgstr "Не вдалося підтвердити прийняття вашого повідомлення. Спробуйте пізніше."
 
 #: .\templates\main\includes\navbar.html:20
 msgid "Main menu"
@@ -2618,9 +2662,22 @@ msgstr ""
 "Якщо ця електронна адреса пов’язана з непідтвердженим обліковим записом, ми "
 "надіслали новий лист для підтвердження."
 
-#: .\user\views.py:63 .\user\views.py:131 .\user\views.py:249
+#: .\user\views.py:66 .\user\views.py:130 .\user\views.py:249
 msgid "The captcha check failed. Please try again."
 msgstr "Перевірку CAPTCHA не пройдено. Будь ласка, спробуйте ще раз."
 
 msgid "Send message"
 msgstr "Надіслати повідомлення"
+
+#: templates/main/includes/sections/services.html
+#, python-format
+msgid "Show services page %(page_number)s"
+msgstr "Показати сторінку послуг %(page_number)s"
+
+#: user/views.py
+msgid ""
+"Your account has been created, but we could not send the verification email. "
+"Please request another verification email later."
+msgstr ""
+"Ваш обліковий запис створено, але не вдалося надіслати лист підтвердження. "
+"Будь ласка, запросіть повторний лист підтвердження пізніше."

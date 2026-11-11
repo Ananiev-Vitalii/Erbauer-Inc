@@ -20,11 +20,13 @@ def get_password_reset_rate_limit_state(
     request: HttpRequest,
     email: str,
 ) -> RateLimitState:
+    ip = get_client_ip_key(request)
     return get_rate_limit_state(
         scope=SCOPE,
         fields=[
-            RateLimitField(name="ip", value=get_client_ip_key(request)),
+            RateLimitField(name="ip", value=ip),
             RateLimitField(name="email", value=email),
+            RateLimitField(name="captcha_ip", value=ip),
         ],
         attempts_limit=ATTEMPTS,
     )
@@ -40,6 +42,17 @@ def register_password_reset_attempt(
             RateLimitField(name="ip", value=get_client_ip_key(request)),
             RateLimitField(name="email", value=email),
         ],
+        attempts_limit=ATTEMPTS,
+        window_seconds=WINDOW_SECONDS,
+        cooldown_seconds=COOLDOWN_SECONDS,
+    )
+
+
+def register_password_reset_captcha_failure(request: HttpRequest) -> RateLimitState:
+    """Count failed CAPTCHA only against its separate IP counter."""
+    return register_rate_limit_attempt(
+        scope=SCOPE,
+        fields=[RateLimitField(name="captcha_ip", value=get_client_ip_key(request))],
         attempts_limit=ATTEMPTS,
         window_seconds=WINDOW_SECONDS,
         cooldown_seconds=COOLDOWN_SECONDS,

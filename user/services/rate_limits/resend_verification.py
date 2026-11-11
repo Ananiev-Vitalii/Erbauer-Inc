@@ -20,11 +20,13 @@ def get_resend_verification_rate_limit_state(
     request: HttpRequest,
     email: str,
 ) -> RateLimitState:
+    ip = get_client_ip_key(request)
     return get_rate_limit_state(
         scope=RESEND_VERIFICATION_SCOPE,
         fields=[
-            RateLimitField(name="ip", value=get_client_ip_key(request)),
+            RateLimitField(name="ip", value=ip),
             RateLimitField(name="email", value=email),
+            RateLimitField(name="captcha_ip", value=ip),
         ],
         attempts_limit=RESEND_VERIFICATION_ATTEMPTS,
     )
@@ -40,6 +42,19 @@ def register_resend_verification_attempt(
             RateLimitField(name="ip", value=get_client_ip_key(request)),
             RateLimitField(name="email", value=email),
         ],
+        attempts_limit=RESEND_VERIFICATION_ATTEMPTS,
+        window_seconds=RESEND_VERIFICATION_WINDOW_SECONDS,
+        cooldown_seconds=RESEND_VERIFICATION_COOLDOWN_SECONDS,
+    )
+
+
+def register_resend_verification_captcha_failure(
+    request: HttpRequest,
+) -> RateLimitState:
+    """Count failed CAPTCHA only against its separate IP counter."""
+    return register_rate_limit_attempt(
+        scope=RESEND_VERIFICATION_SCOPE,
+        fields=[RateLimitField(name="captcha_ip", value=get_client_ip_key(request))],
         attempts_limit=RESEND_VERIFICATION_ATTEMPTS,
         window_seconds=RESEND_VERIFICATION_WINDOW_SECONDS,
         cooldown_seconds=RESEND_VERIFICATION_COOLDOWN_SECONDS,

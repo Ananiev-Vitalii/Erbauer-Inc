@@ -1,6 +1,6 @@
 from modeltranslation.translator import TranslationOptions, register
 
-from account.models import Position, Employee, CheatSheet, CheatSheetStep
+from account.models import CheatSheet, CheatSheetStep, Employee, Position
 
 
 @register(Position)

@@ -20,11 +20,7 @@ app_name = "account"
 
 
 urlpatterns = [
-    path(
-        "profile-settings/",
-        MyProfileView.as_view(),
-        name="profile",
-    ),
+    path("profile-settings/", MyProfileView.as_view(), name="profile"),
     path(
         "profile-settings/avatar/submit/",
         UpdateAvatarView.as_view(),
@@ -45,16 +41,8 @@ urlpatterns = [
         UpdatePasswordView.as_view(),
         name="update_password",
     ),
-    path(
-        "work-hours/",
-        WorkHoursView.as_view(),
-        name="work_hours",
-    ),
-    path(
-        "work-hours/update/",
-        WorkHoursUpdateView.as_view(),
-        name="work_hours_update",
-    ),
+    path("work-hours/", WorkHoursView.as_view(), name="work_hours"),
+    path("work-hours/update/", WorkHoursUpdateView.as_view(), name="work_hours_update"),
     path(
         "invoice/create/",
         SimpleInvoiceCreateView.as_view(),
@@ -80,9 +68,5 @@ urlpatterns = [
         SimpleInvoiceHistoryView.as_view(),
         name="simple_invoice_history",
     ),
-    path(
-        "cheat-sheets/",
-        CheatSheetView.as_view(),
-        name="cheat_sheets",
-    ),
+    path("cheat-sheets/", CheatSheetView.as_view(), name="cheat_sheets"),
 ]

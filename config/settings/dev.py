@@ -26,6 +26,7 @@ CACHES = {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": os.environ["REDIS_URL"],
         "KEY_PREFIX": "erbauer:cache",
+        "OPTIONS": {"socket_connect_timeout": 3, "socket_timeout": 3},
     }
 }
 

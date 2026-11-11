@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n static cache %}
+{% load i18n static %}
 
 {% block title %}{{ company_profile.name|default:"Erbauer" }}{% endblock title %}
 {% block extra_css %}
@@ -18,12 +18,10 @@
 
 {% include "main/includes/sections/hero.html" %}
 
-{% cache 3600 homepage_static_v2 LANGUAGE_CODE %}
 {% include "main/includes/sections/services.html" %}
 {% include "main/includes/sections/about.html" %}
 {% include "main/includes/sections/projects.html" %}
 {% include "main/includes/sections/team.html" %}
-{% endcache %}
 
 {% include "main/includes/sections/contacts.html" %}
 

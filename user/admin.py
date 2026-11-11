@@ -1,9 +1,6 @@
-"""
-- Общая точка входа: user:login
-- Доступ к /admin/ только для пользователей с правами "is_staff", "is_active".
-- При выходе из админки перенаправляет на главную
-"""
+from collections.abc import Callable
 
+from django.http import HttpRequest, HttpResponse
 from functools import update_wrapper
 from django.shortcuts import redirect
 from django.contrib.admin import AdminSite
@@ -12,17 +9,24 @@ from django.core.exceptions import PermissionDenied
 from django.contrib.auth import logout as auth_logout
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.views import redirect_to_login
+from django.urls import reverse
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_protect
 
 from user.models import User
 from main.models import CompanyProfile
 
 
 class CustomAdminSite(AdminSite):
+    """Use the shared login and require active staff for administration."""
+
     site_header = _("Site administration")
     site_title = _("Admin Panel")
     index_title = _("Site management")
 
-    def each_context(self, request):
+    def each_context(self, request: HttpRequest) -> dict[str, object]:
         context = super().each_context(request)
         company = CompanyProfile.objects.filter(is_active=True).first()
         context["company_base"] = company
@@ -34,27 +38,56 @@ class CustomAdminSite(AdminSite):
         context["custom_admin_css"] = "custom_admin/css/custom_admin.css"
         return context
 
-    def has_permission(self, request):
+    def has_permission(self, request: HttpRequest) -> bool:
         return (
             request.user.is_authenticated
             and request.user.is_active
             and request.user.is_staff
         )
 
-    def logout(self, request, extra_context=None):
+    def logout(
+        self,
+        request: HttpRequest,
+        extra_context: dict[str, object] | None = None,
+    ) -> HttpResponse:
         if request.method != "POST":
             return HttpResponseNotAllowed(["POST"])
 
         auth_logout(request)
         return redirect("main:home")
 
-    def admin_view(self, view, cacheable=False):
+    @method_decorator(never_cache)
+    @method_decorator(csrf_protect)
+    def login(
+        self,
+        request: HttpRequest,
+        extra_context: dict[str, object] | None = None,
+    ) -> HttpResponse:
+        """Use the shared login without accepting admin authentication POSTs."""
+        if request.method != "GET":
+            raise PermissionDenied
+
+        index_url = reverse(f"{self.name}:index")
+        if request.user.is_authenticated:
+            if not self.has_permission(request):
+                raise PermissionDenied
+            return redirect(index_url)
+
+        return redirect_to_login(index_url, reverse("user:login"))
+
+    def admin_view(
+        self,
+        view: Callable[..., HttpResponse],
+        cacheable: bool = False,
+    ) -> Callable[..., HttpResponse]:
         wrapped_view = super().admin_view(view, cacheable=cacheable)
 
-        def inner(request, *args, **kwargs):
+        def inner(request: HttpRequest, *args, **kwargs) -> HttpResponse:
 
             if not request.user.is_authenticated:
-                return redirect("user:login")
+                return redirect_to_login(
+                    request.get_full_path(), reverse("user:login")
+                )
 
             if not self.has_permission(request):
                 raise PermissionDenied
@@ -101,19 +134,42 @@ class UserAdmin(BaseUserAdmin):
         ),
     )
 
-    def add_view(self, request, form_url="", extra_context=None):
+    def get_readonly_fields(
+        self, request: HttpRequest, obj: User | None = None
+    ) -> tuple[str, ...]:
+        fields = super().get_readonly_fields(request, obj)
+        if obj is not None and hasattr(obj, "employee"):
+            return (*fields, "email")
+        return tuple(fields)
+
+    def add_view(
+        self,
+        request: HttpRequest,
+        form_url: str = "",
+        extra_context: dict[str, object] | None = None,
+    ) -> HttpResponse:
         extra_context = extra_context or {}
         extra_context["title"] = _("Add user")
         return super().add_view(request, form_url, extra_context=extra_context)
 
-    def change_view(self, request, object_id, form_url="", extra_context=None):
+    def change_view(
+        self,
+        request: HttpRequest,
+        object_id: str,
+        form_url: str = "",
+        extra_context: dict[str, object] | None = None,
+    ) -> HttpResponse:
         extra_context = extra_context or {}
         extra_context["title"] = _("Change user")
         return super().change_view(
             request, object_id, form_url, extra_context=extra_context
         )
 
-    def changelist_view(self, request, extra_context=None):
+    def changelist_view(
+        self,
+        request: HttpRequest,
+        extra_context: dict[str, object] | None = None,
+    ) -> HttpResponse:
         extra_context = extra_context or {}
         extra_context["title"] = _("Select user to change")
         return super().changelist_view(request, extra_context=extra_context)

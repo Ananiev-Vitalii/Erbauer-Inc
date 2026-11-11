@@ -10,7 +10,8 @@ __pycache__/
 venv/
 
 # Django
-.env
+.env*
+!.env.example
 media/
 staticfiles/
 

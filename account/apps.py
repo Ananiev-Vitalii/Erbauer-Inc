@@ -5,3 +5,6 @@ from django.utils.translation import gettext_lazy as _
 class AccountConfig(AppConfig):
     name = "account"
     verbose_name = _("Staff")
+
+    def ready(self) -> None:
+        import account.signals  # noqa: F401 -- Register cache invalidation receivers.

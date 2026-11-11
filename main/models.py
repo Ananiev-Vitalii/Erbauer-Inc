@@ -1,3 +1,6 @@
+from pathlib import Path
+from uuid import uuid4
+
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -6,8 +9,8 @@ from account.models import Employee
 
 
 def team_member_directory_path(instance: "TeamMember", filename: str) -> str:
-    profile_slug = slugify(f"{instance.employee.last_name}_{instance.employee.email}")
-    return f"team_member/{profile_slug}/{filename}"
+    extension = Path(filename).suffix.lower()
+    return f"team_member/{uuid4().hex}{extension}"
 
 
 def company_logo_upload_path(instance: "CompanyProfile", filename: str) -> str:
@@ -83,6 +86,17 @@ class CompanyProfile(models.Model):
         verbose_name = _("Company Profile")
         verbose_name_plural = _("Company Profiles")
         ordering = ["-created_at"]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["is_active"],
+                condition=models.Q(is_active=True),
+                name="main_single_active_company_profile",
+                violation_error_message=_(
+                    "Only one company profile can be active. "
+                    "Deactivate the current profile first."
+                ),
+            ),
+        ]
 
     def __str__(self) -> str:
         return self.name
@@ -110,7 +124,7 @@ class TeamMember(models.Model):
         verbose_name_plural = _("Team Members")
         ordering = ["display_order"]
 
-    def __str__(self):
+    def __str__(self) -> str:
         full_name = f"{self.employee.first_name} {self.employee.last_name}".strip()
         return full_name or str(self.display_order)
 

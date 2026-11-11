@@ -188,14 +188,15 @@
             </td>
 
             <td>
-                <span
-                        class="
-                      invoice-history-status
-                      invoice-history-status--{{ invoice.status }}
-                    "
-                >
-                  {{ invoice.get_status_display }}
-                </span>
+              {% if invoice.status == "preparing" %}
+              <span class="invoice-history-status invoice-history-status--processing">
+                {{ invoice.get_status_display }}
+              </span>
+              {% else %}
+              <span class="invoice-history-status invoice-history-status--{{ invoice.status }}">
+                {{ invoice.get_status_display }}
+              </span>
+              {% endif %}
             </td>
 
             <td class="invoice-history-table__action">
@@ -206,9 +207,9 @@
               >
                 {% trans "Download PDF" %}
               </a>
-              {% elif invoice.status == "processing" %}
+              {% elif invoice.status == "processing" or invoice.status == "preparing" %}
               <span class="invoice-history-action-muted">
-                  {% trans "Processing" %}
+                  {{ invoice.get_status_display }}
                 </span>
               {% else %}
               <span class="invoice-history-action-muted">

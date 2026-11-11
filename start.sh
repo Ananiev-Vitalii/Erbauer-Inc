@@ -2,7 +2,13 @@
 
 set -euo pipefail
 
-export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE:-config.settings.prod}"
+export DJANGO_SETTINGS_MODULE="${DJANGO_SETTINGS_MODULE-config.settings.prod}"
+
+if [[ "$DJANGO_SETTINGS_MODULE" != "config.settings.prod" ]]; then
+    printf '%s\n' \
+        'DJANGO_SETTINGS_MODULE must be config.settings.prod for production startup.' >&2
+    exit 1
+fi
 
 : "${REDIS_URL:?REDIS_URL environment variable is required}"
 : "${CELERY_BROKER_URL:?CELERY_BROKER_URL environment variable is required}"

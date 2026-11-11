@@ -15,7 +15,6 @@ from user.forms import CustomSetPasswordForm
 app_name = "user"
 
 urlpatterns = [
-    # Registration / log in / log out
     path("register/", UserRegistrationView.as_view(), name="register"),
     path("verify/<uidb64>/<token>/", verify_user, name="verify_user"),
     path("verify/invalid/", InvalidVerify.as_view(), name="invalid_verify"),
@@ -24,7 +23,6 @@ urlpatterns = [
     path(
         "logout/", auth_views.LogoutView.as_view(next_page="main:home"), name="logout"
     ),
-    # Registration / password reset
     path("password_reset/", CustomPasswordResetView.as_view(), name="password-reset"),
     path(
         "password_reset/done/",

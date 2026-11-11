@@ -1,13 +1,20 @@
+from __future__ import annotations
+
 import calendar
+from collections.abc import Mapping
 from datetime import date
+from typing import Any
 
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.exceptions import ValidationError
-from django.db.models import OuterRef, Subquery
-from django.http import Http404, HttpResponse, JsonResponse
+from django.db.models import OuterRef, QuerySet, Subquery
+from django.http import Http404, HttpRequest, HttpResponse, JsonResponse
+from django.middleware.csrf import get_token
 from django.shortcuts import redirect, render
+from django.template.loader import render_to_string
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.utils.translation import gettext as _
@@ -21,16 +28,8 @@ from account.forms import (
     ProfileAvatarForm,
     SimpleInvoiceForm,
 )
-from account.models import (
-    Employee,
-    EmployeeSimpleInvoice,
-    Position,
-    Profile,
-)
-from account.services.cache import (
-    get_cheat_sheet_steps_cached,
-    get_cheat_sheets_cached,
-)
+from account.models import Employee, EmployeeSimpleInvoice, Position, Profile
+from account.services.cache import get_cheat_sheet_steps_cached, get_cheat_sheets_cached
 from account.services.simple_invoice_period import (
     build_invoice_period,
     get_available_invoice_months,
@@ -45,6 +44,7 @@ from account.services.simple_invoice_processing import (
     is_simple_invoice_processing_expired,
 )
 from account.services.simple_invoice_submission import (
+    SimpleInvoicePublicationError,
     submit_simple_invoice,
 )
 from account.services.work_hours import (
@@ -60,38 +60,27 @@ from account.simple_invoice_time import (
 )
 
 
-def _parse_int(value):
+def _parse_int(value: str | int | None) -> int | None:
     try:
         return int(value)
     except (TypeError, ValueError):
         return None
 
 
-class SimpleInvoiceHistoryView(
-    LoginRequiredMixin,
-    generic.ListView,
-):
+class SimpleInvoiceHistoryView(LoginRequiredMixin, generic.ListView):
     model = EmployeeSimpleInvoice
     template_name = "account/invoice_history.html"
     context_object_name = "invoices"
 
-    PERIOD_MONTHS = {
-        "3": 3,
-        "6": 6,
-        "12": 12,
-        "24": 24,
-        "36": 36,
-    }
+    PERIOD_MONTHS = {"3": 3, "6": 6, "12": 12, "24": 24, "36": 36}
 
     RETENTION_MONTHS = SIMPLE_INVOICE_RETENTION_MONTHS
 
-    def get_retained_invoices(self):
+    def get_retained_invoices(self) -> list[EmployeeSimpleInvoice]:
         if hasattr(self, "_retained_invoices"):
             return self._retained_invoices
 
-        retention_start = get_simple_invoice_cutoff(
-            months=self.RETENTION_MONTHS,
-        )
+        retention_start = get_simple_invoice_cutoff(months=self.RETENTION_MONTHS)
 
         invoices = list(
             EmployeeSimpleInvoice.objects.filter(
@@ -122,15 +111,13 @@ class SimpleInvoiceHistoryView(
             )
 
             if employee_id is not None:
-                expire_stale_simple_invoices_for_employee(
-                    employee=employee_id,
-                )
+                expire_stale_simple_invoices_for_employee(employee=employee_id)
 
                 refreshed_stale_invoices = {
                     row["pk"]: row
                     for row in (
                         EmployeeSimpleInvoice.objects.filter(
-                            pk__in=stale_invoice_ids,
+                            pk__in=stale_invoice_ids
                         ).values(
                             "pk",
                             "status",
@@ -153,7 +140,7 @@ class SimpleInvoiceHistoryView(
 
         return self._retained_invoices
 
-    def get_queryset(self):
+    def get_queryset(self) -> list[EmployeeSimpleInvoice]:
         invoices = self.get_retained_invoices()
 
         self.selected_period = "all"
@@ -187,10 +174,7 @@ class SimpleInvoiceHistoryView(
 
         return invoices
 
-    def get_context_data(
-        self,
-        **kwargs,
-    ):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         retained_invoices = self.get_retained_invoices()
@@ -200,14 +184,7 @@ class SimpleInvoiceHistoryView(
             reverse=True,
         )
 
-        available_years = [
-            date(
-                year,
-                1,
-                1,
-            )
-            for year in invoice_years
-        ]
+        available_years = [date(year, 1, 1) for year in invoice_years]
 
         context.update(
             {
@@ -220,24 +197,17 @@ class SimpleInvoiceHistoryView(
         return context
 
 
-class MyProfileView(
-    LoginRequiredMixin,
-    generic.TemplateView,
-):
+class MyProfileView(LoginRequiredMixin, generic.TemplateView):
     template_name = "account/profile.html"
 
-    def get_context_data(
-        self,
-        **kwargs,
-    ):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         user = self.request.user
 
-        employee = Employee.objects.select_related(
-            "profile",
-            "position",
-        ).get(user_id=user.pk)
+        employee = Employee.objects.select_related("profile", "position").get(
+            user_id=user.pk
+        )
 
         profile = employee.profile
 
@@ -259,27 +229,23 @@ class PartialFormSuccessMixin(LoginRequiredMixin):
     http_method_names = ["post"]
     context_form_name = None
 
-    def get_context_data(
-        self,
-        **kwargs,
-    ):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         if self.context_form_name:
-            context[self.context_form_name] = kwargs.get(
-                "form",
-                context.get("form"),
-            )
+            context[self.context_form_name] = kwargs.get("form", context.get("form"))
 
         return context
 
-    def get_success_form(self):
+    def get_success_form(
+        self,
+    ) -> EmployeeContactForm | EmployeePositionForm | PasswordChangeForm:
         return self.get_form_class()(instance=self.object)
 
     def form_valid(
         self,
-        form,
-    ):
+        form: EmployeeContactForm | EmployeePositionForm | PasswordChangeForm,
+    ) -> HttpResponse:
         self.object = form.save()
 
         success_form = self.get_success_form()
@@ -290,92 +256,59 @@ class PartialFormSuccessMixin(LoginRequiredMixin):
 
     def form_invalid(
         self,
-        form,
-    ):
-        if hasattr(
-            self,
-            "get_object",
-        ):
+        form: EmployeeContactForm | EmployeePositionForm | PasswordChangeForm,
+    ) -> HttpResponse:
+        if hasattr(self, "get_object"):
             self.object = self.get_object()
 
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class UpdateAvatarView(
-    LoginRequiredMixin,
-    generic.UpdateView,
-):
+class UpdateAvatarView(LoginRequiredMixin, generic.UpdateView):
     form_class = ProfileAvatarForm
     http_method_names = ["post"]
 
-    def get_object(
-        self,
-        queryset=None,
-    ):
-        return Profile.objects.select_related(
-            "employee",
-            "employee__user",
-        ).get(employee__user=self.request.user)
+    def get_object(self, queryset: QuerySet[Profile] | None = None) -> Profile:
+        return Profile.objects.select_related("employee", "employee__user").get(
+            employee__user=self.request.user
+        )
 
-    def form_valid(
-        self,
-        form,
-    ):
+    def form_valid(self, form: ProfileAvatarForm) -> JsonResponse:
         self.object = form.save()
 
         return JsonResponse(
             {
                 "success": True,
-                "avatar_url": self.object.avatar.url,
+                "avatar_url": (
+                    self.object.avatar.url
+                    if self.object.avatar
+                    else static("img/default_profile.png")
+                ),
             }
         )
 
-    def form_invalid(
-        self,
-        form,
-    ):
-        return JsonResponse(
-            {
-                "success": False,
-                "errors": form.errors,
-            },
-            status=400,
-        )
+    def form_invalid(self, form: ProfileAvatarForm) -> JsonResponse:
+        return JsonResponse({"success": False, "errors": form.errors}, status=400)
 
 
-class UpdateContactDetailsView(
-    PartialFormSuccessMixin,
-    generic.UpdateView,
-):
+class UpdateContactDetailsView(PartialFormSuccessMixin, generic.UpdateView):
     form_class = EmployeeContactForm
     context_form_name = "contact_form"
-    template_name = "account/profile.html" "#contact-form"
+    template_name = "account/profile.html#contact-form"
 
-    def get_object(
-        self,
-        queryset=None,
-    ):
+    def get_object(self, queryset: QuerySet[Employee] | None = None) -> Employee:
         return Employee.objects.select_related("user").get(user=self.request.user)
 
 
-class UpdateEmployeePositionView(
-    PartialFormSuccessMixin,
-    generic.UpdateView,
-):
+class UpdateEmployeePositionView(PartialFormSuccessMixin, generic.UpdateView):
     form_class = EmployeePositionForm
     context_form_name = "position_form"
-    template_name = "account/profile.html" "#employee-position-form"
+    template_name = "account/profile.html#employee-position-form"
 
-    def get_object(
-        self,
-        queryset=None,
-    ):
+    def get_object(self, queryset: QuerySet[Employee] | None = None) -> Employee:
         return Employee.objects.select_related("position").get(user=self.request.user)
 
-    def get_context_data(
-        self,
-        **kwargs,
-    ):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         context["employee"] = self.object
@@ -385,34 +318,25 @@ class UpdateEmployeePositionView(
         return context
 
 
-class UpdatePasswordView(
-    PartialFormSuccessMixin,
-    generic.FormView,
-):
+class UpdatePasswordView(PartialFormSuccessMixin, generic.FormView):
     form_class = PasswordChangeForm
     context_form_name = "password_form"
-    template_name = "account/profile.html" "#password-form"
+    template_name = "account/profile.html#password-form"
 
-    def get_form_kwargs(self):
+    def get_form_kwargs(self) -> dict[str, Any]:
         kwargs = super().get_form_kwargs()
 
         kwargs["user"] = self.request.user
 
         return kwargs
 
-    def get_success_form(self):
+    def get_success_form(self) -> PasswordChangeForm:
         return self.get_form_class()(user=self.request.user)
 
-    def form_valid(
-        self,
-        form,
-    ):
+    def form_valid(self, form: PasswordChangeForm) -> HttpResponse:
         user = form.save()
 
-        update_session_auth_hash(
-            self.request,
-            user,
-        )
+        update_session_auth_hash(self.request, user)
 
         success_form = self.get_success_form()
 
@@ -421,23 +345,20 @@ class UpdatePasswordView(
         return self.render_to_response(self.get_context_data(form=success_form))
 
 
-class WorkHoursView(
-    LoginRequiredMixin,
-    generic.TemplateView,
-):
+class WorkHoursView(LoginRequiredMixin, generic.TemplateView):
     template_name = "account/work_hours.html"
-    partial_template_name = "account/work_hours.html" "#work-hours-content"
+    partial_template_name = "account/work_hours.html#work-hours-content"
 
-    def is_partial_request(self):
+    def is_partial_request(self) -> bool:
         return self.request.GET.get("partial") == "1"
 
-    def get_template_names(self):
+    def get_template_names(self) -> list[str]:
         if self.is_partial_request():
             return [self.partial_template_name]
 
         return [self.template_name]
 
-    def get_employee_queryset(self):
+    def get_employee_queryset(self) -> QuerySet[Employee]:
         return (
             Employee.objects.filter(
                 is_active=True,
@@ -456,7 +377,7 @@ class WorkHoursView(
             )
         )
 
-    def get_selected_month(self):
+    def get_selected_month(self) -> date:
         today = timezone.localdate()
 
         month_value = self.request.GET.get("month")
@@ -465,18 +386,12 @@ class WorkHoursView(
             return today.replace(day=1)
 
         try:
-            return parse_work_month(
-                month_value,
-                reference_date=today,
-            )
+            return parse_work_month(month_value, reference_date=today)
 
         except ValueError:
             return today.replace(day=1)
 
-    def get_context_data(
-        self,
-        **kwargs,
-    ):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         today = timezone.localdate()
@@ -512,10 +427,7 @@ class WorkHoursView(
         if employee_value == "all":
             show_all_employees = True
 
-            selected_employees = [
-                current_employee,
-                *other_employees,
-            ]
+            selected_employees = [current_employee, *other_employees]
 
         else:
             requested_employee_id = _parse_int(employee_value)
@@ -548,7 +460,7 @@ class WorkHoursView(
             {
                 "other_employees": other_employees,
                 "available_work_months": get_available_work_months(
-                    reference_date=today,
+                    reference_date=today
                 ),
                 "selected_work_month": selected_month,
                 "selected_work_month_value": selected_month.strftime("%Y-%m"),
@@ -563,22 +475,11 @@ class WorkHoursView(
         return context
 
 
-@method_decorator(
-    never_cache,
-    name="dispatch",
-)
-class WorkHoursUpdateView(
-    LoginRequiredMixin,
-    generic.View,
-):
+@method_decorator(never_cache, name="dispatch")
+class WorkHoursUpdateView(LoginRequiredMixin, generic.View):
     http_method_names = ["post"]
 
-    def post(
-        self,
-        request,
-        *args,
-        **kwargs,
-    ):
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
         if request.headers.get("X-Requested-With") != "XMLHttpRequest":
             raise Http404
 
@@ -589,15 +490,9 @@ class WorkHoursUpdateView(
         try:
             work_date = date.fromisoformat(work_date_value)
 
-        except (
-            TypeError,
-            ValueError,
-        ):
+        except (TypeError, ValueError):
             return JsonResponse(
-                {
-                    "success": False,
-                    "message": _("Invalid work date."),
-                },
+                {"success": False, "message": _("Invalid work date.")},
                 status=400,
             )
 
@@ -630,47 +525,28 @@ class WorkHoursUpdateView(
                 "success": True,
                 "work_date": work_date.isoformat(),
                 "hours": (
-                    format(
-                        entry.hours,
-                        ".2f",
-                    )
+                    format(entry.hours, ".2f")
                     if entry
                     else ""
                 ),
                 "has_hours": entry is not None,
                 "deleted": entry is None,
-                "month_total": format(
-                    month_total,
-                    ".2f",
-                ),
+                "month_total": format(month_total, ".2f"),
             }
         )
 
 
-@method_decorator(
-    never_cache,
-    name="dispatch",
-)
-class SimpleInvoicePeriodPreviewView(
-    LoginRequiredMixin,
-    generic.View,
-):
+@method_decorator(never_cache, name="dispatch")
+class SimpleInvoicePeriodPreviewView(LoginRequiredMixin, generic.View):
     http_method_names = ["get"]
 
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs,
-    ):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> JsonResponse:
         if request.headers.get("X-Requested-With") != "XMLHttpRequest":
             raise Http404
 
         today = timezone.localdate()
 
-        available_years = get_available_invoice_years(
-            reference_date=today,
-        )
+        available_years = get_available_invoice_years(reference_date=today)
 
         selected_year = _parse_int(request.GET.get("year"))
 
@@ -678,7 +554,7 @@ class SimpleInvoicePeriodPreviewView(
             return JsonResponse(
                 {
                     "success": False,
-                    "message": _("The selected invoice " "year is not available."),
+                    "message": _("The selected invoice year is not available."),
                 },
                 status=400,
             )
@@ -693,7 +569,7 @@ class SimpleInvoicePeriodPreviewView(
                 {
                     "success": False,
                     "message": _(
-                        "No invoice months are " "available for the " "selected year."
+                        "No invoice months are available for the selected year."
                     ),
                 },
                 status=400,
@@ -707,16 +583,10 @@ class SimpleInvoicePeriodPreviewView(
         else:
             selected_month = max(available_months)
 
-        max_day = calendar.monthrange(
-            selected_year,
-            selected_month,
-        )[1]
+        max_day = calendar.monthrange(selected_year, selected_month)[1]
 
         if selected_year == today.year and selected_month == today.month:
-            max_day = min(
-                max_day,
-                today.day,
-            )
+            max_day = min(max_day, today.day)
 
         start_day = _parse_int(request.GET.get("start_day"))
 
@@ -728,21 +598,9 @@ class SimpleInvoicePeriodPreviewView(
         if end_day is None:
             end_day = max_day
 
-        start_day = max(
-            1,
-            min(
-                start_day,
-                max_day,
-            ),
-        )
+        start_day = max(1, min(start_day, max_day))
 
-        end_day = max(
-            1,
-            min(
-                end_day,
-                max_day,
-            ),
-        )
+        end_day = max(1, min(end_day, max_day))
 
         month_labels = dict(EmployeeSimpleInvoice.Month.choices)
 
@@ -753,21 +611,12 @@ class SimpleInvoicePeriodPreviewView(
             "selected_start_day": start_day,
             "selected_end_day": end_day,
             "months": [
-                {
-                    "value": month,
-                    "label": str(month_labels[month]),
-                }
+                {"value": month, "label": str(month_labels[month])}
                 for month in available_months
             ],
             "days": [
-                {
-                    "value": day,
-                    "label": str(day),
-                }
-                for day in range(
-                    1,
-                    max_day + 1,
-                )
+                {"value": day, "label": str(day)}
+                for day in range(1, max_day + 1)
             ],
             "hours": "0.00",
             "can_submit": False,
@@ -775,15 +624,12 @@ class SimpleInvoicePeriodPreviewView(
         }
 
         if start_day > end_day:
-            response_data["message"] = _("End day cannot be earlier " "than start day.")
+            response_data["message"] = _("End day cannot be earlier than start day.")
 
             return JsonResponse(response_data)
 
         try:
-            (
-                start_date,
-                end_date,
-            ) = build_invoice_period(
+            (start_date, end_date) = build_invoice_period(
                 year=selected_year,
                 month=selected_month,
                 start_day=start_day,
@@ -808,26 +654,25 @@ class SimpleInvoicePeriodPreviewView(
             end_date=end_date,
         )
 
-        response_data["hours"] = format(
-            hours,
-            ".2f",
-        )
+        response_data["hours"] = format(hours, ".2f")
 
         response_data["can_submit"] = True
 
         return JsonResponse(response_data)
 
 
-class SimpleInvoiceCreateView(
-    LoginRequiredMixin,
-    generic.View,
-):
+class SimpleInvoiceCreateView(LoginRequiredMixin, generic.View):
     template_name = "account/invoice.html"
-    partial_template_name = "account/invoice.html" "#simple-invoice-form"
+    partial_template_name = "account/invoice.html#simple-invoice-form"
 
-    def get_employee(self):
+    def render_form_response(self, context: dict[str, Any]) -> HttpResponse:
+        """Render the POST partial without cache-dependent context processors."""
+        context["csrf_token"] = get_token(self.request)
+        return HttpResponse(render_to_string(self.partial_template_name, context))
+
+    def get_employee(self) -> Employee:
         last_invoice = EmployeeSimpleInvoice.objects.filter(
-            employee_id=OuterRef("pk"),
+            employee_id=OuterRef("pk")
         ).order_by("-pk")
 
         return Employee.objects.annotate(
@@ -846,9 +691,9 @@ class SimpleInvoiceCreateView(
 
     def get_employee_form(
         self,
-        employee,
-        data=None,
-    ):
+        employee: Employee,
+        data: Mapping[str, str] | None = None,
+    ) -> EmployeeInvoiceForm:
         if data is not None:
             return EmployeeInvoiceForm(data)
 
@@ -863,19 +708,14 @@ class SimpleInvoiceCreateView(
 
     def get_invoice_form(
         self,
-        employee,
-        data=None,
-        last_invoice=None,
-    ):
+        employee: Employee,
+        data: Mapping[str, str] | None = None,
+        last_invoice: EmployeeSimpleInvoice | None = None,
+    ) -> SimpleInvoiceForm:
         if data is not None:
-            return SimpleInvoiceForm(
-                data,
-                employee=employee,
-            )
+            return SimpleInvoiceForm(data, employee=employee)
 
-        period_initial = get_initial_invoice_period(
-            employee=employee,
-        )
+        period_initial = get_initial_invoice_period(employee=employee)
 
         invoice_initial = {
             "invoice_year": period_initial["year"],
@@ -897,17 +737,9 @@ class SimpleInvoiceCreateView(
             last_wsbc = last_invoice.wsbc
 
         else:
-            last_invoice_number = getattr(
-                employee,
-                "last_simple_invoice_number",
-                None,
-            )
+            last_invoice_number = getattr(employee, "last_simple_invoice_number", None)
 
-            last_rate = getattr(
-                employee,
-                "last_simple_invoice_rate",
-                None,
-            )
+            last_rate = getattr(employee, "last_simple_invoice_rate", None)
 
             last_gst_account_number = getattr(
                 employee,
@@ -915,17 +747,9 @@ class SimpleInvoiceCreateView(
                 "",
             )
 
-            last_gst = getattr(
-                employee,
-                "last_simple_invoice_gst",
-                None,
-            )
+            last_gst = getattr(employee, "last_simple_invoice_gst", None)
 
-            last_wsbc = getattr(
-                employee,
-                "last_simple_invoice_wsbc",
-                None,
-            )
+            last_wsbc = getattr(employee, "last_simple_invoice_wsbc", None)
 
         if last_invoice_number is not None:
             if last_invoice_number < 99:
@@ -943,55 +767,32 @@ class SimpleInvoiceCreateView(
         else:
             invoice_initial["invoice_number"] = 1
 
-        return SimpleInvoiceForm(
-            initial=invoice_initial,
-            employee=employee,
-        )
+        return SimpleInvoiceForm(initial=invoice_initial, employee=employee)
 
     def get_context(
         self,
-        employee,
-        employee_form=None,
-        invoice_form=None,
-    ):
+        employee: Employee,
+        employee_form: EmployeeInvoiceForm | None = None,
+        invoice_form: SimpleInvoiceForm | None = None,
+    ) -> dict[str, Any]:
         return {
             "employee_form": (employee_form or self.get_employee_form(employee)),
             "invoice_form": (invoice_form or self.get_invoice_form(employee)),
         }
 
-    def get(
-        self,
-        request,
-        *args,
-        **kwargs,
-    ):
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         employee = self.get_employee()
 
         context = self.get_context(employee)
 
-        return render(
-            request,
-            self.template_name,
-            context,
-        )
+        return render(request, self.template_name, context)
 
-    def post(
-        self,
-        request,
-        *args,
-        **kwargs,
-    ):
+    def post(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         employee = self.get_employee()
 
-        employee_form = self.get_employee_form(
-            employee,
-            data=request.POST,
-        )
+        employee_form = self.get_employee_form(employee, data=request.POST)
 
-        invoice_form = self.get_invoice_form(
-            employee,
-            data=request.POST,
-        )
+        invoice_form = self.get_invoice_form(employee, data=request.POST)
 
         if employee_form.is_valid() and invoice_form.is_valid():
             try:
@@ -1002,18 +803,15 @@ class SimpleInvoiceCreateView(
                 )
 
             except ValidationError as exc:
-                invoice_form.add_error(
-                    None,
-                    exc,
-                )
+                invoice_form.add_error(None, exc)
+
+            except SimpleInvoicePublicationError as exc:
+                invoice_form.add_error(None, str(exc))
 
             else:
                 employee_form = self.get_employee_form(employee)
 
-                invoice_form = self.get_invoice_form(
-                    employee,
-                    last_invoice=invoice,
-                )
+                invoice_form = self.get_invoice_form(employee, last_invoice=invoice)
 
                 invoice_form.is_success = True
 
@@ -1025,11 +823,7 @@ class SimpleInvoiceCreateView(
 
                 context["invoice_id"] = invoice.pk
 
-                return render(
-                    request,
-                    self.partial_template_name,
-                    context,
-                )
+                return self.render_form_response(context)
 
         context = self.get_context(
             employee,
@@ -1037,30 +831,20 @@ class SimpleInvoiceCreateView(
             invoice_form=invoice_form,
         )
 
-        return render(
-            request,
-            self.partial_template_name,
-            context,
-        )
+        return self.render_form_response(context)
 
 
-@method_decorator(
-    never_cache,
-    name="dispatch",
-)
-class SimpleInvoiceStatusView(
-    LoginRequiredMixin,
-    generic.View,
-):
+@method_decorator(never_cache, name="dispatch")
+class SimpleInvoiceStatusView(LoginRequiredMixin, generic.View):
     http_method_names = ["get"]
 
     def get(
         self,
-        request,
-        invoice_id,
-        *args,
-        **kwargs,
-    ):
+        request: HttpRequest,
+        invoice_id: int,
+        *args: Any,
+        **kwargs: Any,
+    ) -> JsonResponse:
         if request.headers.get("X-Requested-With") != "XMLHttpRequest":
             raise Http404
 
@@ -1076,29 +860,18 @@ class SimpleInvoiceStatusView(
             invoice.pdf_file
         )
 
-        return JsonResponse(
-            {
-                "status": invoice.status,
-                "can_download": can_download,
-            }
-        )
+        return JsonResponse({"status": invoice.status, "can_download": can_download})
 
 
-@method_decorator(
-    never_cache,
-    name="dispatch",
-)
-class SimpleInvoiceDownloadView(
-    LoginRequiredMixin,
-    generic.View,
-):
+@method_decorator(never_cache, name="dispatch")
+class SimpleInvoiceDownloadView(LoginRequiredMixin, generic.View):
     def get(
         self,
-        request,
-        invoice_id,
-        *args,
-        **kwargs,
-    ):
+        request: HttpRequest,
+        invoice_id: int,
+        *args: Any,
+        **kwargs: Any,
+    ) -> HttpResponse:
         invoice = get_simple_invoice_after_expiration_check(
             invoice_id=invoice_id,
             employee_user_id=request.user.pk,
@@ -1108,25 +881,19 @@ class SimpleInvoiceDownloadView(
             raise Http404
 
         if invoice.status != EmployeeSimpleInvoice.Status.SENT or not invoice.pdf_file:
-            return HttpResponse(
-                "Invoice PDF is not ready.",
-                status=409,
-            )
+            return HttpResponse("Invoice PDF is not ready.", status=409)
 
         return redirect(invoice.pdf_file.url)
 
 
-class CheatSheetView(
-    LoginRequiredMixin,
-    generic.TemplateView,
-):
+class CheatSheetView(LoginRequiredMixin, generic.TemplateView):
     template_name = "account/cheat_sheet.html"
-    partial_template_name = "account/cheat_sheet.html" "#cheat-sheet-detail"
+    partial_template_name = "account/cheat_sheet.html#cheat-sheet-detail"
 
-    def is_partial_request(self):
+    def is_partial_request(self) -> bool:
         return self.request.GET.get("partial") == "1"
 
-    def get_cheat_sheet_id(self):
+    def get_cheat_sheet_id(self) -> int | None:
         cheat_sheet_id = self.request.GET.get("cheat_sheet_id")
 
         if not cheat_sheet_id:
@@ -1135,22 +902,16 @@ class CheatSheetView(
         try:
             return int(cheat_sheet_id)
 
-        except (
-            TypeError,
-            ValueError,
-        ):
+        except (TypeError, ValueError):
             return None
 
-    def get_template_names(self):
+    def get_template_names(self) -> list[str]:
         if self.is_partial_request():
             return [self.partial_template_name]
 
         return [self.template_name]
 
-    def get_context_data(
-        self,
-        **kwargs,
-    ):
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
         cheat_sheet_id = self.get_cheat_sheet_id()

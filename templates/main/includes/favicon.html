@@ -1,0 +1,10 @@
+{% load cloudinary static %}
+{% if company_base and company_base.favicon %}
+  {% cloudinary_url company_base.favicon.name secure=True resource_type="image" type="upload" format="png" crop="pad" background="transparent" width=32 height=32 as favicon_32_url %}
+  {% cloudinary_url company_base.favicon.name secure=True resource_type="image" type="upload" format="png" crop="pad" background="transparent" width=192 height=192 as favicon_192_url %}
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ favicon_32_url }}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{{ favicon_192_url }}">
+{% else %}
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon-32.png' %}">
+  <link rel="icon" type="image/png" sizes="192x192" href="{% static 'img/favicon-192.png' %}">
+{% endif %}

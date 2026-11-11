@@ -1,11 +1,14 @@
+from __future__ import annotations
+
 import calendar
+from datetime import datetime
 
 from django.utils import timezone
 
 SIMPLE_INVOICE_RETENTION_MONTHS = 36
 
 
-def get_simple_invoice_cutoff(*, months: int):
+def get_simple_invoice_cutoff(*, months: int) -> datetime:
     if months < 1:
         raise ValueError("Months must be greater than zero.")
 
@@ -16,13 +19,6 @@ def get_simple_invoice_cutoff(*, months: int):
     year, month_index = divmod(month_index, 12)
     month = month_index + 1
 
-    day = min(
-        now.day,
-        calendar.monthrange(year, month)[1],
-    )
+    day = min(now.day, calendar.monthrange(year, month)[1])
 
-    return now.replace(
-        year=year,
-        month=month,
-        day=day,
-    )
+    return now.replace(year=year, month=month, day=day)

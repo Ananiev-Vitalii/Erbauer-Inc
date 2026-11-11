@@ -18,33 +18,24 @@ function initSimpleInvoicePostalCodeInput(
     "#id_postal_code"
   );
 
-  if (!postalCodeInput) {
+  if (!postalCodeInput || postalCodeInput.dataset.postalInitialized === "true") {
     return;
   }
 
+  postalCodeInput.dataset.postalInitialized = "true";
+  postalCodeInput.removeAttribute("maxlength");
+
   const formatPostalCode = (value) => {
-    let formattedValue = value
-      .toUpperCase()
-      .replace(
-        /[^A-Z0-9]/g,
-        ""
-      )
-      .slice(
-        0,
-        6
-      );
-
-    if (
-      formattedValue.length
-      > 3
-    ) {
-      formattedValue = (
-        `${formattedValue.slice(0, 3)} `
-        + formattedValue.slice(3)
-      );
+    if (/[^\x00-\x7F]/.test(value)) return value;
+    const normalized = value.trim().toUpperCase();
+    const complete = /^[ABCEGHJ-NPRSTVXY][0-9][ABCEGHJ-NPRSTV-Z] ?[0-9][ABCEGHJ-NPRSTV-Z][0-9]$/;
+    if (complete.test(normalized)) {
+      return normalized.slice(0, 3) + " " + normalized.slice(-3);
     }
-
-    return formattedValue;
+    if (/^[A-Z0-9]{4,6}$/.test(normalized)) {
+      return normalized.slice(0, 3) + " " + normalized.slice(3);
+    }
+    return normalized;
   };
 
   postalCodeInput.value =

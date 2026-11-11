@@ -18,12 +18,18 @@
         <p class="auth-shell__kicker">{% trans "Check your email" %}</p>
         <h1 class="auth-shell__title">{% trans "Confirm User" %}</h1>
 
+        {% if messages %}
+        {% for message in messages %}
+        <p class="auth-shell__lead" role="status">{{ message }}</p>
+        {% endfor %}
+        {% else %}
         <p class="auth-shell__lead">
           {% blocktrans %}
           We’ve sent a verification link to your email address.
           Please open the email and click the link to activate your account.
           {% endblocktrans %}
         </p>
+        {% endif %}
         <br>
         <p class="auth-shell__lead">
           {% blocktrans %}

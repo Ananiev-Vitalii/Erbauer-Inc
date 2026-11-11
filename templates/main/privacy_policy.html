@@ -24,7 +24,10 @@
       </p>
 
       <p class="privacy-policy__updated">
-        {% trans "Last updated:" %} {% now "F j, Y" %}
+        {% trans "Last updated:" %}
+        <time datetime="{{ privacy_policy_updated_on|date:'Y-m-d' }}">
+          {{ privacy_policy_updated_on|date:"DATE_FORMAT" }}
+        </time>
       </p>
     </div>
 

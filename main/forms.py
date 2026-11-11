@@ -1,12 +1,18 @@
+import re
+
 from django import forms
 from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _, pgettext_lazy
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import HTML, Layout, Field, Div
 
+PHONE_ERROR_MESSAGE = _(
+    "Enter a 10-digit Canadian or US phone number, optionally prefixed with +1 or 1."
+)
+
 
 class BaseStyledForm:
-    def init_form_helper(self):
+    def init_form_helper(self) -> None:
         self.helper = FormHelper()
         self.helper.form_method = "post"
         self.helper.form_action = reverse_lazy("main:contact_submit")
@@ -28,7 +34,8 @@ class ContactForm(BaseStyledForm, forms.Form):
     )
 
     phone = forms.CharField(
-        max_length=14,
+        max_length=17,
+        error_messages={"max_length": PHONE_ERROR_MESSAGE},
         widget=forms.TextInput(
             attrs={
                 "class": "contacts__input contacts__input--phone",
@@ -63,9 +70,11 @@ class ContactForm(BaseStyledForm, forms.Form):
         error_messages={"required": _("You must agree to the Privacy Policy.")},
     )
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         self.service_message = kwargs.pop("service_message", "")
         super().__init__(*args, **kwargs)
+        # Keep server length validation without truncating input in the browser.
+        self.fields["phone"].widget.attrs.pop("maxlength", None)
         self.is_success = False
         self.init_form_helper()
         self.helper.form_class = "contacts__form"
@@ -74,6 +83,12 @@ class ContactForm(BaseStyledForm, forms.Form):
         privacy_acknowledge_text = _("I acknowledge the")
         privacy_policy_text = pgettext_lazy(
             "contact form checkbox link", "Privacy Policy"
+        )
+        privacy_policy_id = self["privacy_policy"].id_for_label
+        privacy_acknowledge_id = f"{privacy_policy_id}_acknowledge"
+        privacy_policy_link_id = f"{privacy_policy_id}_link"
+        self.fields["privacy_policy"].widget.attrs["aria-labelledby"] = (
+            f"{privacy_acknowledge_id} {privacy_policy_link_id}"
         )
 
         self.helper.layout = Layout(
@@ -90,9 +105,13 @@ class ContactForm(BaseStyledForm, forms.Form):
                     Field("privacy_policy"),
                     HTML(f"""
                         <span>
-                          {privacy_acknowledge_text}
-                          <a href="{{% url 'main:privacy_policy' %}}" target="_blank" rel="noopener noreferrer" 
-                          class="external-link">
+                          <label for="{privacy_policy_id}"
+                                 id="{privacy_acknowledge_id}">
+                            {privacy_acknowledge_text}
+                          </label>
+                          <a href="{{% url 'main:privacy_policy' %}}"
+                          target="_blank" rel="noopener noreferrer"
+                          class="external-link" id="{privacy_policy_link_id}">
                             {privacy_policy_text}
                             <span class="external-icon">
                                 <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -102,7 +121,7 @@ class ContactForm(BaseStyledForm, forms.Form):
                             </span>
                           </a>
                         </span>
-                        """),
+                        """),  # noqa: E501 -- Keep the SVG path unchanged.
                     css_class="contacts__checkbox-label",
                 ),
                 css_class="contacts__checkbox-field",
@@ -118,13 +137,16 @@ class ContactForm(BaseStyledForm, forms.Form):
             """),
         )
 
-    def clean_phone(self):
+    def clean_phone(self) -> str:
         phone = self.cleaned_data["phone"]
-        normalized = "".join(ch for ch in phone if ch.isdigit())
+        match = re.fullmatch(
+            r"(?:\+?1 ?)?("
+            r"[0-9]{10}|[0-9]{3}([ .-])[0-9]{3}\2[0-9]{4}|"
+            r"\([0-9]{3}\) [0-9]{3}-[0-9]{4})",
+            phone,
+        )
+        if match is None:
+            raise forms.ValidationError(PHONE_ERROR_MESSAGE, code="invalid")
 
-        if len(normalized) != 10:
-            raise forms.ValidationError(
-                _("Please enter a valid 10-digit Canadian phone number.")
-            )
-
-        return phone
+        national_number = re.sub(r"[ ().-]", "", match.group(1))
+        return f"+1{national_number}"
