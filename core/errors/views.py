@@ -1,5 +1,7 @@
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
+from django.utils.translation import get_language
 
 
 def custom_permission_denied(
@@ -13,4 +15,5 @@ def custom_page_not_found(request: HttpRequest, exception: Exception) -> HttpRes
 
 
 def custom_server_error(request: HttpRequest) -> HttpResponse:
-    return render(request, "core/errors/500.html", status=500)
+    html = render_to_string("core/errors/500.html", {"language": get_language()})
+    return HttpResponse(html, status=500)

@@ -1,8 +1,13 @@
-from typing import List, Optional
 from dataclasses import dataclass, field
+from typing import Any, List, Optional
 
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
+from django.utils.functional import Promise
+
+
+class EmailDeliveryError(RuntimeError):
+    """The message had no recipients or the backend did not report a send."""
 
 
 @dataclass
@@ -14,9 +19,9 @@ class EmailAttachment:
 
 @dataclass
 class EmailPayload:
-    subject: str
+    subject: str | Promise
     template_name: str
-    context: dict
+    context: dict[str, Any]
     to: List[str]
 
     cc: Optional[List[str]] = field(default=None)
@@ -26,10 +31,7 @@ class EmailPayload:
 
 
 def send_html_email(payload: EmailPayload) -> None:
-    """
-    Universal HTML email sender.
-    Can be reused across all apps.
-    """
+    """Render and send one HTML message, raising if no message was sent."""
 
     message = render_to_string(
         payload.template_name,
@@ -45,6 +47,9 @@ def send_html_email(payload: EmailPayload) -> None:
         reply_to=payload.reply_to,
     )
 
+    if not email.recipients():
+        raise EmailDeliveryError("No email recipients were provided.")
+
     email.content_subtype = "html"
 
     if payload.attachments:
@@ -55,4 +60,5 @@ def send_html_email(payload: EmailPayload) -> None:
                 attachment.mimetype,
             )
 
-    email.send()
+    if email.send() != 1:
+        raise EmailDeliveryError("Email backend did not report a successful send.")

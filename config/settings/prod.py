@@ -30,6 +30,7 @@ if REDIS_URL:
             "BACKEND": "django.core.cache.backends.redis.RedisCache",
             "LOCATION": REDIS_URL,
             "KEY_PREFIX": "erbauer:cache",
+            "OPTIONS": {"socket_connect_timeout": 3, "socket_timeout": 3},
         }
     }
 else:

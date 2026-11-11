@@ -7,7 +7,7 @@ from django.conf import settings
 from django.http import HttpRequest
 from django.utils.translation import gettext_lazy as _
 
-from core.services.email import EmailPayload, send_html_email
+from core.services.email import EmailDeliveryError, EmailPayload, send_html_email
 from user.services.tokens import build_verification_context
 from user.models import User
 from main.models import CompanyProfile
@@ -38,7 +38,12 @@ def send_verification_email(request: HttpRequest, user: User) -> bool:
 
     try:
         send_html_email(payload)
-    except (AnymailAPIError, AnymailRecipientsRefused, RequestException):
+    except (
+        AnymailAPIError,
+        AnymailRecipientsRefused,
+        RequestException,
+        EmailDeliveryError,
+    ):
         logger.exception("Verification email delivery failed.")
         return False
     return True

@@ -8,6 +8,7 @@ from django.http import HttpRequest, HttpResponse
 from django.test import RequestFactory, TestCase, override_settings
 from django.urls import reverse
 
+from core.services.email import EmailDeliveryError
 from core.services.rate_limit_redis import RateLimitUnavailable
 from main.models import CompanyProfile
 from user.models import User
@@ -94,7 +95,7 @@ class EmailWorkflowTests(TestCase):
         user = User.objects.create_user(email="pending@example.invalid",
                                         is_active=False)
         for exception in (AnymailAPIError("failure"), AnymailRecipientsRefused(),
-                          Timeout()):
+                          Timeout(), EmailDeliveryError("Message not sent")):
             with patch("user.services.email.send_html_email", side_effect=exception), \
                  self.assertLogs("user.services.email", level="ERROR"):
                 self.assertFalse(send_verification_email(RequestFactory().get("/"),
@@ -120,6 +121,59 @@ class EmailWorkflowTests(TestCase):
         self.assertIsNotNone(member.user_id)
         self.assertTrue(hasattr(member, "profile"))
         self.assertTrue(list(get_messages(response.wsgi_request)))
+
+    def test_zero_send_result_keeps_registration_and_resend_controlled(self) -> None:
+        member = employee()
+        data = {
+            "email": member.email,
+            "password1": "Strong-test-password-842!",
+            "password2": "Strong-test-password-842!",
+            "privacy_policy": True,
+        }
+        with (
+            patch("core.services.email.EmailMessage.send", return_value=0) as send,
+            self.assertLogs("user.services.email", level="ERROR"),
+        ):
+            with (
+                patch(
+                    "user.views.get_registration_rate_limit_state",
+                    return_value=state(),
+                ),
+                patch(
+                    "user.mixins.verify_turnstile_token",
+                    return_value={"success": True},
+                ),
+                self.captureOnCommitCallbacks(execute=True),
+            ):
+                response = self.client.post(reverse("user:register"), data)
+                send.assert_not_called()
+
+            self.assertEqual(response.status_code, 302)
+            self.assertEqual(response.url, reverse("user:confirm_user"))
+            member.refresh_from_db()
+            self.assertIsNotNone(member.user_id)
+            self.assertFalse(member.user.is_active)
+            self.assertFalse(member.user.is_verified)
+            self.assertTrue(hasattr(member, "profile"))
+            self.assertTrue(list(get_messages(response.wsgi_request)))
+            send.assert_called_once_with()
+
+            with (
+                patch.object(ConfirmUser, "is_turnstile_valid", return_value=True),
+                patch.object(
+                    ConfirmUser, "get_email_rate_limit_state", return_value=state()
+                ),
+                patch.object(
+                    ConfirmUser, "register_email_attempt", return_value=state()
+                ),
+            ):
+                response = self.client.post(
+                    reverse("user:confirm_user"), {"email": member.email}
+                )
+
+            self.assertEqual(response.status_code, 200)
+            self.assertTrue(response.context["form"].success_message)
+            self.assertEqual(send.call_count, 2)
 
     def test_password_reset_uses_django_delivery_failure_handling(self) -> None:
         user = User.objects.create_user(email="reset@example.invalid", password="test")
