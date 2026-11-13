@@ -902,6 +902,17 @@ function initSimpleInvoiceForm(
   form.dataset.submitting =
     "false";
 
+  form.addEventListener("keydown", (event) => {
+    if (
+      event.key === "Enter"
+      && !event.isComposing
+      && event.target instanceof HTMLInputElement
+      && !["submit", "button", "reset", "image"].includes(event.target.type)
+    ) {
+      event.preventDefault();
+    }
+  });
+
   form.addEventListener(
     "submit",
     async (event) => {
